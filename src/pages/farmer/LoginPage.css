@@ -1,0 +1,103 @@
+/* ---------- FarmXP brand tokens ---------- */
+.auth-stage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #f4efdd 0%, #fbf7ec 60%);
+  padding: 40px 20px;
+}
+
+.auth-card {
+  width: 100%;
+  border-radius: 22px !important;
+  box-shadow: 0 14px 34px rgba(37, 66, 42, 0.14) !important;
+  padding: 38px 34px !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-band {
+  height: 8px;
+  width: 100%;
+  background: linear-gradient(90deg, #6fa83a, #f2a93b);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.auth-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.auth-logo .mark {
+  font-size: 30px;
+}
+
+.auth-logo .word {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  color: #173019;
+}
+
+.auth-title {
+  font-family: 'Baloo 2', sans-serif !important;
+  color: #173019 !important;
+  margin-bottom: 4px !important;
+}
+
+.auth-subtitle {
+  color: #5b6b5c !important;
+  margin-bottom: 20px !important;
+}
+
+.auth-alert {
+  margin-bottom: 16px !important;
+}
+
+.auth-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.forgot-link {
+  color: #3e8fa0 !important;
+  cursor: pointer;
+  font-weight: 600 !important;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+.auth-submit-btn {
+  margin-top: 12px !important;
+  margin-bottom: 16px !important;
+  padding: 12px 0 !important;
+  border-radius: 100px !important;
+  font-weight: 700 !important;
+  font-size: 15.5px !important;
+  box-shadow: 0 8px 18px rgba(111, 168, 58, 0.35) !important;
+}
+
+.auth-foot {
+  color: #5b6b5c !important;
+}
+
+.auth-link {
+  color: #6fa83a;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
