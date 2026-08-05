@@ -121,13 +121,12 @@
 
 // export default App
 import { Button } from "@mui/material";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
   return (
-    <div style={{ padding: "40px" }}>
-      <Button variant="contained">
-        FarmXP
-      </Button>
+    <div>
+      <AppRoutes/>
     </div>
   );
 }
