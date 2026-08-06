@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Box, Drawer, List, ListItemButton, Typography } from '@mui/material';
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 
 const drawerWidth = 250;
 
@@ -17,7 +18,7 @@ const menuGroups = [
     items: [
       { text: 'Learning Modules', icon: '📚', path: '/farmer/learning-modules' },
       { text: 'Progress', icon: '📈', path: '/farmer/progress' },
-      { text: 'Leaderboard', icon: '🏆', path: '/farmer/leaderboard' },
+      { text: 'Leaderboard', icon: <EmojiEventsIcon /> , path: '/farmer/leaderboard' },
     ],
   },
   {

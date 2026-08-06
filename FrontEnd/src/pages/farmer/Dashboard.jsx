@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 
 const statCards = [
@@ -9,10 +10,10 @@ const statCards = [
 ];
 
 const quickActions = [
-  { icon: '🤖', bg: 'var(--clay-light)', label: 'Ask AI' },
-  { icon: '📷', bg: 'var(--sprout-light)', label: 'Log Practice' },
-  { icon: '💧', bg: 'var(--sky-light)', label: 'Add Metric' },
-  { icon: '🏛️', bg: 'var(--harvest-light)', label: 'Schemes' },
+  { icon: '🤖', bg: 'var(--clay-light)', label: 'Ask AI', path: '/farmer/ai-assistant' },
+  { icon: '📷', bg: 'var(--sprout-light)', label: 'Log Practice', path: '/farmer/practice-logs' },
+  { icon: '💧', bg: 'var(--sky-light)', label: 'Add Metric', path: '/farmer/sustainability-metrics' },
+  { icon: '🏛️', bg: 'var(--harvest-light)', label: 'Schemes', path: '/farmer/govt-schemes' },
 ];
 
 const todayTasks = [
@@ -33,7 +34,6 @@ const recommendedSchemes = [
   { icon: '🌾', bg: 'var(--harvest-light)', title: 'PM-KISAN', desc: '₹6,000/year direct income support', eligible: true, deadline: '15 Aug 2026' },
 ];
 
-// Condensed version of the prototype's Profile → Farm Details card
 const farmSummary = {
   farmSize: '2.5 acres',
   soilType: 'Alluvial',
@@ -47,6 +47,8 @@ const farmerName = 'Guest Farmer';
 const sustainabilityScore = 72;
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="dash">
       {/* Greeting hero */}
@@ -144,7 +146,12 @@ const Dashboard = () => {
 
         <div className="quick-actions">
           {quickActions.map((qa) => (
-            <button className="qa-btn" key={qa.label} type="button">
+            <button
+              className="qa-btn"
+              key={qa.label}
+              type="button"
+              onClick={() => navigate(qa.path)}
+            >
               <div className="ic" style={{ background: qa.bg }}>{qa.icon}</div>
               <div className="lb">{qa.label}</div>
             </button>
@@ -173,11 +180,24 @@ const Dashboard = () => {
       {/* Recommended for You (modules) */}
       <div className="section-title">
         <h3>🤖 Recommended for You</h3>
-        <button className="link-more" type="button">View all →</button>
+        <button
+          className="link-more"
+          type="button"
+          onClick={() => navigate('/farmer/learning-modules')}
+        >
+          View all →
+        </button>
       </div>
       <div className="grid grid-3">
         {recommendedModules.map((m) => (
-          <div className="card module-card" key={m.title}>
+          <div
+            className="card module-card"
+            key={m.title}
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate('/farmer/learning-modules')}
+            onKeyDown={(e) => e.key === 'Enter' && navigate('/farmer/learning-modules')}
+          >
             <div className="module-hero" style={{ background: m.bg }}>{m.icon}</div>
             <div className="module-body">
               <span className="module-tag" style={{ background: m.tagBg, color: m.tagCol }}>
@@ -201,7 +221,13 @@ const Dashboard = () => {
       {/* Government Schemes for You */}
       <div className="section-title">
         <h3>🏛️ Government Schemes for You</h3>
-        <button className="link-more" type="button">View all →</button>
+        <button
+          className="link-more"
+          type="button"
+          onClick={() => navigate('/farmer/govt-schemes')}
+        >
+          View all →
+        </button>
       </div>
       <div className="grid grid-3">
         {recommendedSchemes.map((s) => (
@@ -219,7 +245,11 @@ const Dashboard = () => {
               <b>💰 Benefit:</b> {s.desc}
             </div>
             <div className="scheme-deadline">⏰ Deadline: {s.deadline}</div>
-            <button className="btn btn-outline btn-sm scheme-btn" type="button">
+            <button
+              className="btn btn-outline btn-sm scheme-btn"
+              type="button"
+              onClick={() => navigate('/farmer/govt-schemes')}
+            >
               📄 View Details
             </button>
           </div>
