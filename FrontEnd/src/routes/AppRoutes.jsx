@@ -16,6 +16,7 @@ import Leaderboard from "../pages/farmer/Leaderboard";
 import GovtSchemes from "../pages/farmer/GovtSchemes";
 import AIAssistant from "../pages/farmer/AIAssistant";
 import MarketBuyers from "../pages/farmer/MarketBuyers";
+import ContactBuyer from "../pages/farmer/ContactBuyer";
 import Notifications from "../pages/farmer/Notifications";
 import Progress from "../pages/farmer/Progress";
 import Settings from "../pages/farmer/Settings";
@@ -46,7 +47,10 @@ function AppRoutes() {
           <Route path="govt-schemes" element={<GovtSchemes />} />
           <Route path="govt-schemes/:id" element={<SchemeDetails />} /> 
           <Route path="ai-assistant" element={<AIAssistant />} />
+
           <Route path="market-buyers" element={<MarketBuyers />} />
+          <Route path="market-buyers/:id" element={<ContactBuyer />} />
+
           <Route path="notifications" element={<Notifications />} />
           <Route path="progress" element={<Progress />} />
           <Route path="settings" element={<Settings />} />

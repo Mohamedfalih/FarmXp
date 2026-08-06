@@ -40,3 +40,17 @@ export const sendChatMessage = async (message, conversationHistory) => {
 
   return MOCK_REPLIES.default;
 };
+
+// ...existing imports and functions stay unchanged (getPracticeLogs,
+// submitPractice, sendChatMessage) — only this new function is added:
+
+export const sendBuyerInquiry = async (inquiryData) => {
+  // Simulated network delay
+  await new Promise((resolve) => setTimeout(resolve, 700));
+
+  // Later:
+  // const { data } = await axiosInstance.post("/api/marketplace/inquiries", inquiryData);
+  // return data;
+
+  return { success: true, ...inquiryData, sentAt: new Date().toISOString() };
+};

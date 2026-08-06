@@ -1,0 +1,223 @@
+.market-buyers-page {
+  --paper: #FFFFFF;
+  --line: #E4DFCF;
+  --ink: #1E2B1F;
+  --ink-soft: #5B6B5C;
+  --soil-dark: #173019;
+  --sprout: #6FA83A;
+  --sprout-light: #E4F1D8;
+  --harvest-light: #FCEDD3;
+  --sky-light: #DFF0F2;
+  --clay-light: #F8E1D6;
+  --radius-md: 14px;
+  --shadow: 0 6px 20px rgba(37, 66, 42, 0.08);
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+}
+
+.market-buyers-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.market-buyers-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 20px;
+  color: var(--soil-dark);
+  margin: 0;
+}
+
+.market-buyers-search {
+  flex: 1;
+  max-width: 280px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  font-size: 13.5px;
+  outline: none;
+}
+
+.market-buyers-search:focus {
+  border-color: var(--sprout);
+}
+
+.grid {
+  display: grid;
+  gap: 18px;
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.card {
+  background: var(--paper);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.buyer-card {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.buyer-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.buyer-emblem {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+.pill-approved {
+  background: var(--sprout-light);
+  color: #3e6b1e;
+}
+
+.pill-neutral {
+  background: var(--harvest-light);
+  color: #9a6a0e;
+}
+
+.buyer-name {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--soil-dark);
+  margin-top: 4px;
+}
+
+.buyer-crops {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 2px 0 4px;
+}
+
+.crop-tag {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 100px;
+  background: var(--sky-light);
+  color: #2a6b78;
+}
+
+.buyer-detail-row {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.buyer-detail-row b {
+  color: var(--soil-dark);
+  font-weight: 700;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--sprout);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #5e9530;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.btn-sm {
+  padding: 9px 16px;
+  border-radius: 100px;
+  font-size: 13px;
+}
+
+.buyer-contact-btn {
+  margin-top: 6px;
+}
+
+.market-buyers-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--ink-soft);
+  padding: 30px;
+}
+
+.market-locked-card {
+  padding: 40px 30px;
+  text-align: center;
+  max-width: 420px;
+  margin: 40px auto;
+}
+
+.market-locked-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.market-locked-card h3 {
+  color: var(--soil-dark);
+  margin: 0 0 8px;
+}
+
+.market-locked-card p {
+  color: var(--ink-soft);
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 900px) {
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+  .market-buyers-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .market-buyers-search {
+    max-width: none;
+  }
+}

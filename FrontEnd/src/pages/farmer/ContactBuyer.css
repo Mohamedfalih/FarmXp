@@ -1,0 +1,242 @@
+.contact-buyer-page {
+  --paper: #FFFFFF;
+  --line: #E4DFCF;
+  --ink: #1E2B1F;
+  --ink-soft: #5B6B5C;
+  --soil-dark: #173019;
+  --sprout: #6FA83A;
+  --sprout-light: #E4F1D8;
+  --harvest-light: #FCEDD3;
+  --sky-light: #DFF0F2;
+  --clay-light: #F8E1D6;
+  --radius-md: 14px;
+  --shadow: 0 6px 20px rgba(37, 66, 42, 0.08);
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  padding: 0;
+}
+
+.back-btn:hover {
+  color: var(--soil-dark);
+}
+
+.card {
+  background: var(--paper);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+/* ===== Buyer Summary ===== */
+.buyer-summary-card {
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.buyer-summary-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.buyer-emblem {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.buyer-summary-name {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 18px;
+  color: var(--soil-dark);
+  margin: 0 0 6px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+.pill-approved {
+  background: var(--sprout-light);
+  color: #3e6b1e;
+}
+
+.pill-neutral {
+  background: var(--harvest-light);
+  color: #9a6a0e;
+}
+
+.grid {
+  display: grid;
+  gap: 14px;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.info-box {
+  padding: 14px;
+}
+
+.info-box b {
+  font-size: 12.5px;
+  color: var(--soil-dark);
+}
+
+.info-box p {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 5px 0 0;
+  line-height: 1.5;
+}
+
+/* ===== Contact Form ===== */
+.contact-form-card {
+  padding: 24px;
+}
+
+.contact-form-title {
+  font-size: 16px;
+  color: var(--soil-dark);
+  margin: 0 0 16px;
+}
+
+.contact-form-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--soil-dark);
+  margin: 14px 0 6px;
+}
+
+.contact-form-label:first-of-type {
+  margin-top: 0;
+}
+
+.contact-form-select,
+.contact-form-input,
+.contact-form-textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.contact-form-select:focus,
+.contact-form-input:focus,
+.contact-form-textarea:focus {
+  border-color: var(--sprout);
+}
+
+.contact-form-textarea {
+  resize: vertical;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--sprout);
+  color: #fff;
+  padding: 13px 26px;
+  border-radius: 100px;
+  font-size: 14.5px;
+  box-shadow: 0 6px 14px rgba(111, 168, 58, 0.3);
+}
+
+.btn-primary:hover {
+  background: #5e9530;
+}
+
+.btn-primary:disabled {
+  background: #a9c791;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-sm {
+  padding: 10px 20px;
+  border-radius: 100px;
+  font-size: 13px;
+}
+
+.contact-submit-btn {
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* ===== Success State ===== */
+.contact-success-card {
+  padding: 40px 30px;
+  text-align: center;
+}
+
+.contact-success-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.contact-success-card h3 {
+  color: var(--soil-dark);
+  margin: 0 0 8px;
+}
+
+.contact-success-card p {
+  color: var(--ink-soft);
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.buyer-notfound {
+  padding: 30px;
+  text-align: center;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+  .buyer-summary-card,
+  .contact-form-card {
+    padding: 18px;
+  }
+}
