@@ -1,0 +1,173 @@
+/* ---------- Design tokens (shared prototype values) ---------- */
+.dash {
+  --paper: #FFFFFF;
+  --line: #E4DFCF;
+  --ink: #1E2B1F;
+  --ink-soft: #5B6B5C;
+  --soil: #25422A;
+  --soil-dark: #173019;
+  --sprout: #6FA83A;
+  --sprout-light: #E4F1D8;
+  --harvest: #F2A93B;
+  --harvest-light: #FCEDD3;
+  --sky: #3E8FA0;
+  --sky-light: #DFF0F2;
+  --clay: #C1552E;
+  --clay-light: #F8E1D6;
+  --radius-md: 14px;
+  --shadow: 0 6px 20px rgba(37, 66, 42, 0.08);
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+}
+
+/* ---------- Greeting hero ---------- */
+.dash-hero {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(120deg, #25422A, #3E6B1E);
+  color: #fff;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+}
+
+.dash-hero-eyebrow { font-size: 13px; opacity: 0.8; font-weight: 700; }
+.dash-hero-name { font-family: 'Baloo 2', sans-serif; color: #fff; font-size: 24px; margin: 4px 0 8px; }
+.dash-hero-sub { opacity: 0.9; font-size: 14px; }
+
+/* ---------- Circular score ring ---------- */
+.gring { position: relative; display: flex; align-items: center; justify-content: center; width: 96px; height: 96px; }
+.gring svg { transform: rotate(-90deg); }
+.gring-center { position: absolute; text-align: center; }
+.gring-num { font-family: 'Baloo 2', sans-serif; font-weight: 700; display: block; }
+.gring-sub { font-size: 10.5px; font-weight: 600; }
+
+/* ---------- Grid system ---------- */
+.grid { display: grid; gap: 20px; }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* ---------- Base card (with hover lift) ---------- */
+.card {
+  background: var(--paper);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* ---------- Stat cards ---------- */
+.stat-card { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.stat-top { display: flex; align-items: center; justify-content: space-between; }
+.stat-icon { width: 46px; height: 46px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.stat-value { font-family: 'Baloo 2', sans-serif; font-size: 28px; color: var(--soil-dark); }
+.stat-label { color: var(--ink-soft); font-size: 13.5px; font-weight: 600; }
+.stat-trend { font-size: 12.5px; font-weight: 700; padding: 3px 9px; border-radius: 100px; }
+.trend-up { background: var(--sprout-light); color: #3E6B1E; }
+.trend-down { background: var(--clay-light); color: var(--clay); }
+
+/* ---------- Farm Summary ---------- */
+.farm-summary-card { padding: 22px 24px; }
+.farm-summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.farm-summary-item { display: flex; flex-direction: column; gap: 4px; }
+.farm-summary-label { color: var(--ink-soft); font-size: 12px; font-weight: 700; }
+.farm-summary-value { font-weight: 700; font-size: 14.5px; color: var(--soil-dark); }
+
+/* ---------- XP goal card ---------- */
+.xpgoal-card { padding: 20px 22px; display: flex; align-items: center; gap: 20px; }
+.xpgoal-track { flex: 1; height: 14px; background: var(--line); border-radius: 100px; overflow: hidden; position: relative; }
+.xpgoal-fill { height: 100%; background: linear-gradient(90deg, var(--harvest), var(--sprout)); border-radius: 100px; }
+
+/* ---------- Icon badge ---------- */
+.icon-badge { border-radius: 14px; display: flex; align-items: center; justify-content: center; }
+.icon-badge.harvest { background: var(--harvest-light); }
+
+/* ---------- Quick actions ---------- */
+.quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.qa-btn {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 16px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.qa-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12); }
+.qa-btn .ic { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 19px; }
+.qa-btn .lb { font-size: 12.5px; font-weight: 700; color: var(--soil-dark); }
+
+/* ---------- Task cards ---------- */
+.task-card { padding: 16px; display: flex; gap: 12px; align-items: center; }
+.task-title { font-weight: 700; font-size: 14px; }
+.task-sub { font-size: 12.5px; color: var(--ink-soft); }
+
+/* ---------- Module cards ---------- */
+.module-card { overflow: hidden; display: flex; flex-direction: column; }
+.module-hero { height: 110px; display: flex; align-items: center; justify-content: center; font-size: 44px; }
+.module-body { padding: 16px; }
+.module-tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 100px; margin-bottom: 9px; }
+.diff-badge { font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 100px; margin-left: 6px; }
+.diff-beginner { background: var(--sprout-light); color: #3E6B1E; }
+.diff-intermediate { background: var(--harvest-light); color: #9A6A0E; }
+.diff-advanced { background: var(--clay-light); color: var(--clay); }
+.module-title { font-size: 16px; font-weight: 700; color: var(--soil-dark); margin-bottom: 6px; }
+.module-meta { display: flex; gap: 14px; color: var(--ink-soft); font-size: 12.5px; font-weight: 600; margin-bottom: 12px; }
+.progress-bar { height: 8px; background: var(--line); border-radius: 100px; overflow: hidden; margin-bottom: 6px; }
+.progress-fill { height: 100%; background: var(--sprout); border-radius: 100px; }
+.module-complete { font-size: 11.5px; color: var(--ink-soft); font-weight: 700; }
+
+/* ---------- Scheme cards ---------- */
+.scheme-card-official { padding: 20px; position: relative; overflow: hidden; }
+.scheme-card-official::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--soil), var(--harvest));
+}
+.scheme-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.scheme-emblem { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; border: 2px solid var(--line); background: #fff; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 100px; }
+.pill-approved { background: var(--sprout-light); color: #3E6B1E; }
+.pill-neutral { background: var(--line); color: var(--ink-soft); }
+.scheme-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.scheme-desc { font-size: 13px; color: var(--ink-soft); margin-bottom: 4px; }
+.scheme-deadline { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--clay); font-weight: 700; margin-top: 10px; }
+.scheme-btn { margin-top: 14px; width: 100%; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; cursor: pointer; font-weight: 700; }
+.btn-outline { background: transparent; color: var(--soil); border: 2px solid var(--soil); }
+.btn-outline:hover { background: var(--soil); color: #fff; }
+.btn-sm { padding: 9px 16px; font-size: 13.5px; border-radius: 100px; }
+
+/* ---------- Section titles ---------- */
+.section-title { display: flex; align-items: center; justify-content: space-between; margin: 34px 0 16px; }
+.section-title h3 { font-family: 'Baloo 2', sans-serif; font-size: 19px; color: var(--soil-dark); margin: 0; }
+.link-more { background: none; border: none; color: var(--sprout); font-weight: 700; font-size: 13.5px; cursor: pointer; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .grid-2 { grid-template-columns: 1fr; }
+  .quick-actions { grid-template-columns: repeat(2, 1fr); }
+  .farm-summary-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  .farm-summary-grid { grid-template-columns: 1fr; }
+  .dash-hero { flex-direction: column; align-items: flex-start; gap: 16px; }
+}
