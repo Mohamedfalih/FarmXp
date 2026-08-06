@@ -1,7 +1,18 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Box, Drawer, List, ListItemButton, Typography } from '@mui/material';
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import {
+  Dashboard,
+  Person,
+  MenuBook,
+  EmojiEvents,
+  WaterDrop,
+  AccountBalance,
+  SmartToy,
+  Storefront,
+  Notifications,
+  Settings,
+} from "@mui/icons-material";
 
 const drawerWidth = 250;
 
@@ -9,38 +20,43 @@ const menuGroups = [
   {
     label: null,
     items: [
+<<<<<<< HEAD
       { text: 'Dashboard', icon: '🏠', path: '/farmer/dashboard' },
       { text: 'Farmer Profile', icon: '👤', path: '/farmer/my-farm' },
+=======
+      { text: 'Dashboard', icon: <Dashboard />, path: '/farmer/dashboard' },
+      { text: 'Farmer Profile', icon: <Person />, path: '/farmer/profile' },
+>>>>>>> 15049725e9372b9275d1724f7aa459e066860d45
     ],
   },
   {
     label: 'Learn & Grow',
     items: [
-      { text: 'Learning Modules', icon: '📚', path: '/farmer/learning-modules' },
+      { text: 'Learning Modules', icon: <MenuBook />, path: '/farmer/learning-modules' },
       { text: 'Progress', icon: '📈', path: '/farmer/progress' },
-      { text: 'Leaderboard', icon: <EmojiEventsIcon /> , path: '/farmer/leaderboard' },
+      { text: 'Leaderboard', icon: <EmojiEvents /> , path: '/farmer/leaderboard' },
     ],
   },
   {
     label: 'Sustainability',
     items: [
       { text: 'Certified Practices', icon: '🧪', path: '/farmer/practice-logs' },
-      { text: 'Sustainability Metrics', icon: '💧', path: '/farmer/sustainability-metrics' },
+      { text: 'Sustainability Metrics', icon: <WaterDrop />, path: '/farmer/sustainability-metrics' },
     ],
   },
   {
     label: 'Opportunities',
     items: [
-      { text: 'Govt. Schemes', icon: '🏛️', path: '/farmer/govt-schemes' },
-      { text: 'AI Assistant', icon: '🤖', path: '/farmer/ai-assistant' },
-      { text: 'Market Buyers', icon: '🛒', path: '/farmer/market-buyers' },
+      { text: 'Govt. Schemes', icon: <AccountBalance />, path: '/farmer/govt-schemes' },
+      { text: 'AI Assistant', icon: <SmartToy />, path: '/farmer/ai-assistant' },
+      { text: 'Market Buyers', icon: <Storefront />, path: '/farmer/market-buyers' },
     ],
   },
   {
     label: 'Account',
     items: [
-      { text: 'Notifications', icon: '🔔', path: '/farmer/notifications' },
-      { text: 'Settings', icon: '⚙️', path: '/farmer/settings' },
+      { text: 'Notifications', icon: <Notifications />, path: '/farmer/notifications' },
+      { text: 'Settings', icon: <Settings />, path: '/farmer/settings' },
     ],
   },
 ];
