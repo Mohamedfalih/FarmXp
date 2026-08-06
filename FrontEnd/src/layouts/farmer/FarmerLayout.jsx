@@ -1,49 +1,65 @@
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
-import { Box, Toolbar, Container, CssBaseline } from '@mui/material';
+import { Outlet, useLocation } from 'react-router-dom';
+import { Box, CssBaseline } from '@mui/material';
 import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
 
-const drawerWidth = 260;
+const pageTitles = {
+  '/farmer/dashboard': 'Dashboard',
+  '/farmer/my-farm': 'My Farm',
+  '/farmer/learning-modules': 'Learning Modules',
+  '/farmer/progress': 'Progress',
+  '/farmer/leaderboard': 'Leaderboard',
+  '/farmer/practice-logs': 'Certified Practices',
+  '/farmer/sustainability-metrics': 'Sustainability Metrics',
+  '/farmer/govt-schemes': 'Govt. Schemes',
+  '/farmer/ai-assistant': 'AI Assistant',
+  '/farmer/market-buyers': 'Market Buyers',
+  '/farmer/profile': 'Farmer Profile',
+  '/farmer/notifications': 'Notifications',
+  '/farmer/settings': 'Settings',
+};
 
 const FarmerLayout = () => {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
 
-  const handleDrawerToggle = () => {
-    setMobileOpen((prev) => !prev);
-  };
+  const handleSidebarToggle = () => setSidebarOpen((prev) => !prev);
+  const handleSidebarClose = () => setSidebarOpen(false);
 
-  const handleDrawerClose = () => {
-    setMobileOpen(false);
-  };
+  const currentTitle = pageTitles[location.pathname] || 'Dashboard';
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <CssBaseline />
 
-      <Navbar onMenuClick={handleDrawerToggle} />
-
-      <Sidebar mobileOpen={mobileOpen} onClose={handleDrawerClose} />
+      <Sidebar open={sidebarOpen} onClose={handleSidebarClose} />
 
       <Box
-        component="main"
         sx={{
+          display: 'flex',
+          flexDirection: 'column',
           flexGrow: 1,
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-          minHeight: '100vh',
-          bgcolor: 'background.default',
+          height: '100vh',
         }}
       >
-        <Toolbar />
-        <Container
-          maxWidth="xl"
+        {/* Fixed header — no longer sticky inside the scroll area, so it can never overlap content */}
+        <Navbar onMenuClick={handleSidebarToggle} pageTitle={currentTitle} />
+
+        {/* Only this region scrolls */}
+        <Box
+          component="main"
           sx={{
-            pt: "90px",
-            pb: 3,
+            flexGrow: 1,
+            overflowY: 'auto',
+            bgcolor: '#FBF7EC',
+            padding: { xs: '20px', md: '30px 34px 60px' },
           }}
         >
-          <Outlet />
-        </Container>
+          <Box sx={{ maxWidth: '1280px', margin: '0 auto' }}>
+            <Outlet />
+          </Box>
+        </Box>
       </Box>
     </Box>
   );
