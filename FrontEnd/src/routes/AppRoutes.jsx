@@ -15,10 +15,10 @@ import Leaderboard from "../pages/farmer/Leaderboard";
 import GovtSchemes from "../pages/farmer/GovtSchemes";
 import AIAssistant from "../pages/farmer/AIAssistant";
 import MarketBuyers from "../pages/farmer/MarketBuyers";
-import Profile from "../pages/farmer/Profile";
 import Notifications from "../pages/farmer/Notifications";
 import Progress from "../pages/farmer/Progress";
 import Settings from "../pages/farmer/Settings";
+import EditFarm from "../pages/farmer/EditFarm";
 
 function AppRoutes() {
   return (
@@ -35,6 +35,7 @@ function AppRoutes() {
 
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="my-farm" element={<MyFarm />} />
+          <Route path="edit-farm" element={<EditFarm />} />
           <Route path="learning-modules" element={<LearningModules />} />
           <Route path="practice-logs" element={<PracticeLogs />} />
           <Route path="sustainability-metrics" element={<SustainabilityMetrics />} />
@@ -42,7 +43,6 @@ function AppRoutes() {
           <Route path="govt-schemes" element={<GovtSchemes />} />
           <Route path="ai-assistant" element={<AIAssistant />} />
           <Route path="market-buyers" element={<MarketBuyers />} />
-          <Route path="profile" element={<Profile />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="progress" element={<Progress />} />
           <Route path="settings" element={<Settings />} />

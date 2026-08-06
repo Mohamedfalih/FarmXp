@@ -1,0 +1,266 @@
+/* ---------- Design tokens (shared across farmer pages) ---------- */
+.myfarm {
+  --paper: #FFFFFF;
+  --line: #E4DFCF;
+  --ink: #1E2B1F;
+  --ink-soft: #5B6B5C;
+  --soil: #25422A;
+  --soil-dark: #173019;
+  --sprout: #6FA83A;
+  --sprout-light: #E4F1D8;
+  --harvest: #F2A93B;
+  --harvest-light: #FCEDD3;
+  --sky: #3E8FA0;
+  --sky-light: #DFF0F2;
+  --clay: #C1552E;
+  --clay-light: #F8E1D6;
+  --radius-md: 14px;
+  --shadow: 0 6px 20px rgba(37, 66, 42, 0.08);
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+}
+
+.myfarm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.myfarm-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 26px;
+  color: var(--soil-dark);
+  margin: 0;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 30px 0 14px;
+}
+
+.section-title h3 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 17px;
+  color: var(--soil-dark);
+  margin: 0;
+}
+
+.card {
+  background: var(--paper);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.info-card { padding: 22px 24px; }
+.info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.info-item { display: flex; align-items: flex-start; gap: 12px; }
+.info-icon {
+  font-size: 18px; width: 30px; height: 30px; border-radius: 8px;
+  background: var(--sprout-light); display: flex; align-items: center;
+  justify-content: center; flex-shrink: 0;
+}
+.info-label { font-size: 12px; color: var(--ink-soft); font-weight: 700; margin-bottom: 2px; }
+.info-value { font-size: 14.5px; font-weight: 700; color: var(--soil-dark); }
+
+/* ---------- Crop Details ---------- */
+.crop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.crop-detail-card {
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.crop-detail-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--sprout), var(--harvest));
+}
+
+.crop-detail-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.crop-detail-name {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 17px;
+  color: var(--soil-dark);
+}
+
+.crop-detail-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.crop-icon-btn {
+  background: var(--wheat, #FBF7EC);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crop-icon-btn:hover {
+  background: var(--sprout-light);
+}
+
+.crop-detail-row {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  font-weight: 600;
+  padding: 4px 0;
+}
+
+/* ---------- Add/Edit Crop Form ---------- */
+.crop-form-card {
+  padding: 20px 22px;
+  margin-top: 16px;
+}
+
+.crop-form-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 16px;
+  color: var(--soil-dark);
+  margin-bottom: 14px;
+}
+
+.crop-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.crop-form-input {
+  padding: 12px 14px;
+  border-radius: 9px;
+  border: 2px solid var(--line);
+  font-size: 14px;
+  font-family: inherit;
+  background: #fcfaf3;
+}
+
+.crop-form-input:focus {
+  outline: none;
+  border-color: var(--sprout);
+}
+
+.crop-form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.add-crop-btn {
+  margin-top: 16px;
+  padding: 12px 24px;
+  border-radius: 100px;
+  font-weight: 700;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.btn-primary {
+  background: var(--sprout);
+  color: #fff;
+  border-radius: 100px;
+  box-shadow: 0 6px 14px rgba(111, 168, 58, 0.3);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink-soft);
+  border-radius: 100px;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--soil);
+  border: 2px solid var(--soil);
+  border-radius: 100px;
+}
+
+.btn-outline:hover {
+  background: var(--soil);
+  color: #fff;
+}
+
+.btn-sm {
+  padding: 9px 18px;
+  font-size: 13.5px;
+}
+
+/* ---------- Farm Statistics ---------- */
+.grid { display: grid; gap: 20px; }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+.stat-card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+
+.stat-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.stat-value { font-family: 'Baloo 2', sans-serif; font-size: 24px; color: var(--soil-dark); }
+.stat-label { color: var(--ink-soft); font-size: 12.5px; font-weight: 600; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .info-grid { grid-template-columns: 1fr; }
+  .crop-grid { grid-template-columns: repeat(2, 1fr); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .crop-form-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .crop-grid { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: 1fr; }
+  .myfarm-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+}

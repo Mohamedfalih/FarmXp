@@ -10,7 +10,7 @@ const menuGroups = [
     label: null,
     items: [
       { text: 'Dashboard', icon: '🏠', path: '/farmer/dashboard' },
-      { text: 'Farmer Profile', icon: '👤', path: '/farmer/profile' },
+      { text: 'Farmer Profile', icon: '👤', path: '/farmer/my-farm' },
     ],
   },
   {

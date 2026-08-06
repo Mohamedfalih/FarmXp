@@ -60,7 +60,7 @@ const Navbar = ({ onMenuClick, pageTitle = 'Dashboard' }) => {
 
         <Box
           component={Link}
-          to="/farmer/profile"
+          to="/farmer/my-farm"
           sx={{
             display: 'flex',
             alignItems: 'center',
