@@ -35,7 +35,13 @@ const FarmerLayout = () => {
         }}
       >
         <Toolbar />
-        <Container maxWidth="xl" sx={{ py: 3 }}>
+        <Container
+          maxWidth="xl"
+          sx={{
+            pt: "90px",
+            pb: 3,
+          }}
+        >
           <Outlet />
         </Container>
       </Box>
