@@ -120,15 +120,11 @@
 // }
 
 // export default App
-import { Button } from "@mui/material";
 import AppRoutes from "./routes/AppRoutes";
 
 function App() {
-  return (
-    <div>
-      <AppRoutes/>
-    </div>
-  );
+  return <AppRoutes />;
 }
 
 export default App;
+
