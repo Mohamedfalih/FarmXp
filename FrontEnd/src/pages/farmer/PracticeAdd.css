@@ -1,0 +1,62 @@
+.practice-add {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.practice-add-back {
+  margin-bottom: 8px !important;
+}
+
+.practice-add-card {
+  padding: 28px;
+}
+
+.practice-add-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.practice-add-upload {
+  margin: 16px 0;
+}
+
+.practice-add-upload-label {
+  margin-bottom: 7px !important;
+  font-weight: 700 !important;
+}
+
+.practice-add-upload-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 130px;
+  border: 2px dashed var(--line, #e4dfcf);
+  border-radius: 14px;
+  background: var(--wheat, #fbf7ec);
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.practice-add-upload-box:hover {
+  border-color: var(--sprout, #6fa83a);
+}
+
+.practice-add-upload-box.has-photo {
+  border-color: var(--sprout, #6fa83a);
+  border-style: solid;
+}
+
+.practice-add-submit {
+  margin-top: 12px !important;
+}
+
+@media (max-width: 600px) {
+  .practice-add-card {
+    padding: 20px;
+  }
+}

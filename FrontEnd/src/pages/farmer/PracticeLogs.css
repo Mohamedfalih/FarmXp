@@ -1,0 +1,49 @@
+.practice-logs {
+  width: 100%;
+}
+
+.practice-logs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.practice-log-list {
+  padding: 8px 0;
+}
+
+.practice-logs-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 16px;
+  text-align: center;
+}
+
+.practice-log-row {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line, #e4dfcf);
+}
+
+.practice-log-row:last-child {
+  border-bottom: none;
+}
+
+.practice-log-avatar {
+  background: var(--sprout-light, #e4f1d8) !important;
+  color: var(--soil-dark, #173019) !important;
+}
+
+.practice-log-info {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .practice-logs-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

@@ -10,6 +10,7 @@ import Dashboard from "../pages/farmer/Dashboard";
 import MyFarm from "../pages/farmer/MyFarm";
 import LearningModules from "../pages/farmer/LearningModules";
 import PracticeLogs from "../pages/farmer/PracticeLogs";
+import PracticeAdd from "../pages/farmer/PracticeAdd";
 import SustainabilityMetrics from "../pages/farmer/SustainabilityMetrics";
 import Leaderboard from "../pages/farmer/Leaderboard";
 import GovtSchemes from "../pages/farmer/GovtSchemes";
@@ -19,6 +20,7 @@ import Notifications from "../pages/farmer/Notifications";
 import Progress from "../pages/farmer/Progress";
 import Settings from "../pages/farmer/Settings";
 import EditFarm from "../pages/farmer/EditFarm";
+import SchemeDetails from "../pages/farmer/SchemeDetails";
 
 function AppRoutes() {
   return (
@@ -38,9 +40,11 @@ function AppRoutes() {
           <Route path="edit-farm" element={<EditFarm />} />
           <Route path="learning-modules" element={<LearningModules />} />
           <Route path="practice-logs" element={<PracticeLogs />} />
+          <Route path="practice/add" element={<PracticeAdd />} />
           <Route path="sustainability-metrics" element={<SustainabilityMetrics />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="govt-schemes" element={<GovtSchemes />} />
+          <Route path="govt-schemes/:id" element={<SchemeDetails />} /> 
           <Route path="ai-assistant" element={<AIAssistant />} />
           <Route path="market-buyers" element={<MarketBuyers />} />
           <Route path="notifications" element={<Notifications />} />

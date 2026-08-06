@@ -1,0 +1,267 @@
+/* ---------- Design tokens (shared across farmer pages) ---------- */
+.schemes-page {
+  --paper: #FFFFFF;
+  --line: #E4DFCF;
+  --ink: #1E2B1F;
+  --ink-soft: #5B6B5C;
+  --soil: #25422A;
+  --soil-dark: #173019;
+  --sprout: #6FA83A;
+  --sprout-light: #E4F1D8;
+  --harvest: #F2A93B;
+  --harvest-light: #FCEDD3;
+  --sky: #3E8FA0;
+  --sky-light: #DFF0F2;
+  --clay: #C1552E;
+  --clay-light: #F8E1D6;
+  --wheat: #FBF7EC;
+  --radius-md: 14px;
+  --shadow: 0 6px 20px rgba(37, 66, 42, 0.08);
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+}
+
+/* ---------- View toggle (Recommended vs Explore All) ---------- */
+.schemes-view-toggle {
+  display: flex;
+  gap: 6px;
+  background: var(--wheat);
+  padding: 6px;
+  border-radius: 100px;
+  width: fit-content;
+  margin-bottom: 24px;
+}
+
+.viewbtn {
+  padding: 10px 20px;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  background: none;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.viewbtn.active {
+  background: var(--soil);
+  color: #fff;
+}
+
+/* ---------- Section titles ---------- */
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 30px 0 14px;
+}
+
+.section-title h3 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 17px;
+  color: var(--soil-dark);
+  margin: 0;
+}
+
+.link-more {
+  background: none;
+  border: none;
+  color: var(--sprout);
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+
+/* ---------- Search + filters ---------- */
+.schemes-filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.schemes-search {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px 16px;
+  border-radius: 100px;
+  border: 2px solid var(--line);
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+}
+
+.schemes-search:focus {
+  outline: none;
+  border-color: var(--sprout);
+}
+
+.schemes-filters select {
+  padding: 12px 16px;
+  border-radius: 100px;
+  border: 2px solid var(--line);
+  font-size: 13.5px;
+  font-family: inherit;
+  background: #fff;
+  cursor: pointer;
+}
+
+.schemes-filters select:focus {
+  outline: none;
+  border-color: var(--sprout);
+}
+
+/* ---------- Grid ---------- */
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* ---------- Base card ---------- */
+.card {
+  background: var(--paper);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* ---------- Scheme cards ---------- */
+.scheme-card-official {
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.scheme-card-official::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--soil), var(--harvest));
+}
+
+.scheme-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.scheme-emblem {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 100px;
+}
+
+.pill-approved {
+  background: var(--sprout-light);
+  color: #3E6B1E;
+}
+
+.pill-neutral {
+  background: var(--line);
+  color: var(--ink-soft);
+}
+
+.scheme-title {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.scheme-desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+
+.scheme-deadline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--clay);
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.scheme-btn {
+  margin-top: 14px;
+  width: 100%;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--soil);
+  border: 2px solid var(--soil);
+  border-radius: 100px;
+}
+
+.btn-outline:hover {
+  background: var(--soil);
+  color: #fff;
+}
+
+.btn-sm {
+  padding: 9px 16px;
+  font-size: 13.5px;
+}
+
+/* ---------- Empty state ---------- */
+.schemes-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .grid-3 { grid-template-columns: 1fr; }
+  .schemes-filters { flex-direction: column; }
+  .schemes-view-toggle { width: 100%; overflow-x: auto; }
+}

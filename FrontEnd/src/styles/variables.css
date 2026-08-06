@@ -1,0 +1,28 @@
+:root {
+  /* ================= Colors ================= */
+  --soil: #25422A;
+  --soil-dark: #173019;
+  --sprout: #6FA83A;
+  --sprout-light: #E4F1D8;
+  --harvest: #F2A93B;
+  --harvest-light: #FCEDD3;
+  --sky: #3E8FA0;
+  --sky-light: #DFF0F2;
+  --clay: #C1552E;
+  --clay-light: #F8E1D6;
+  --wheat: #FBF7EC;
+  --paper: #FFFFFF;
+  --earth: #5B3E2B;
+  --ink: #1E2B1F;
+  --ink-soft: #5B6B5C;
+  --line: #E4DFCF;
+
+  /* ================= Radius ================= */
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --radius-sm: 9px;
+
+  /* ================= Shadows ================= */
+  --shadow: 0 6px 20px rgba(37, 66, 42, 0.08);
+  --shadow-lift: 0 14px 34px rgba(37, 66, 42, 0.14);
+}
