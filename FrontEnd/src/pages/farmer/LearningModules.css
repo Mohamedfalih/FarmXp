@@ -1,0 +1,172 @@
+/* ---------- Design tokens (shared across farmer pages) ---------- */
+.modules-page {
+  --paper: #FFFFFF;
+  --line: #E4DFCF;
+  --ink: #1E2B1F;
+  --ink-soft: #5B6B5C;
+  --soil: #25422A;
+  --soil-dark: #173019;
+  --sprout: #6FA83A;
+  --sprout-light: #E4F1D8;
+  --harvest: #F2A93B;
+  --harvest-light: #FCEDD3;
+  --sky: #3E8FA0;
+  --sky-light: #DFF0F2;
+  --clay: #C1552E;
+  --clay-light: #F8E1D6;
+  --wheat: #FBF7EC;
+  --radius-md: 14px;
+  --shadow: 0 6px 20px rgba(37, 66, 42, 0.08);
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+}
+
+/* ---------- Tab filter bar ---------- */
+.tabbar {
+  display: flex;
+  gap: 6px;
+  background: var(--wheat);
+  padding: 6px;
+  border-radius: 100px;
+  width: fit-content;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.tabbtn {
+  padding: 10px 20px;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  background: none;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tabbtn.active {
+  background: var(--soil);
+  color: #fff;
+}
+
+/* ---------- Grid ---------- */
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* ---------- Base card ---------- */
+.card {
+  background: var(--paper);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* ---------- Module cards ---------- */
+.module-card {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.module-hero {
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+}
+
+.module-body {
+  padding: 16px;
+}
+
+.module-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+  margin-bottom: 9px;
+}
+
+.diff-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 100px;
+  margin-left: 6px;
+}
+
+.diff-beginner { background: var(--sprout-light); color: #3E6B1E; }
+.diff-intermediate { background: var(--harvest-light); color: #9A6A0E; }
+.diff-advanced { background: var(--clay-light); color: var(--clay); }
+
+.module-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--soil-dark);
+  margin-bottom: 6px;
+}
+
+.module-meta {
+  display: flex;
+  gap: 14px;
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.progress-bar {
+  height: 8px;
+  background: var(--line);
+  border-radius: 100px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--sprout);
+  border-radius: 100px;
+}
+
+.module-complete {
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+
+/* ---------- Empty state ---------- */
+.modules-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .grid-3 { grid-template-columns: 1fr; }
+  .tabbar { width: 100%; overflow-x: auto; }
+}

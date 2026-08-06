@@ -1,0 +1,316 @@
+/* ---------- Design tokens (shared across farmer pages) ---------- */
+.leaderboard-page {
+  --paper: #FFFFFF;
+  --line: #E4DFCF;
+  --ink: #1E2B1F;
+  --ink-soft: #5B6B5C;
+  --soil: #25422A;
+  --soil-dark: #173019;
+  --sprout: #6FA83A;
+  --sprout-light: #E4F1D8;
+  --harvest: #F2A93B;
+  --harvest-light: #FCEDD3;
+  --sky: #3E8FA0;
+  --sky-light: #DFF0F2;
+  --clay: #C1552E;
+  --clay-light: #F8E1D6;
+  --wheat: #FBF7EC;
+  --radius-md: 14px;
+  --shadow: 0 6px 20px rgba(37, 66, 42, 0.08);
+
+  font-family: "Inter", sans-serif;
+  color: var(--ink);
+}
+
+/* ---------- Header ---------- */
+.lb-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding: 16px 0 30px;
+}
+
+.lb-trophy {
+  font-size: 34px;
+}
+
+.lb-title {
+  font-family: "Baloo 2", sans-serif;
+  font-size: 24px;
+  color: var(--soil-dark);
+  margin: 0;
+}
+
+/* ---------- Time Tabs ---------- */
+.tabbar {
+  display: flex;
+  gap: 6px;
+  background: var(--wheat);
+  padding: 6px;
+  border-radius: 100px;
+}
+
+.tabbtn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 100px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: 0.25s ease;
+  white-space: nowrap;
+}
+
+.tabbtn:hover {
+  background: var(--sprout-light);
+}
+
+.tabbtn.active {
+  background: var(--soil);
+  color: #fff;
+}
+
+/* ---------- State Dropdown ---------- */
+.state-select {
+  margin-top: 4px;
+  padding: 12px 28px;
+  border-radius: 100px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--soil-dark);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: all 0.25s ease;
+}
+
+.state-select:hover {
+  border-color: var(--sprout);
+}
+
+.state-select:focus {
+  outline: none;
+  border-color: var(--sprout);
+}
+
+/* ---------- Podium ---------- */
+.podium {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 34px;
+}
+
+.podium-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 150px;
+}
+
+.podium-crown {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.podium-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.avatar-first {
+  width: 72px;
+  height: 72px;
+  font-size: 22px;
+}
+
+.podium-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.podium-xp {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.podium-block {
+  width: 100%;
+  border-radius: 14px 14px 0 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--soil-dark);
+}
+
+.block-first {
+  height: 90px;
+  background: var(--harvest);
+}
+
+.block-second {
+  height: 65px;
+  background: #C9DCE0;
+}
+
+.block-third {
+  height: 48px;
+  background: var(--clay-light);
+}
+
+/* ---------- Leaderboard List ---------- */
+.lb-list {
+  background: var(--paper);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.lb-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--line);
+  transition: background 0.2s ease;
+}
+
+.lb-row:last-child {
+  border-bottom: none;
+}
+
+.lb-row:hover {
+  background: #fafaf5;
+}
+
+.lb-row-you {
+  background: var(--sprout-light);
+}
+
+.lb-rank {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--wheat);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--soil-dark);
+  flex-shrink: 0;
+}
+
+.lb-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.lb-info {
+  flex: 1;
+}
+
+.lb-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.lb-you-tag {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.lb-sub {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.lb-xp {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--soil-dark);
+}
+
+.lb-empty {
+  padding: 30px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 700px) {
+
+  .tabbar {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .state-select {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .podium {
+    gap: 10px;
+  }
+
+  .podium-col {
+    width: 100px;
+  }
+
+  .podium-avatar {
+    width: 52px;
+    height: 52px;
+    font-size: 16px;
+  }
+
+  .avatar-first {
+    width: 58px;
+    height: 58px;
+    font-size: 18px;
+  }
+
+  .lb-row {
+    padding: 14px 16px;
+  }
+
+  .lb-name {
+    font-size: 13px;
+  }
+
+  .lb-xp {
+    font-size: 13px;
+  }
+}
