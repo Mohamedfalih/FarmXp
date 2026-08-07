@@ -150,9 +150,8 @@ const ModuleDetails = () => {
   };
 
   const handleStartModule = () => {
-    // Later this becomes: learningService.startModule(module.id)
-    console.log('Start/Continue module', module.id);
-  };
+  navigate(`/farmer/learning-modules/${module.id}/start`);
+};
 
   if (!module) {
     return (

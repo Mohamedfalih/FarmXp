@@ -23,6 +23,8 @@ import Settings from "../pages/farmer/Settings";
 import EditFarm from "../pages/farmer/EditFarm";
 import SchemeDetails from "../pages/farmer/SchemeDetails";
 import ModuleDetails from "../pages/farmer/ModuleDetails";
+import StartModule from "../pages/farmer/StartModule";
+import Quiz from "../pages/farmer/Quiz";
 
 function AppRoutes() {
   return (
@@ -40,14 +42,36 @@ function AppRoutes() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="my-farm" element={<MyFarm />} />
           <Route path="edit-farm" element={<EditFarm />} />
-          <Route path="learning-modules" element={<LearningModules />} />
-          <Route path="learning-modules/:id" element={<ModuleDetails/>} />
+           <Route
+            path="learning-modules"
+            element={<LearningModules />}
+          />
+
+          <Route
+            path="learning-modules/:id"
+            element={<ModuleDetails />}
+          />
+
+          <Route
+            path="learning-modules/:id/start"
+            element={<StartModule />}
+          />
+
+          <Route
+            path="learning-modules/:id/quiz"
+            element={<Quiz />}
+          />
+
+
           <Route path="practice-logs" element={<PracticeLogs />} />
           <Route path="practice/add" element={<PracticeAdd />} />
-          <Route path="sustainability-metrics" element={<SustainabilityMetrics />} />
+          <Route
+            path="sustainability-metrics"
+            element={<SustainabilityMetrics />}
+          />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="govt-schemes" element={<GovtSchemes />} />
-          <Route path="govt-schemes/:id" element={<SchemeDetails />} /> 
+          <Route path="govt-schemes/:id" element={<SchemeDetails />} />
           <Route path="ai-assistant" element={<AIAssistant />} />
 
           <Route path="market-buyers" element={<MarketBuyers />} />
