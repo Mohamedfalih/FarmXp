@@ -1,0 +1,242 @@
+.module-details-page {
+  --paper: #FFFFFF;
+  --line: #E4DFCF;
+  --ink: #1E2B1F;
+  --ink-soft: #5B6B5C;
+  --soil-dark: #173019;
+  --sprout: #6FA83A;
+  --sprout-light: #E4F1D8;
+  --harvest-light: #FCEDD3;
+  --sky-light: #DFF0F2;
+  --clay-light: #F8E1D6;
+  --radius-md: 14px;
+  --shadow: 0 6px 20px rgba(37, 66, 42, 0.08);
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+}
+
+/* ---------- Back button ---------- */
+.back-btn {
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  padding: 4px 0;
+}
+
+.back-btn:hover,
+.back-btn:focus-visible {
+  color: var(--soil-dark);
+}
+
+.back-btn:focus-visible {
+  outline: 2px solid var(--sprout);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- Card base ---------- */
+.card {
+  background: var(--paper);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+/* ---------- Module details card ---------- */
+.module-details-card {
+  max-width: 720px;
+  overflow: hidden;
+}
+
+.module-details-hero {
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+}
+
+.module-details-body {
+  padding: 26px 28px 30px;
+}
+
+.module-details-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.module-tag {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 100px;
+}
+
+.diff-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 11px;
+  border-radius: 100px;
+}
+
+.diff-beginner { background: var(--sprout-light); color: #3E6B1E; }
+.diff-intermediate { background: var(--harvest-light); color: #9A6A0E; }
+.diff-advanced { background: var(--clay-light); color: #C1552E; }
+
+.module-details-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 24px;
+  color: var(--soil-dark);
+  margin: 0 0 12px;
+  line-height: 1.25;
+}
+
+.module-details-meta {
+  display: flex;
+  gap: 18px;
+  color: var(--ink-soft);
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* ---------- Progress ---------- */
+.module-details-progress {
+  margin-bottom: 26px;
+}
+
+.progress-bar {
+  height: 10px;
+  background: var(--line);
+  border-radius: 100px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--sprout);
+  border-radius: 100px;
+}
+
+.progress-pct {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+
+/* ---------- Section headings ---------- */
+.section-heading {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 16px;
+  color: var(--soil-dark);
+  margin: 22px 0 10px;
+}
+
+.module-details-desc {
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ---------- Objectives list ---------- */
+.objectives-list {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.objectives-list li {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 13px 26px;
+  border-radius: 100px;
+  font-size: 15px;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--soil-dark);
+  outline-offset: 3px;
+}
+
+.btn-primary {
+  background: var(--sprout);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(111, 168, 58, 0.3);
+}
+
+.btn-primary:hover {
+  background: #5e9530;
+}
+
+.btn-completed {
+  background: var(--sprout-light);
+  color: #3E6B1E;
+  cursor: default;
+}
+
+.btn-block {
+  width: 100%;
+  margin-top: 28px;
+}
+
+/* ---------- Not found state ---------- */
+.not-found-card {
+  padding: 50px 30px;
+  text-align: center;
+  max-width: 480px;
+}
+
+.not-found-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.not-found-card h2 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 19px;
+  color: var(--soil-dark);
+  margin: 0 0 8px;
+}
+
+.not-found-card p {
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: 0 0 20px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  .module-details-body {
+    padding: 22px 20px 26px;
+  }
+  .module-details-title {
+    font-size: 20px;
+  }
+  .module-details-hero {
+    height: 110px;
+    font-size: 44px;
+  }
+}

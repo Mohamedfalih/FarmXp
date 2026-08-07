@@ -22,6 +22,7 @@ import Progress from "../pages/farmer/Progress";
 import Settings from "../pages/farmer/Settings";
 import EditFarm from "../pages/farmer/EditFarm";
 import SchemeDetails from "../pages/farmer/SchemeDetails";
+import ModuleDetails from "../pages/farmer/ModuleDetails";
 
 function AppRoutes() {
   return (
@@ -40,6 +41,7 @@ function AppRoutes() {
           <Route path="my-farm" element={<MyFarm />} />
           <Route path="edit-farm" element={<EditFarm />} />
           <Route path="learning-modules" element={<LearningModules />} />
+          <Route path="learning-modules/:id" element={<ModuleDetails/>} />
           <Route path="practice-logs" element={<PracticeLogs />} />
           <Route path="practice/add" element={<PracticeAdd />} />
           <Route path="sustainability-metrics" element={<SustainabilityMetrics />} />

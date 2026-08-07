@@ -81,7 +81,6 @@ const PracticeLogs = () => {
   }, [logs, activeTab]);
 
   const handleAddPractice = () => navigate("/farmer/practice/add");
-  const handleViewStatus = (logId) => navigate(`/farmer/practice/status/${logId}`);
 
   return (
     <Box className="practice-logs">
