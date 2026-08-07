@@ -1,0 +1,65 @@
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: var(--paper, #fff);
+  border-bottom: 1px solid var(--line, #e4dfcf);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.admin-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-topbar-menu-btn {
+  display: none !important;
+}
+
+.admin-topbar-title {
+  font-weight: 700 !important;
+  color: var(--soil-dark, #173019);
+}
+
+.admin-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.admin-topbar-icon-btn {
+  color: var(--ink-soft, #5b6b5c) !important;
+}
+
+.admin-topbar-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-topbar-avatar {
+  width: 34px !important;
+  height: 34px !important;
+  background: var(--soil, #25422a) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+.admin-topbar-name {
+  font-weight: 700 !important;
+  color: var(--ink, #1e2b1f);
+}
+
+@media (max-width: 900px) {
+  .admin-topbar-menu-btn {
+    display: inline-flex !important;
+  }
+
+  .admin-topbar-name {
+    display: none;
+  }
+}

@@ -5,6 +5,7 @@ import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/farmer/RegisterPage";
 
 import FarmerLayout from "../layouts/farmer/FarmerLayout";
+import AdminLayout from "../layouts/admin/AdminLayout";
 
 import Dashboard from "../pages/farmer/Dashboard";
 import MyFarm from "../pages/farmer/MyFarm";
@@ -25,6 +26,8 @@ import SchemeDetails from "../pages/farmer/SchemeDetails";
 import ModuleDetails from "../pages/farmer/ModuleDetails";
 import StartModule from "../pages/farmer/StartModule";
 import Quiz from "../pages/farmer/Quiz";
+
+import AdminDashboard from "../pages/admin/AdminDashboard";
 
 function AppRoutes() {
   return (
@@ -81,6 +84,10 @@ function AppRoutes() {
           <Route path="progress" element={<Progress />} />
           <Route path="settings" element={<Settings />} />
         </Route>
+
+        <Route path="/admin" element={<AdminLayout />}>
+  <Route path="dashboard" element={<AdminDashboard />} />
+  </Route>
 
         {/* Optional: 404 Page */}
         <Route path="*" element={<h1>404 - Page Not Found</h1>} />
