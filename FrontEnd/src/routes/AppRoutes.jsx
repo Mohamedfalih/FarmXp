@@ -11,7 +11,7 @@ import MyFarm from "../pages/farmer/MyFarm";
 import LearningModules from "../pages/farmer/LearningModules";
 import PracticeLogs from "../pages/farmer/PracticeLogs";
 import PracticeAdd from "../pages/farmer/PracticeAdd";
-import SustainabilityMetrics from "../pages/farmer/SustainabilityMetrics";
+import SustainabilityMetrics from "../pages/farmer/sustainabilityMetrics";
 import Leaderboard from "../pages/farmer/Leaderboard";
 import GovtSchemes from "../pages/farmer/GovtSchemes";
 import AIAssistant from "../pages/farmer/AIAssistant";
