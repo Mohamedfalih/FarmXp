@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import LandingPage from "../pages/LandingPage";
-import LoginPage from "../pages/farmer/LoginPage";
+import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/farmer/RegisterPage";
 
 import FarmerLayout from "../layouts/farmer/FarmerLayout";
