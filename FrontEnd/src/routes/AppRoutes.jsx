@@ -28,6 +28,7 @@ import StartModule from "../pages/farmer/StartModule";
 import Quiz from "../pages/farmer/Quiz";
 
 import AdminDashboard from "../pages/admin/AdminDashboard";
+import VerifyPractices from "../pages/admin/VerifyPractices";
 
 function AppRoutes() {
   return (
@@ -87,6 +88,7 @@ function AppRoutes() {
 
         <Route path="/admin" element={<AdminLayout />}>
   <Route path="dashboard" element={<AdminDashboard />} />
+  <Route path="verify-practices" element={<VerifyPractices />} />
   </Route>
 
         {/* Optional: 404 Page */}
