@@ -88,6 +88,7 @@ function AppRoutes() {
         </Route>
 
         <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="verify-practices" element={<VerifyPractices />} />
           <Route path="farmers" element={<FarmerManagement />} />

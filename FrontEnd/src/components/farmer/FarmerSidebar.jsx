@@ -87,7 +87,7 @@ const SideItem = ({ icon, text, path, isSelected, onClick }) => (
   </ListItemButton>
 );
 
-const Sidebar = ({ mobileOpen, onClose }) => {
+const FarmerSidebar = ({ mobileOpen, onClose }) => {
   const location = useLocation();
 
   const drawerContent = (
@@ -177,4 +177,4 @@ const Sidebar = ({ mobileOpen, onClose }) => {
   );
 };
 
-export default Sidebar;
+export default FarmerSidebar;

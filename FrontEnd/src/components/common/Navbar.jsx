@@ -1,6 +1,7 @@
 import React from 'react';
-import { Box, Typography, Badge } from '@mui/material';
+import { Box, Typography, Badge, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const Navbar = ({ onMenuClick, pageTitle = 'Dashboard' }) => {
   const farmerName = 'Guest Farmer';
@@ -20,7 +21,17 @@ const Navbar = ({ onMenuClick, pageTitle = 'Dashboard' }) => {
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        
+        {/* Hamburger — only visible on mobile/tablet */}
+        <IconButton
+          onClick={onMenuClick}
+          sx={{
+            display: { xs: 'flex', md: 'none' },
+            color: '#173019',
+          }}
+        >
+          <MenuIcon />
+        </IconButton>
+
         <Typography sx={{ fontFamily: "'Baloo 2', sans-serif", fontSize: '18px', color: '#173019' }}>
           {pageTitle}
         </Typography>

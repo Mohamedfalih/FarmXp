@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Box, CssBaseline } from '@mui/material';
 import Navbar from '../../components/common/Navbar';
-import Sidebar from '../../components/common/Sidebar';
+import FarmerSidebar from '../../components/farmer/FarmerSidebar';
 
 const pageTitles = {
   '/farmer/dashboard': 'Dashboard',
@@ -33,7 +33,7 @@ const FarmerLayout = () => {
     <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <CssBaseline />
 
-      <Sidebar open={sidebarOpen} onClose={handleSidebarClose} />
+      <FarmerSidebar mobileOpen={sidebarOpen} onClose={handleSidebarClose} />
 
       <Box
         sx={{
