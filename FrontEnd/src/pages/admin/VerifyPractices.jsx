@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Box, Tabs, Tab, Card, Stack, Avatar, Typography, Button, CircularProgress } from '@mui/material';
+import {
+  Box, Tabs, Tab, Card, Stack, Avatar, Typography, Button, CircularProgress,
+  Dialog, DialogContent, IconButton,
+} from '@mui/material';
 import ScienceIcon from '@mui/icons-material/Science';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import GrassIcon from '@mui/icons-material/Grass';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import BrokenImageIcon from '@mui/icons-material/BrokenImage';
 import { getPendingPractices, reviewPractice } from '../../services/adminService';
 import './VerifyPractices.css';
 
-// Page-specific constants — only this page uses these
 const STATUS = {
   PENDING: 'pending',
   APPROVED: 'approved',
@@ -22,7 +25,6 @@ const TABS = [
   { label: 'Rejected', value: STATUS.REJECTED },
 ];
 
-// Maps the serializable "type" field from data/API to a display icon
 const ICONS = {
   irrigation: <WaterDropIcon />,
   compost: <GrassIcon />,
@@ -30,11 +32,21 @@ const ICONS = {
   rotation: <ScienceIcon />,
 };
 
+const formatDate = (dateString) => {
+  if (!dateString) return null;
+  return new Date(dateString).toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+};
+
 const VerifyPractices = () => {
   const [activeTab, setActiveTab] = useState(STATUS.PENDING);
   const [practices, setPractices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
 
   useEffect(() => {
     getPendingPractices().then((data) => {
@@ -54,7 +66,6 @@ const VerifyPractices = () => {
 
   const handleReview = async (practiceId, decision) => {
     setProcessingId(practiceId);
-
     try {
       await reviewPractice(practiceId, decision);
       setPractices((prev) =>
@@ -110,9 +121,30 @@ const VerifyPractices = () => {
                   <b>{practice.farmerName}</b> — {practice.description}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  {practice.location} · Submitted {practice.submittedLabel}
+                  {practice.location}
+                  {practice.datePracticed && (
+                    <> · Practiced on {formatDate(practice.datePracticed)}</>
+                  )}
+                  {' '}· Submitted {practice.submittedLabel}
                 </Typography>
               </Box>
+
+              {practice.evidenceUrl ? (
+                <Box
+                  className="verify-evidence-thumb"
+                  onClick={() => setPreviewImage(practice.evidenceUrl)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && setPreviewImage(practice.evidenceUrl)}
+                >
+                  <img src={practice.evidenceUrl} alt={`Evidence for ${practice.description}`} />
+                </Box>
+              ) : (
+                <Box className="verify-evidence-missing" title="No evidence uploaded">
+                  <BrokenImageIcon fontSize="small" />
+                  <span>No photo</span>
+                </Box>
+              )}
 
               {practice.status === STATUS.PENDING && (
                 <Box className="verify-row-actions">
@@ -142,6 +174,19 @@ const VerifyPractices = () => {
           ))
         )}
       </Card>
+
+      <Dialog open={Boolean(previewImage)} onClose={() => setPreviewImage(null)} maxWidth="md">
+        <DialogContent className="verify-evidence-dialog">
+          <IconButton
+            className="verify-evidence-close"
+            onClick={() => setPreviewImage(null)}
+            aria-label="Close preview"
+          >
+            <CloseIcon />
+          </IconButton>
+          {previewImage && <img src={previewImage} alt="Practice evidence full size" />}
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };

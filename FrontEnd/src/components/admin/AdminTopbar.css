@@ -1,3 +1,4 @@
+
 .admin-topbar {
   display: flex;
   align-items: center;
@@ -39,6 +40,14 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 4px 7px;
+  transition: background 0.2s ease;
+}
+
+.admin-topbar-profile:hover {
+  background: rgba(37, 66, 42, 0.06);
 }
 
 .admin-topbar-avatar {
@@ -54,6 +63,63 @@
   color: var(--ink, #1e2b1f);
 }
 
+/* =========================================
+   PROFILE DROPDOWN
+========================================= */
+
+.admin-profile-menu-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  min-width: 210px;
+}
+
+.admin-profile-menu-avatar {
+  width: 38px !important;
+  height: 38px !important;
+  background: #25422a !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+.admin-profile-menu-name {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #173019 !important;
+}
+
+.admin-profile-menu-role {
+  font-size: 12px !important;
+  color: #6b756c !important;
+  margin-top: 2px !important;
+}
+
+.admin-profile-menu-header + hr {
+  margin-bottom: 4px;
+}
+
+.admin-profile-logout {
+  color: #c0392b !important;
+}
+
+.admin-profile-logout svg {
+  color: #c0392b !important;
+}
+
+.MuiMenuItem-root {
+  gap: 12px;
+  font-size: 14px !important;
+}
+
+.MuiMenuItem-root svg {
+  color: #5b6b5c;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
 @media (max-width: 900px) {
   .admin-topbar-menu-btn {
     display: inline-flex !important;
@@ -63,3 +129,4 @@
     display: none;
   }
 }
+

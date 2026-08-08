@@ -1,106 +1,554 @@
-import React, { useState } from 'react';
+
+import { useState } from "react";
 import {
   Box,
-  Card,
-  TextField,
-  Switch,
-  Button,
-  Divider,
   Typography,
+  Avatar,
+  TextField,
+  MenuItem,
+  Button,
+  ToggleButtonGroup,
+  ToggleButton,
+  IconButton,
+  InputAdornment,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Snackbar,
   Alert,
-} from '@mui/material';
+  Divider,
+  Chip,
+} from "@mui/material";
 
-import PersonIcon from '@mui/icons-material/Person';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import SecurityIcon from '@mui/icons-material/Security';
-import SettingsIcon from '@mui/icons-material/Settings';
-import SaveIcon from '@mui/icons-material/Save';
-import LockIcon from '@mui/icons-material/Lock';
+import {
+  Person,
+  Notifications,
+  Palette,
+  Security,
+  Lock,
+  Visibility,
+  VisibilityOff,
+  Login,
+  Delete,
+  Agriculture,
+  Save,
+  Edit,
+  LightMode,
+  DarkMode,
+  SettingsBrightness,
+  Close,
+} from "@mui/icons-material";
 
-import './Settings.css';
+import "./Settings.css";
+
+/* =========================================================
+   CONSTANTS
+========================================================= */
+
+const NAV_SECTIONS = [
+  {
+    id: "profile",
+    label: "Profile",
+    icon: <Person />,
+  },
+  {
+    id: "notifications",
+    label: "Notifications",
+    icon: <Notifications />,
+  },
+  {
+    id: "preferences",
+    label: "Preferences",
+    icon: <Palette />,
+  },
+  {
+    id: "security",
+    label: "Security",
+    icon: <Security />,
+  },
+];
+
+const LANGUAGES = [
+  "English",
+  "Tamil",
+  "Malayalam",
+  "Hindi",
+];
+
+const NOTIFICATION_ITEMS = [
+  {
+    id: "newFarmer",
+    title: "New Farmer Registrations",
+    description:
+      "Get notified when a new farmer registers on FarmXP.",
+  },
+  {
+    id: "practiceVerification",
+    title: "Practice Verification",
+    description:
+      "Receive alerts when farmer practices require verification.",
+  },
+  {
+    id: "buyerActivity",
+    title: "Buyer Activity",
+    description:
+      "Get notified about important buyer activity and requests.",
+  },
+  {
+    id: "farmerReports",
+    title: "Farmer Reports",
+    description:
+      "Receive notifications when farmers submit reports or issues.",
+  },
+  {
+    id: "schemeUpdates",
+    title: "Government Scheme Updates",
+    description:
+      "Stay informed about government scheme updates.",
+  },
+  {
+    id: "systemAlerts",
+    title: "System Alerts",
+    description:
+      "Receive important FarmXP system and security alerts.",
+  },
+];
+
+const LOGIN_ACTIVITY = [
+  {
+    id: 1,
+    device: "Chrome · Windows",
+    time: "Today, 10:42 AM",
+    current: true,
+  },
+  {
+    id: 2,
+    device: "Chrome · Windows",
+    time: "Yesterday, 8:15 PM",
+    current: false,
+  },
+  {
+    id: 3,
+    device: "Mobile Browser · Android",
+    time: "August 5, 2026",
+    current: false,
+  },
+];
+
+/* =========================================================
+   SMALL COMPONENTS
+========================================================= */
+
+const SettingNavItem = ({
+  section,
+  isActive,
+  onClick,
+}) => (
+  <Box
+    className={`settings-nav-item ${
+      isActive ? "active" : ""
+    }`}
+    onClick={() => onClick(section.id)}
+  >
+    <Box className="settings-nav-icon">
+      {section.icon}
+    </Box>
+
+    <Typography
+      variant="body2"
+      className="settings-nav-label"
+    >
+      {section.label}
+    </Typography>
+  </Box>
+);
+
+const NotificationRow = ({
+  title,
+  description,
+  checked,
+  onChange,
+}) => (
+  <Box className="setting-row">
+    <Box className="setting-row-text">
+      <Typography
+        variant="body2"
+        className="setting-row-title"
+      >
+        {title}
+      </Typography>
+
+      <Typography
+        variant="caption"
+        color="text.secondary"
+      >
+        {description}
+      </Typography>
+    </Box>
+
+    <Button
+      size="small"
+      className={`notification-toggle ${
+        checked ? "enabled" : ""
+      }`}
+      onClick={onChange}
+    >
+      {checked ? "On" : "Off"}
+    </Button>
+  </Box>
+);
+
+const SecurityItem = ({
+  icon,
+  title,
+  description,
+  children,
+  danger = false,
+}) => (
+  <Box
+    className={`security-item ${
+      danger ? "danger-zone" : ""
+    }`}
+  >
+    <Box className="security-item-header">
+      <Box
+        className={`security-item-icon ${
+          danger ? "danger-icon" : ""
+        }`}
+      >
+        {icon}
+      </Box>
+
+      <Box className="security-item-heading">
+        <Typography
+          variant="body2"
+          className="security-item-title"
+        >
+          {title}
+        </Typography>
+
+        <Typography
+          variant="caption"
+          color="text.secondary"
+        >
+          {description}
+        </Typography>
+      </Box>
+    </Box>
+
+    {children}
+  </Box>
+);
+
+/* =========================================================
+   SETTINGS PAGE
+========================================================= */
 
 const Settings = () => {
+  const [activeSection, setActiveSection] =
+    useState("profile");
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
+  const showSnackbar = (
+    message,
+    severity = "success"
+  ) => {
+    setSnackbar({
+      open: true,
+      message,
+      severity,
+    });
+  };
+
+  const closeSnackbar = () => {
+    setSnackbar((prev) => ({
+      ...prev,
+      open: false,
+    }));
+  };
+
+  /* =======================================================
+     PROFILE
+  ======================================================= */
+
   const [profile, setProfile] = useState({
-    name: 'System Administrator',
-    email: 'admin@farmxp.com',
-    phone: '9876543210',
+    fullName: "FarmXP Admin",
+    email: "admin@farmxp.com",
+    phone: "+91 98765 43210",
+    role: "Administrator",
   });
 
-  const [notifications, setNotifications] = useState({
-    practiceVerification: true,
-    newFarmer: true,
-    schemeUpdates: true,
-    buyerUpdates: false,
-    systemAlerts: true,
-  });
+  const [editProfile, setEditProfile] =
+    useState(false);
 
-  const [platform, setPlatform] = useState({
-    emailNotifications: true,
-    maintenanceMode: false,
-  });
+  const [profileForm, setProfileForm] =
+    useState(profile);
 
-  const [saved, setSaved] = useState(false);
-
-  const handleProfileChange = (event) => {
-    const { name, value } = event.target;
-
-    setProfile((previous) => ({
-      ...previous,
-      [name]: value,
+  const handleProfileChange = (field) => (event) => {
+    setProfileForm((prev) => ({
+      ...prev,
+      [field]: event.target.value,
     }));
-
-    setSaved(false);
   };
 
-  const handleNotificationChange = (event) => {
-    const { name, checked } = event.target;
-
-    setNotifications((previous) => ({
-      ...previous,
-      [name]: checked,
-    }));
-
-    setSaved(false);
+  const handleStartEditing = () => {
+    setProfileForm(profile);
+    setEditProfile(true);
   };
 
-  const handlePlatformChange = (event) => {
-    const { name, checked } = event.target;
-
-    setPlatform((previous) => ({
-      ...previous,
-      [name]: checked,
-    }));
-
-    setSaved(false);
+  const handleCancelEditing = () => {
+    setProfileForm(profile);
+    setEditProfile(false);
   };
 
-  const handleSave = async () => {
+  const handleSaveProfile = () => {
+    setProfile(profileForm);
+    setEditProfile(false);
+
+    // Later:
+    // PUT /api/admin/profile
+
+    showSnackbar(
+      "Profile updated successfully"
+    );
+  };
+
+  /* =======================================================
+     NOTIFICATIONS
+  ======================================================= */
+
+  const [notificationPreferences, setNotificationPreferences] =
+    useState({
+      newFarmer: true,
+      practiceVerification: true,
+      buyerActivity: true,
+      farmerReports: true,
+      schemeUpdates: false,
+      systemAlerts: true,
+    });
+
+  const handleNotificationToggle = (id) => {
+    setNotificationPreferences((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+
+    // Later:
+    // PUT /api/admin/settings/notifications
+  };
+
+  /* =======================================================
+     PREFERENCES
+  ======================================================= */
+
+  const [language, setLanguage] =
+    useState("English");
+
+  const [appearance, setAppearance] =
+    useState(() => {
+      return (
+        localStorage.getItem("farmxp-theme") ||
+        "light"
+      );
+    });
+
+  const handleLanguageChange = (event) => {
+    setLanguage(event.target.value);
+  };
+
+  const handleAppearanceChange = (_, value) => {
+    if (!value) return;
+
+    setAppearance(value);
+
+    localStorage.setItem(
+      "farmxp-theme",
+      value
+    );
+
     /*
-     * Later:
-     *
-     * await adminService.updateAdminSettings({
-     *   profile,
-     *   notifications,
-     *   platform,
-     * });
-     */
+      This event can be listened to by your
+      application's central ThemeProvider.
+    */
+    window.dispatchEvent(
+      new CustomEvent("farmxp-theme-change", {
+        detail: value,
+      })
+    );
 
-    setSaved(true);
-
-    setTimeout(() => {
-      setSaved(false);
-    }, 3000);
+    showSnackbar(
+      `${value.charAt(0).toUpperCase() + value.slice(1)} theme selected`
+    );
   };
+
+  const handleSavePreferences = () => {
+    // Later:
+    // PUT /api/admin/settings
+
+    showSnackbar(
+      "Preferences saved successfully"
+    );
+  };
+
+  /* =======================================================
+     PASSWORD
+  ======================================================= */
+
+  const [passwordFormOpen, setPasswordFormOpen] =
+    useState(false);
+
+  const [passwordForm, setPasswordForm] =
+    useState({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
+
+  const [showPassword, setShowPassword] =
+    useState({
+      current: false,
+      new: false,
+      confirm: false,
+    });
+
+  const [passwordErrors, setPasswordErrors] =
+    useState({});
+
+  const handlePasswordFieldChange =
+    (field) => (event) => {
+      setPasswordForm((prev) => ({
+        ...prev,
+        [field]: event.target.value,
+      }));
+
+      setPasswordErrors((prev) => ({
+        ...prev,
+        [field]: "",
+      }));
+    };
+
+  const togglePasswordVisibility = (field) => {
+    setShowPassword((prev) => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
+  };
+
+  const handleCancelPassword = () => {
+    setPasswordFormOpen(false);
+
+    setPasswordForm({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
+
+    setPasswordErrors({});
+  };
+
+  const validatePassword = () => {
+    const errors = {};
+
+    if (!passwordForm.currentPassword.trim()) {
+      errors.currentPassword =
+        "Current password is required";
+    }
+
+    if (!passwordForm.newPassword.trim()) {
+      errors.newPassword =
+        "New password is required";
+    } else if (
+      passwordForm.newPassword.length < 8
+    ) {
+      errors.newPassword =
+        "Password must contain at least 8 characters";
+    } else if (
+      passwordForm.newPassword ===
+      passwordForm.currentPassword
+    ) {
+      errors.newPassword =
+        "New password must be different";
+    }
+
+    if (
+      !passwordForm.confirmPassword.trim()
+    ) {
+      errors.confirmPassword =
+        "Please confirm your password";
+    } else if (
+      passwordForm.confirmPassword !==
+      passwordForm.newPassword
+    ) {
+      errors.confirmPassword =
+        "Passwords do not match";
+    }
+
+    setPasswordErrors(errors);
+
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleUpdatePassword = () => {
+    if (!validatePassword()) return;
+
+    // Later:
+    // PUT /api/admin/profile/password
+
+    handleCancelPassword();
+
+    showSnackbar(
+      "Password updated successfully"
+    );
+  };
+
+  /* =======================================================
+     LOGIN ACTIVITY
+  ======================================================= */
+
+  const [loginActivityOpen, setLoginActivityOpen] =
+    useState(false);
+
+  /* =======================================================
+     DELETE ACCOUNT
+  ======================================================= */
+
+  const [deleteDialogOpen, setDeleteDialogOpen] =
+    useState(false);
+
+  const handleDeleteAccount = () => {
+    setDeleteDialogOpen(false);
+
+    // UI only for now.
+    // Later:
+    // DELETE /api/admin/account
+
+    showSnackbar(
+      "Account deletion is not enabled yet",
+      "info"
+    );
+  };
+
+  /* =======================================================
+     RENDER
+  ======================================================= */
 
   return (
-    <Box className="admin-settings-page">
+    <Box className="settings-page">
 
-      {/* Page Header */}
+      {/* ===================================================
+          HEADER
+      =================================================== */}
+
       <Box className="settings-header">
-
         <Box>
           <Typography
-            variant="h4"
+            variant="h5"
             className="settings-title"
           >
             Settings
@@ -108,398 +556,953 @@ const Settings = () => {
 
           <Typography
             variant="body2"
-            className="settings-subtitle"
+            color="text.secondary"
           >
-            Manage your administrator account and platform preferences.
+            Manage your administrator account and
+            preferences.
           </Typography>
         </Box>
 
+        <Box className="settings-header-icon">
+          <Agriculture />
+        </Box>
       </Box>
 
-      {saved && (
-        <Alert
-          severity="success"
-          className="settings-success"
-        >
-          Settings saved successfully.
-        </Alert>
-      )}
+      {/* ===================================================
+          MAIN SETTINGS LAYOUT
+      =================================================== */}
 
-      {/* ========================= */}
-      {/* ADMIN PROFILE */}
-      {/* ========================= */}
+      <Box className="settings-layout">
 
-      <Card className="settings-card">
+        {/* LEFT NAVIGATION */}
 
-        <Box className="settings-section-header">
+        <Box className="settings-nav">
 
-          <Box className="settings-section-icon">
-            <PersonIcon />
-          </Box>
-
-          <Box>
-            <Typography
-              variant="h6"
-              className="settings-section-title"
-            >
-              Admin Profile
-            </Typography>
-
-            <Typography
-              variant="body2"
-              className="settings-section-description"
-            >
-              Update your administrator account information.
-            </Typography>
-          </Box>
+          {NAV_SECTIONS.map((section) => (
+            <SettingNavItem
+              key={section.id}
+              section={section}
+              isActive={
+                activeSection === section.id
+              }
+              onClick={setActiveSection}
+            />
+          ))}
 
         </Box>
 
-        <Divider className="settings-divider" />
+        {/* RIGHT CONTENT */}
 
-        <Box className="settings-form-grid">
+        <Box className="settings-content">
 
-          <TextField
-            fullWidth
-            label="Full Name"
-            name="name"
-            value={profile.name}
-            onChange={handleProfileChange}
-          />
+          {/* =================================================
+              PROFILE
+          ================================================= */}
 
-          <TextField
-            fullWidth
-            label="Email Address"
-            name="email"
-            type="email"
-            value={profile.email}
-            onChange={handleProfileChange}
-          />
+          {activeSection === "profile" && (
+            <Box className="settings-panel">
 
-          <TextField
-            fullWidth
-            label="Phone Number"
-            name="phone"
-            value={profile.phone}
-            onChange={handleProfileChange}
-          />
+              <Box className="settings-panel-heading">
 
-          <TextField
-            fullWidth
-            label="Role"
-            value="Super Administrator"
-            disabled
-          />
+                <Box>
+                  <Typography
+                    variant="subtitle1"
+                    className="settings-panel-title"
+                  >
+                    Profile
+                  </Typography>
+
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                  >
+                    View and manage your administrator
+                    profile.
+                  </Typography>
+                </Box>
+
+                <Person className="panel-heading-icon" />
+
+              </Box>
+
+              <Divider />
+
+              {!editProfile ? (
+                <>
+                  {/* PROFILE VIEW */}
+
+                  <Box className="profile-summary">
+
+                    <Avatar className="profile-avatar">
+                      <Agriculture />
+                    </Avatar>
+
+                    <Box>
+                      <Typography
+                        className="profile-name"
+                      >
+                        {profile.fullName}
+                      </Typography>
+
+                      <Chip
+                        label={profile.role}
+                        size="small"
+                        className="profile-role-chip"
+                      />
+                    </Box>
+
+                  </Box>
+
+                  <Box className="profile-details">
+
+                    <Box className="profile-detail">
+                      <Typography className="detail-label">
+                        Full Name
+                      </Typography>
+
+                      <Typography className="detail-value">
+                        {profile.fullName}
+                      </Typography>
+                    </Box>
+
+                    <Box className="profile-detail">
+                      <Typography className="detail-label">
+                        Email
+                      </Typography>
+
+                      <Typography className="detail-value">
+                        {profile.email}
+                      </Typography>
+                    </Box>
+
+                    <Box className="profile-detail">
+                      <Typography className="detail-label">
+                        Phone Number
+                      </Typography>
+
+                      <Typography className="detail-value">
+                        {profile.phone}
+                      </Typography>
+                    </Box>
+
+                    <Box className="profile-detail">
+                      <Typography className="detail-label">
+                        Role
+                      </Typography>
+
+                      <Typography className="detail-value">
+                        {profile.role}
+                      </Typography>
+                    </Box>
+
+                  </Box>
+
+                  <Box className="settings-panel-actions">
+
+                    <Button
+                      variant="outlined"
+                      startIcon={<Edit />}
+                      onClick={
+                        handleStartEditing
+                      }
+                    >
+                      Edit Profile
+                    </Button>
+
+                  </Box>
+                </>
+              ) : (
+                <>
+                  {/* PROFILE EDIT */}
+
+                  <Box className="edit-profile-heading">
+
+                    <Typography
+                      variant="body2"
+                      fontWeight={600}
+                    >
+                      Edit Profile
+                    </Typography>
+
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                    >
+                      Update your administrator
+                      information.
+                    </Typography>
+
+                  </Box>
+
+                  <Box className="settings-form-grid">
+
+                    <TextField
+                      label="Full Name"
+                      value={
+                        profileForm.fullName
+                      }
+                      onChange={handleProfileChange(
+                        "fullName"
+                      )}
+                      size="small"
+                      fullWidth
+                    />
+
+                    <TextField
+                      label="Email"
+                      value={
+                        profileForm.email
+                      }
+                      onChange={handleProfileChange(
+                        "email"
+                      )}
+                      size="small"
+                      fullWidth
+                    />
+
+                    <TextField
+                      label="Phone Number"
+                      value={
+                        profileForm.phone
+                      }
+                      onChange={handleProfileChange(
+                        "phone"
+                      )}
+                      size="small"
+                      fullWidth
+                    />
+
+                    <TextField
+                      label="Role"
+                      value={
+                        profileForm.role
+                      }
+                      size="small"
+                      fullWidth
+                      disabled
+                    />
+
+                  </Box>
+
+                  <Box className="settings-panel-actions">
+
+                    <Button
+                      variant="text"
+                      onClick={
+                        handleCancelEditing
+                      }
+                    >
+                      Cancel
+                    </Button>
+
+                    <Button
+                      variant="contained"
+                      color="success"
+                      startIcon={<Save />}
+                      onClick={
+                        handleSaveProfile
+                      }
+                    >
+                      Save Changes
+                    </Button>
+
+                  </Box>
+                </>
+              )}
+
+            </Box>
+          )}
+
+          {/* =================================================
+              NOTIFICATIONS
+          ================================================= */}
+
+          {activeSection === "notifications" && (
+            <Box className="settings-panel">
+
+              <Box className="settings-panel-heading">
+
+                <Box>
+                  <Typography
+                    variant="subtitle1"
+                    className="settings-panel-title"
+                  >
+                    Notification Preferences
+                  </Typography>
+
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                  >
+                    Choose which FarmXP events should
+                    notify you.
+                  </Typography>
+                </Box>
+
+                <Notifications className="panel-heading-icon" />
+
+              </Box>
+
+              <Divider />
+
+              <Box className="settings-rows-list">
+
+                {NOTIFICATION_ITEMS.map(
+                  (item, index) => (
+                    <Box key={item.id}>
+
+                      <NotificationRow
+                        title={item.title}
+                        description={
+                          item.description
+                        }
+                        checked={
+                          notificationPreferences[
+                            item.id
+                          ]
+                        }
+                        onChange={() =>
+                          handleNotificationToggle(
+                            item.id
+                          )
+                        }
+                      />
+
+                      {index <
+                        NOTIFICATION_ITEMS.length -
+                          1 && (
+                        <Divider />
+                      )}
+
+                    </Box>
+                  )
+                )}
+
+              </Box>
+
+            </Box>
+          )}
+
+          {/* =================================================
+              PREFERENCES
+          ================================================= */}
+
+          {activeSection === "preferences" && (
+            <Box className="settings-panel">
+
+              <Box className="settings-panel-heading">
+
+                <Box>
+                  <Typography
+                    variant="subtitle1"
+                    className="settings-panel-title"
+                  >
+                    Preferences
+                  </Typography>
+
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                  >
+                    Customize your FarmXP experience.
+                  </Typography>
+                </Box>
+
+                <Palette className="panel-heading-icon" />
+
+              </Box>
+
+              <Divider />
+
+              {/* LANGUAGE */}
+
+              <Box className="preferences-block">
+
+                <Typography
+                  className="preferences-label"
+                >
+                  Language
+                </Typography>
+
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                >
+                  Select your preferred language.
+                </Typography>
+
+                <TextField
+                  select
+                  value={language}
+                  onChange={
+                    handleLanguageChange
+                  }
+                  size="small"
+                  className="preferences-language-select"
+                >
+                  {LANGUAGES.map((lang) => (
+                    <MenuItem
+                      key={lang}
+                      value={lang}
+                    >
+                      {lang}
+                    </MenuItem>
+                  ))}
+                </TextField>
+
+              </Box>
+
+              <Divider />
+
+              {/* APPEARANCE */}
+
+              <Box className="preferences-block">
+
+                <Typography
+                  className="preferences-label"
+                >
+                  Appearance
+                </Typography>
+
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                >
+                  Choose how FarmXP should appear.
+                </Typography>
+
+                <ToggleButtonGroup
+                  value={appearance}
+                  exclusive
+                  onChange={
+                    handleAppearanceChange
+                  }
+                  size="small"
+                  className="appearance-toggle-group"
+                >
+
+                  <ToggleButton value="light">
+                    <LightMode
+                      fontSize="small"
+                    />
+
+                    <span>Light</span>
+                  </ToggleButton>
+
+                  <ToggleButton value="system">
+                    <SettingsBrightness
+                      fontSize="small"
+                    />
+
+                    <span>System</span>
+                  </ToggleButton>
+
+                  <ToggleButton value="dark">
+                    <DarkMode
+                      fontSize="small"
+                    />
+
+                    <span>Dark</span>
+                  </ToggleButton>
+
+                </ToggleButtonGroup>
+
+              </Box>
+
+              <Box className="settings-panel-actions">
+
+                <Button
+                  variant="contained"
+                  color="success"
+                  startIcon={<Save />}
+                  onClick={
+                    handleSavePreferences
+                  }
+                >
+                  Save Preferences
+                </Button>
+
+              </Box>
+
+            </Box>
+          )}
+
+          {/* =================================================
+              SECURITY
+          ================================================= */}
+
+          {activeSection === "security" && (
+            <Box className="settings-panel">
+
+              <Box className="settings-panel-heading">
+
+                <Box>
+                  <Typography
+                    variant="subtitle1"
+                    className="settings-panel-title"
+                  >
+                    Security
+                  </Typography>
+
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                  >
+                    Protect your FarmXP administrator
+                    account.
+                  </Typography>
+                </Box>
+
+                <Security className="panel-heading-icon" />
+
+              </Box>
+
+              <Divider />
+
+              {/* PASSWORD */}
+
+              <SecurityItem
+                icon={<Lock />}
+                title="Password"
+                description="Keep your account secure by regularly updating your password."
+              >
+
+                {!passwordFormOpen ? (
+                  <Box className="security-item-action">
+
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() =>
+                        setPasswordFormOpen(true)
+                      }
+                    >
+                      Change Password
+                    </Button>
+
+                  </Box>
+                ) : (
+                  <Box className="password-form">
+
+                    <Typography
+                      variant="body2"
+                      fontWeight={600}
+                    >
+                      Change Password
+                    </Typography>
+
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                    >
+                      Enter your current password
+                      and choose a new password.
+                    </Typography>
+
+                    {/* CURRENT PASSWORD */}
+
+                    <TextField
+                      label="Current Password"
+                      type={
+                        showPassword.current
+                          ? "text"
+                          : "password"
+                      }
+                      value={
+                        passwordForm.currentPassword
+                      }
+                      onChange={
+                        handlePasswordFieldChange(
+                          "currentPassword"
+                        )
+                      }
+                      error={Boolean(
+                        passwordErrors.currentPassword
+                      )}
+                      helperText={
+                        passwordErrors.currentPassword
+                      }
+                      size="small"
+                      fullWidth
+                      margin="dense"
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                togglePasswordVisibility(
+                                  "current"
+                                )
+                              }
+                            >
+                              {showPassword.current ? (
+                                <VisibilityOff fontSize="small" />
+                              ) : (
+                                <Visibility fontSize="small" />
+                              )}
+                            </IconButton>
+
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+
+                    {/* NEW PASSWORD */}
+
+                    <TextField
+                      label="New Password"
+                      type={
+                        showPassword.new
+                          ? "text"
+                          : "password"
+                      }
+                      value={
+                        passwordForm.newPassword
+                      }
+                      onChange={
+                        handlePasswordFieldChange(
+                          "newPassword"
+                        )
+                      }
+                      error={Boolean(
+                        passwordErrors.newPassword
+                      )}
+                      helperText={
+                        passwordErrors.newPassword ||
+                        "Minimum 8 characters"
+                      }
+                      size="small"
+                      fullWidth
+                      margin="dense"
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                togglePasswordVisibility(
+                                  "new"
+                                )
+                              }
+                            >
+                              {showPassword.new ? (
+                                <VisibilityOff fontSize="small" />
+                              ) : (
+                                <Visibility fontSize="small" />
+                              )}
+                            </IconButton>
+
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+
+                    {/* CONFIRM PASSWORD */}
+
+                    <TextField
+                      label="Confirm New Password"
+                      type={
+                        showPassword.confirm
+                          ? "text"
+                          : "password"
+                      }
+                      value={
+                        passwordForm.confirmPassword
+                      }
+                      onChange={
+                        handlePasswordFieldChange(
+                          "confirmPassword"
+                        )
+                      }
+                      error={Boolean(
+                        passwordErrors.confirmPassword
+                      )}
+                      helperText={
+                        passwordErrors.confirmPassword
+                      }
+                      size="small"
+                      fullWidth
+                      margin="dense"
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                togglePasswordVisibility(
+                                  "confirm"
+                                )
+                              }
+                            >
+                              {showPassword.confirm ? (
+                                <VisibilityOff fontSize="small" />
+                              ) : (
+                                <Visibility fontSize="small" />
+                              )}
+                            </IconButton>
+
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+
+                    <Box className="password-form-actions">
+
+                      <Button
+                        variant="text"
+                        size="small"
+                        onClick={
+                          handleCancelPassword
+                        }
+                      >
+                        Cancel
+                      </Button>
+
+                      <Button
+                        variant="contained"
+                        color="success"
+                        size="small"
+                        onClick={
+                          handleUpdatePassword
+                        }
+                      >
+                        Update Password
+                      </Button>
+
+                    </Box>
+
+                  </Box>
+                )}
+
+              </SecurityItem>
+
+              <Divider className="security-divider" />
+
+              {/* LOGIN ACTIVITY */}
+
+              <SecurityItem
+                icon={<Login />}
+                title="Login Activity"
+                description="Review recent login activity on your administrator account."
+              >
+
+                <Box className="security-item-action">
+
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() =>
+                      setLoginActivityOpen(true)
+                    }
+                  >
+                    View Activity
+                  </Button>
+
+                </Box>
+
+              </SecurityItem>
+
+              <Divider className="security-divider" />
+
+              {/* DELETE ACCOUNT */}
+
+              <SecurityItem
+                icon={<Delete />}
+                title="Delete Account"
+                description="Permanently delete your FarmXP administrator account."
+                danger
+              >
+
+                <Box className="security-item-action">
+
+                  <Button
+                    variant="text"
+                    color="error"
+                    size="small"
+                    startIcon={<Delete />}
+                    onClick={() =>
+                      setDeleteDialogOpen(true)
+                    }
+                  >
+                    Delete Account
+                  </Button>
+
+                </Box>
+
+              </SecurityItem>
+
+            </Box>
+          )}
 
         </Box>
-
-      </Card>
-
-      {/* ========================= */}
-      {/* NOTIFICATIONS */}
-      {/* ========================= */}
-
-      <Card className="settings-card">
-
-        <Box className="settings-section-header">
-
-          <Box className="settings-section-icon">
-            <NotificationsIcon />
-          </Box>
-
-          <Box>
-            <Typography
-              variant="h6"
-              className="settings-section-title"
-            >
-              Notifications
-            </Typography>
-
-            <Typography
-              variant="body2"
-              className="settings-section-description"
-            >
-              Choose which platform activities you want to be notified about.
-            </Typography>
-          </Box>
-
-        </Box>
-
-        <Divider className="settings-divider" />
-
-        <Box className="settings-options">
-
-          <Box className="settings-option">
-
-            <Box>
-              <Typography className="settings-option-title">
-                Practice Verification
-              </Typography>
-
-              <Typography className="settings-option-description">
-                Get notified when farmers submit practices for verification.
-              </Typography>
-            </Box>
-
-            <Switch
-              name="practiceVerification"
-              checked={notifications.practiceVerification}
-              onChange={handleNotificationChange}
-              color="success"
-            />
-
-          </Box>
-
-          <Box className="settings-option">
-
-            <Box>
-              <Typography className="settings-option-title">
-                New Farmer Registration
-              </Typography>
-
-              <Typography className="settings-option-description">
-                Receive notifications when a new farmer joins FarmXP.
-              </Typography>
-            </Box>
-
-            <Switch
-              name="newFarmer"
-              checked={notifications.newFarmer}
-              onChange={handleNotificationChange}
-              color="success"
-            />
-
-          </Box>
-
-          <Box className="settings-option">
-
-            <Box>
-              <Typography className="settings-option-title">
-                Government Scheme Updates
-              </Typography>
-
-              <Typography className="settings-option-description">
-                Get notified about government scheme changes and updates.
-              </Typography>
-            </Box>
-
-            <Switch
-              name="schemeUpdates"
-              checked={notifications.schemeUpdates}
-              onChange={handleNotificationChange}
-              color="success"
-            />
-
-          </Box>
-
-          <Box className="settings-option">
-
-            <Box>
-              <Typography className="settings-option-title">
-                Buyer Updates
-              </Typography>
-
-              <Typography className="settings-option-description">
-                Receive notifications about marketplace buyer activity.
-              </Typography>
-            </Box>
-
-            <Switch
-              name="buyerUpdates"
-              checked={notifications.buyerUpdates}
-              onChange={handleNotificationChange}
-              color="success"
-            />
-
-          </Box>
-
-          <Box className="settings-option">
-
-            <Box>
-              <Typography className="settings-option-title">
-                System Alerts
-              </Typography>
-
-              <Typography className="settings-option-description">
-                Receive important system and security notifications.
-              </Typography>
-            </Box>
-
-            <Switch
-              name="systemAlerts"
-              checked={notifications.systemAlerts}
-              onChange={handleNotificationChange}
-              color="success"
-            />
-
-          </Box>
-
-        </Box>
-
-      </Card>
-
-      {/* ========================= */}
-      {/* PLATFORM SETTINGS */}
-      {/* ========================= */}
-
-      <Card className="settings-card">
-
-        <Box className="settings-section-header">
-
-          <Box className="settings-section-icon">
-            <SettingsIcon />
-          </Box>
-
-          <Box>
-            <Typography
-              variant="h6"
-              className="settings-section-title"
-            >
-              Platform Preferences
-            </Typography>
-
-            <Typography
-              variant="body2"
-              className="settings-section-description"
-            >
-              Configure general FarmXP administration preferences.
-            </Typography>
-          </Box>
-
-        </Box>
-
-        <Divider className="settings-divider" />
-
-        <Box className="settings-options">
-
-          <Box className="settings-option">
-
-            <Box>
-              <Typography className="settings-option-title">
-                Email Notifications
-              </Typography>
-
-              <Typography className="settings-option-description">
-                Allow FarmXP to send administrative notifications by email.
-              </Typography>
-            </Box>
-
-            <Switch
-              name="emailNotifications"
-              checked={platform.emailNotifications}
-              onChange={handlePlatformChange}
-              color="success"
-            />
-
-          </Box>
-
-          <Box className="settings-option">
-
-            <Box>
-              <Typography className="settings-option-title">
-                Maintenance Mode
-              </Typography>
-
-              <Typography className="settings-option-description">
-                Temporarily restrict platform access during maintenance.
-              </Typography>
-            </Box>
-
-            <Switch
-              name="maintenanceMode"
-              checked={platform.maintenanceMode}
-              onChange={handlePlatformChange}
-              color="success"
-            />
-
-          </Box>
-
-        </Box>
-
-      </Card>
-
-      {/* ========================= */}
-      {/* SECURITY */}
-      {/* ========================= */}
-
-      <Card className="settings-card">
-
-        <Box className="settings-section-header">
-
-          <Box className="settings-section-icon">
-            <SecurityIcon />
-          </Box>
-
-          <Box>
-            <Typography
-              variant="h6"
-              className="settings-section-title"
-            >
-              Security
-            </Typography>
-
-            <Typography
-              variant="body2"
-              className="settings-section-description"
-            >
-              Manage your administrator account security.
-            </Typography>
-          </Box>
-
-        </Box>
-
-        <Divider className="settings-divider" />
-
-        <Box className="security-row">
-
-          <Box className="security-content">
-
-            <Box className="security-icon">
-              <LockIcon />
-            </Box>
-
-            <Box>
-              <Typography className="settings-option-title">
-                Change Password
-              </Typography>
-
-              <Typography className="settings-option-description">
-                Update your administrator account password regularly.
-              </Typography>
-            </Box>
-
-          </Box>
-
-          <Button
-            variant="outlined"
-            className="security-btn"
-            onClick={() => {
-              alert('Change password feature will be connected to the backend.');
+      </Box>
+
+      {/* =====================================================
+          LOGIN ACTIVITY DIALOG
+      ===================================================== */}
+
+      <Dialog
+        open={loginActivityOpen}
+        onClose={() =>
+          setLoginActivityOpen(false)
+        }
+        maxWidth="xs"
+        fullWidth
+      >
+
+        <DialogTitle>
+
+          Login Activity
+
+          <IconButton
+            onClick={() =>
+              setLoginActivityOpen(false)
+            }
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
             }}
           >
-            Change Password
+            <Close />
+          </IconButton>
+
+        </DialogTitle>
+
+        <DialogContent dividers>
+
+          {LOGIN_ACTIVITY.map((entry) => (
+            <Box
+              key={entry.id}
+              className="login-activity-row"
+            >
+
+              <Box>
+
+                <Typography
+                  variant="body2"
+                  fontWeight={600}
+                >
+                  {entry.device}
+                </Typography>
+
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                >
+                  {entry.time}
+                </Typography>
+
+              </Box>
+
+              {entry.current && (
+                <Chip
+                  label="Current"
+                  size="small"
+                  color="success"
+                  variant="outlined"
+                />
+              )}
+
+            </Box>
+          ))}
+
+        </DialogContent>
+
+        <DialogActions>
+
+          <Button
+            onClick={() =>
+              setLoginActivityOpen(false)
+            }
+          >
+            Close
           </Button>
 
-        </Box>
+        </DialogActions>
 
-      </Card>
+      </Dialog>
 
-      {/* ========================= */}
-      {/* SAVE */}
-      {/* ========================= */}
+      {/* =====================================================
+          DELETE ACCOUNT DIALOG
+      ===================================================== */}
 
-      <Box className="settings-save-area">
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() =>
+          setDeleteDialogOpen(false)
+        }
+        maxWidth="xs"
+        fullWidth
+      >
 
-        <Button
-          variant="contained"
-          startIcon={<SaveIcon />}
-          className="settings-save-btn"
-          onClick={handleSave}
+        <DialogTitle>
+          Delete your account?
+        </DialogTitle>
+
+        <DialogContent>
+
+          <Typography
+            variant="body2"
+            color="text.secondary"
+          >
+            This action cannot be undone. Your
+            FarmXP administrator account and
+            associated data will be permanently
+            removed.
+          </Typography>
+
+        </DialogContent>
+
+        <DialogActions>
+
+          <Button
+            onClick={() =>
+              setDeleteDialogOpen(false)
+            }
+          >
+            Cancel
+          </Button>
+
+          <Button
+            color="error"
+            variant="contained"
+            onClick={handleDeleteAccount}
+          >
+            Delete Account
+          </Button>
+
+        </DialogActions>
+
+      </Dialog>
+
+      {/* =====================================================
+          SNACKBAR
+      ===================================================== */}
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={closeSnackbar}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+      >
+
+        <Alert
+          severity={snackbar.severity}
+          variant="filled"
+          onClose={closeSnackbar}
         >
-          Save Changes
-        </Button>
+          {snackbar.message}
+        </Alert>
 
-      </Box>
+      </Snackbar>
 
     </Box>
   );

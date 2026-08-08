@@ -15,6 +15,7 @@ const pageTitles = {
   '/admin/reports': 'Reports & Analytics',
   '/admin/admin-management': 'Admin Management',
   '/admin/settings': 'Settings',
+  '/admin/notifications': 'Notifications', // ← added
 };
 
 const AdminLayout = () => {
@@ -40,7 +41,7 @@ const AdminLayout = () => {
           height: '100vh',
         }}
       >
-        <AdminTopbar onMenuClick={handleSidebarToggle} pageTitle={currentTitle} />
+        <AdminTopbar onMenuToggle={handleSidebarToggle} pageTitle={currentTitle} />
 
         <Box
           component="main"

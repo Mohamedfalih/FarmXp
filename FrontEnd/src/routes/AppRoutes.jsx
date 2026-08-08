@@ -42,6 +42,7 @@ import Reports from "../pages/admin/Reports";
 import AdminManagement from "../pages/admin/AdminManagement";
 import AddAdmin from "../pages/admin/AddAdmin";
 import AdminSettings  from "../pages/admin/Settings";
+import AdminNotifications from "../pages/admin/AdminNotifications";
 
 function AppRoutes() {
   return (
@@ -103,6 +104,8 @@ function AppRoutes() {
           <Route path="admins" element={<AdminManagement />} />
           <Route path="admins/add" element={<AddAdmin />} />
           <Route path="settings" element={<AdminSettings  />} />
+          <Route path="notifications" element={<AdminNotifications />}
+/>
         </Route>
 
         {/* Optional: 404 Page */}

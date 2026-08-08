@@ -38,6 +38,66 @@
   min-width: 220px;
 }
 
+/* ---------- Evidence thumbnail ---------- */
+.verify-evidence-thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid var(--line, #e4dfcf);
+  flex-shrink: 0;
+}
+
+.verify-evidence-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.verify-evidence-thumb:hover {
+  border-color: var(--sprout, #6fa83a);
+}
+
+.verify-evidence-missing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  border: 2px dashed var(--line, #e4dfcf);
+  color: var(--ink-soft, #5b6b5c);
+  font-size: 9px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+/* ---------- Evidence modal ---------- */
+.verify-evidence-dialog {
+  padding: 0 !important;
+  position: relative;
+  background: #000;
+}
+
+.verify-evidence-dialog img {
+  display: block;
+  width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+.verify-evidence-close {
+  position: absolute !important;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.5) !important;
+  color: #fff !important;
+  z-index: 2;
+}
+
 .verify-row-actions {
   display: flex;
   gap: 8px;

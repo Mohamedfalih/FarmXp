@@ -1,6 +1,11 @@
 // Mock data — kept inline here since only VerifyPractices.jsx uses it today.
 // Replace the resolved arrays/objects below with axiosInstance calls once
 // the backend is ready. Pages calling these functions will not change.
+
+// ==============================
+// PRACTICES
+// ==============================
+
 const PRACTICES = [
   {
     id: 1,
@@ -8,8 +13,10 @@ const PRACTICES = [
     farmerName: 'Mohamed Falih',
     description: 'Drip irrigation installed',
     location: 'Coimbatore',
+    datePracticed: '2026-08-03',
     submittedLabel: '5h ago',
     status: 'pending',
+    evidenceUrl: 'https://images.unsplash.com/photo-1591857177580-dc82b9ac4e1e?w=400&q=80',
   },
   {
     id: 2,
@@ -17,8 +24,10 @@ const PRACTICES = [
     farmerName: 'Velan K.',
     description: 'Compost pit built',
     location: 'Erode',
+    datePracticed: '2026-08-07',
     submittedLabel: '1 day ago',
     status: 'pending',
+    evidenceUrl: 'https://images.unsplash.com/photo-1621459555275-e5a63e12c518?w=400&q=80',
   },
   {
     id: 3,
@@ -26,8 +35,10 @@ const PRACTICES = [
     farmerName: 'Anitha R.',
     description: 'Neem-based pest control',
     location: 'Salem',
+    datePracticed: '2026-08-06',
     submittedLabel: '2 days ago',
     status: 'pending',
+    evidenceUrl: 'https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=400&q=80',
   },
   {
     id: 4,
@@ -35,8 +46,10 @@ const PRACTICES = [
     farmerName: 'Rithick K.',
     description: 'Crop rotation, paddy to legumes',
     location: 'Erode',
+    datePracticed: '2026-08-05',
     submittedLabel: '3 days ago',
     status: 'pending',
+    evidenceUrl: 'https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=400&q=80',
   },
 ];
 
@@ -53,8 +66,9 @@ export const reviewPractice = async (practiceId, decision) => {
   return { id: practiceId, status: decision };
 };
 
-// ...existing PRACTICES data and getPendingPractices/reviewPractice stay
-// unchanged above — only this new data + function is added:
+// ==============================
+// FARMERS
+// ==============================
 
 const FARMERS = [
   {
@@ -103,6 +117,7 @@ export const getFarmers = async () => {
   // Later: const { data } = await axiosInstance.get("/api/admin/farmers");
   return Promise.resolve(FARMERS);
 };
+
 export const getFarmerById = async (id) => {
   // Temporary mock data.
   // Later replace with:
@@ -204,8 +219,9 @@ export const getFarmerById = async (id) => {
   );
 };
 
-// ...existing PRACTICES, FARMERS data and their functions stay unchanged
-// above — only this new data + these functions are added:
+// ==============================
+// SCHEMES
+// ==============================
 
 const SCHEMES = [
   {
@@ -264,9 +280,6 @@ export const addScheme = async (schemeData) => {
   return Promise.resolve(newScheme);
 };
 
-// ...existing PRACTICES, FARMERS, SCHEMES data and their functions stay
-// unchanged above — only these two new functions are added:
-
 export const getSchemeById = async (id) => {
   // Later: const { data } = await axiosInstance.get(`/api/admin/schemes/${id}`);
   const scheme = SCHEMES.find((s) => String(s.id) === String(id));
@@ -292,7 +305,9 @@ export const updateScheme = async (id, schemeData) => {
   return Promise.resolve(SCHEMES[index]);
 };
 
-// src/services/adminService.js
+// ==============================
+// BUYERS
+// ==============================
 
 let buyers = [
   {
@@ -330,31 +345,16 @@ let buyers = [
   },
 ];
 
-
-// ==============================
-// GET BUYERS
-// ==============================
 export const getBuyers = async () => {
-  // Simulate API delay
   await new Promise((resolve) => setTimeout(resolve, 400));
-
   return [...buyers];
 };
 
-
-// ==============================
-// GET BUYER BY ID
-// ==============================
 export const getBuyerById = async (id) => {
   await new Promise((resolve) => setTimeout(resolve, 300));
-
   return buyers.find((buyer) => buyer.id === Number(id));
 };
 
-
-// ==============================
-// CREATE BUYER
-// ==============================
 export const createBuyer = async (buyerData) => {
   await new Promise((resolve) => setTimeout(resolve, 400));
 
@@ -368,10 +368,6 @@ export const createBuyer = async (buyerData) => {
   return newBuyer;
 };
 
-
-// ==============================
-// DELETE BUYER
-// ==============================
 export const deleteBuyer = async (id) => {
   await new Promise((resolve) => setTimeout(resolve, 300));
 
@@ -384,10 +380,7 @@ export const updateBuyer = async (id, buyerData) => {
   await new Promise((resolve) => setTimeout(resolve, 400));
 
   const buyerId = Number(id);
-
-  const index = buyers.findIndex(
-    (buyer) => buyer.id === buyerId
-  );
+  const index = buyers.findIndex((buyer) => buyer.id === buyerId);
 
   if (index === -1) {
     throw new Error('Buyer not found');
@@ -416,23 +409,16 @@ let admins = [
   },
 ];
 
-// GET ADMINS
 export const getAdmins = async () => {
   await new Promise((resolve) => setTimeout(resolve, 400));
-
   return [...admins];
 };
 
-// GET ADMIN BY ID
 export const getAdminById = async (id) => {
   await new Promise((resolve) => setTimeout(resolve, 300));
-
-  return admins.find(
-    (admin) => admin.id === Number(id)
-  );
+  return admins.find((admin) => admin.id === Number(id));
 };
 
-// CREATE ADMIN
 export const createAdmin = async (adminData) => {
   await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -450,13 +436,10 @@ export const createAdmin = async (adminData) => {
   return newAdmin;
 };
 
-// DELETE ADMIN
 export const deleteAdmin = async (id) => {
   await new Promise((resolve) => setTimeout(resolve, 300));
 
-  admins = admins.filter(
-    (admin) => admin.id !== Number(id)
-  );
+  admins = admins.filter((admin) => admin.id !== Number(id));
 
   return true;
 };
