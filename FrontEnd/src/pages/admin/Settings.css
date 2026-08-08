@@ -1,0 +1,247 @@
+.admin-settings-page {
+  width: 100%;
+  max-width: 1100px;
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.settings-title {
+  color: var(--text-primary, #173019);
+  font-weight: 800 !important;
+}
+
+.settings-subtitle {
+  margin-top: 6px !important;
+  color: #6b756d;
+}
+
+.settings-success {
+  margin-bottom: 20px;
+  border-radius: 8px !important;
+}
+
+/* ========================= */
+/* CARD */
+/* ========================= */
+
+.settings-card {
+  margin-bottom: 20px;
+  padding: 26px !important;
+  border-radius: 12px !important;
+  border: 1px solid var(--line, #e4dfcf) !important;
+  box-shadow: var(
+    --shadow,
+    0 6px 20px rgba(37, 66, 42, 0.08)
+  ) !important;
+}
+
+/* ========================= */
+/* SECTION HEADER */
+/* ========================= */
+
+.settings-section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.settings-section-icon {
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e8f2dc;
+  color: #6fa83a;
+}
+
+.settings-section-icon svg {
+  font-size: 24px;
+}
+
+.settings-section-title {
+  color: #173019;
+  font-weight: 800 !important;
+}
+
+.settings-section-description {
+  margin-top: 4px !important;
+  color: #6b756d;
+}
+
+/* ========================= */
+/* DIVIDER */
+/* ========================= */
+
+.settings-divider {
+  margin: 22px 0 !important;
+  border-color: #e4dfcf !important;
+}
+
+/* ========================= */
+/* PROFILE FORM */
+/* ========================= */
+
+.settings-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.settings-form-grid .MuiTextField-root {
+  background: #ffffff;
+}
+
+/* ========================= */
+/* SETTINGS OPTIONS */
+/* ========================= */
+
+.settings-options {
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-option {
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid #eeeadd;
+}
+
+.settings-option:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.settings-option:first-child {
+  padding-top: 0;
+}
+
+.settings-option-title {
+  color: #263626;
+  font-weight: 700 !important;
+}
+
+.settings-option-description {
+  color: #737b73;
+  font-size: 13px !important;
+  margin-top: 4px !important;
+  max-width: 650px;
+}
+
+/* ========================= */
+/* SECURITY */
+/* ========================= */
+
+.security-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.security-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.security-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4eee0;
+  color: #8b6d32;
+}
+
+.security-btn {
+  text-transform: none !important;
+  font-weight: 700 !important;
+  border-color: #6fa83a !important;
+  color: #527f2c !important;
+}
+
+.security-btn:hover {
+  background: #f0f7e9 !important;
+}
+
+/* ========================= */
+/* SAVE */
+/* ========================= */
+
+.settings-save-area {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 30px;
+}
+
+.settings-save-btn {
+  min-width: 150px;
+  padding: 10px 20px !important;
+  background-color: #6fa83a !important;
+  text-transform: none !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+}
+
+.settings-save-btn:hover {
+  background-color: #5e9230 !important;
+}
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+@media (max-width: 750px) {
+  .settings-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .security-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .security-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-settings-page {
+    width: 100%;
+  }
+
+  .settings-card {
+    padding: 20px !important;
+  }
+
+  .settings-section-header {
+    align-items: flex-start;
+  }
+
+  .settings-option {
+    align-items: flex-start;
+  }
+
+  .settings-save-area {
+    justify-content: stretch;
+  }
+
+  .settings-save-btn {
+    width: 100%;
+  }
+}

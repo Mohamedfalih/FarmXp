@@ -1,0 +1,428 @@
+.farmer-details-page {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  color: var(--ink, #1e2b1f);
+}
+
+.farmer-details-back {
+  margin-bottom: 18px !important;
+  color: var(--ink-soft, #5b6b5c) !important;
+  font-weight: 700 !important;
+  text-transform: none !important;
+}
+
+/* =========================
+   Loading / Not Found
+========================= */
+
+.farmer-details-state {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.farmer-details-not-found {
+  max-width: 480px;
+  margin: 50px auto;
+  padding: 50px 30px;
+  text-align: center;
+  border: 1px solid var(--line, #e4dfcf) !important;
+  box-shadow: var(
+    --shadow,
+    0 6px 20px rgba(37, 66, 42, 0.08)
+  ) !important;
+}
+
+.farmer-details-not-found h5 {
+  margin-bottom: 8px;
+}
+
+.farmer-details-not-found button {
+  margin-top: 22px;
+}
+
+.not-found-icon {
+  font-size: 42px !important;
+  margin-bottom: 12px !important;
+}
+
+/* =========================
+   Profile Header
+========================= */
+
+.farmer-profile-card,
+.farmer-details-card {
+  background: #ffffff !important;
+  border: 1px solid var(--line, #e4dfcf) !important;
+  border-radius: 14px !important;
+  box-shadow: var(
+    --shadow,
+    0 6px 20px rgba(37, 66, 42, 0.08)
+  ) !important;
+  margin-bottom: 18px;
+}
+
+.farmer-profile-main {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 24px;
+}
+
+.farmer-details-avatar {
+  width: 72px !important;
+  height: 72px !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+}
+
+.farmer-profile-info {
+  flex: 1;
+}
+
+.farmer-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.farmer-details-name {
+  font-family: 'Baloo 2', sans-serif !important;
+  font-size: 25px !important;
+  font-weight: 700 !important;
+  color: var(--soil-dark, #173019) !important;
+}
+
+.farmer-location {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ink-soft, #5b6b5c);
+  font-size: 14px !important;
+}
+
+.farmer-location svg {
+  font-size: 17px;
+}
+
+.farmer-id {
+  color: #8a938a;
+  font-size: 12px !important;
+  margin-top: 4px !important;
+}
+
+.farmer-contact-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 18px 24px;
+  gap: 20px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--sprout, #6fa83a);
+}
+
+.contact-item svg {
+  font-size: 20px;
+}
+
+.contact-label {
+  color: #899189 !important;
+  font-size: 11px !important;
+}
+
+.contact-value {
+  color: var(--ink, #1e2b1f) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+/* =========================
+   Section Cards
+========================= */
+
+.farmer-details-card {
+  padding: 22px 24px;
+}
+
+.card-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.card-heading > svg {
+  color: var(--sprout, #6fa83a);
+  font-size: 25px;
+}
+
+.card-title {
+  color: var(--soil-dark, #173019) !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+}
+
+.card-subtitle {
+  color: var(--ink-soft, #5b6b5c) !important;
+  font-size: 12px !important;
+  margin-top: 2px !important;
+}
+
+/* =========================
+   Farm Information
+========================= */
+
+.farm-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  padding-top: 18px;
+}
+
+.info-box {
+  background: #fbf7ec;
+  border: 1px solid #e8e2d2;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.info-label {
+  color: #7d877d !important;
+  font-size: 11px !important;
+  margin-bottom: 5px !important;
+}
+
+.info-value {
+  color: var(--soil-dark, #173019) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+/* =========================
+   Sustainability Score
+========================= */
+
+.score-summary {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 20px 0;
+}
+
+.score-main {
+  display: flex;
+  align-items: baseline;
+  min-width: 130px;
+}
+
+.score-number {
+  font-family: 'Baloo 2', sans-serif !important;
+  font-size: 48px !important;
+  line-height: 1 !important;
+  font-weight: 700 !important;
+  color: var(--sprout, #6fa83a) !important;
+}
+
+.score-out-of {
+  color: #8b938b !important;
+  font-size: 16px !important;
+}
+
+.score-progress {
+  flex: 1;
+}
+
+.score-progress > p {
+  margin-top: 7px;
+  color: var(--ink-soft, #5b6b5c) !important;
+  font-size: 12px !important;
+}
+
+.score-linear {
+  height: 9px !important;
+  border-radius: 20px !important;
+  background-color: #e5e1d5 !important;
+}
+
+.score-linear .MuiLinearProgress-bar {
+  background-color: var(--sprout, #6fa83a) !important;
+  border-radius: 20px !important;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.metric-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid #e8e2d2;
+  border-radius: 10px;
+}
+
+.metric-icon {
+  font-size: 25px !important;
+}
+
+.water-icon {
+  color: #3e8fa0;
+}
+
+.soil-icon {
+  color: #8b6547;
+}
+
+.pest-icon {
+  color: #c1552e;
+}
+
+.crop-icon {
+  color: #6fa83a;
+}
+
+.metric-label {
+  color: #7d877d !important;
+  font-size: 11px !important;
+}
+
+.metric-value {
+  color: var(--soil-dark, #173019) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+/* =========================
+   Learning Progress
+========================= */
+
+.learning-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding-top: 18px;
+}
+
+.learning-stat {
+  text-align: center;
+  padding: 16px;
+  background: #fbf7ec;
+  border-radius: 10px;
+}
+
+.learning-number {
+  font-family: 'Baloo 2', sans-serif !important;
+  color: var(--sprout, #6fa83a) !important;
+  font-size: 26px !important;
+  font-weight: 700 !important;
+}
+
+.learning-stat > p:last-child {
+  color: var(--ink-soft, #5b6b5c);
+  font-size: 12px;
+}
+
+/* =========================
+   Practice Activity
+========================= */
+
+.practice-list {
+  padding-top: 10px;
+}
+
+.practice-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 4px;
+  border-bottom: 1px solid #eee9dc;
+}
+
+.practice-item:last-child {
+  border-bottom: none;
+}
+
+.practice-name {
+  color: var(--ink, #1e2b1f) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+.practice-date {
+  color: #8a938a !important;
+  font-size: 11px !important;
+  margin-top: 3px !important;
+}
+
+.no-practices {
+  padding: 25px 0 5px;
+  text-align: center;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 850px) {
+  .farm-info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .metric-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .learning-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  .farmer-profile-main {
+    align-items: flex-start;
+  }
+
+  .farmer-details-avatar {
+    width: 58px !important;
+    height: 58px !important;
+  }
+
+  .farmer-details-name {
+    font-size: 21px !important;
+  }
+
+  .farmer-contact-row {
+    grid-template-columns: 1fr;
+  }
+
+  .farm-info-grid,
+  .metric-grid,
+  .learning-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .score-summary {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .score-main {
+    justify-content: center;
+  }
+
+  .farmer-details-card {
+    padding: 18px;
+  }
+}

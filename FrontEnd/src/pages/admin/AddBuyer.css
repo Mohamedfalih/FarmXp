@@ -1,0 +1,213 @@
+.add-buyer-page {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.add-buyer-back {
+  margin-bottom: 18px !important;
+  color: var(--ink-soft, #5b6b5c) !important;
+  font-weight: 700 !important;
+  text-transform: none !important;
+}
+
+.add-buyer-header {
+  margin-bottom: 20px;
+}
+
+.add-buyer-title {
+  font-family: 'Baloo 2', sans-serif !important;
+  font-size: 27px !important;
+  font-weight: 700 !important;
+  color: var(--soil-dark, #173019) !important;
+}
+
+.add-buyer-subtitle {
+  color: var(--ink-soft, #5b6b5c) !important;
+  font-size: 13px !important;
+  margin-top: 3px !important;
+}
+
+/* =========================
+   Card
+========================= */
+
+.add-buyer-card {
+  border: 1px solid var(--line, #e4dfcf) !important;
+  border-radius: 14px !important;
+  box-shadow: var(
+    --shadow,
+    0 6px 20px rgba(37, 66, 42, 0.08)
+  ) !important;
+  padding: 25px;
+}
+
+/* =========================
+   Section Heading
+========================= */
+
+.add-buyer-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.add-buyer-section-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: var(--sprout-light, #e4f1d8);
+  color: var(--sprout, #6fa83a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-buyer-section-icon svg {
+  font-size: 23px;
+}
+
+.section-title {
+  color: var(--soil-dark, #173019) !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+}
+
+.section-subtitle {
+  color: var(--ink-soft, #5b6b5c) !important;
+  font-size: 12px !important;
+}
+
+/* =========================
+   Alert
+========================= */
+
+.add-buyer-alert {
+  margin: 20px 0 !important;
+}
+
+/* =========================
+   Form
+========================= */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding-top: 25px;
+}
+
+.form-full-field {
+  margin-top: 20px;
+}
+
+.form-grid .MuiTextField-root,
+.form-full-field .MuiTextField-root {
+  background: #ffffff;
+}
+
+.form-grid .MuiInputLabel-root,
+.form-full-field .MuiInputLabel-root {
+  font-size: 14px;
+}
+
+.form-grid .MuiOutlinedInput-root,
+.form-full-field .MuiOutlinedInput-root {
+  border-radius: 8px;
+}
+
+/* =========================
+   Select
+========================= */
+
+.select-placeholder {
+  color: #8a938a;
+}
+
+.form-grid > .MuiInputBase-root {
+  height: 40px;
+  border-radius: 8px;
+}
+
+/* =========================
+   Status
+========================= */
+
+.status-field {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 22px;
+}
+
+.field-label {
+  color: var(--ink-soft, #5b6b5c) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+.status-field .MuiInputBase-root {
+  min-width: 150px;
+}
+
+/* =========================
+   Actions
+========================= */
+
+.add-buyer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line, #e4dfcf);
+}
+
+.cancel-buyer-btn {
+  text-transform: none !important;
+  border-color: #d4cfc1 !important;
+  color: var(--ink-soft, #5b6b5c) !important;
+  font-weight: 700 !important;
+}
+
+.save-buyer-btn {
+  background: var(--sprout, #6fa83a) !important;
+  text-transform: none !important;
+  font-weight: 700 !important;
+  padding: 9px 20px !important;
+}
+
+.save-buyer-btn:hover {
+  background: #5e9530 !important;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 650px) {
+  .add-buyer-card {
+    padding: 18px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .add-buyer-actions {
+    flex-direction: column-reverse;
+  }
+
+  .cancel-buyer-btn,
+  .save-buyer-btn {
+    width: 100%;
+  }
+
+  .status-field {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+}

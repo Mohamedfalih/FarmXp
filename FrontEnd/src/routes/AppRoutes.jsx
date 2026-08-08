@@ -29,6 +29,19 @@ import Quiz from "../pages/farmer/Quiz";
 
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import VerifyPractices from "../pages/admin/VerifyPractices";
+import FarmerManagement from "../pages/admin/FarmerManagement";
+import FarmerDetails from "../pages/admin/FarmerDetails";
+import SchemeManagement from "../pages/admin/SchemeManagement";
+import AddScheme from "../pages/admin/AddScheme";
+import EditScheme from "../pages/admin/EditScheme";
+import BuyerManagement from "../pages/admin/BuyerManagement";
+import AddBuyer from "../pages/admin/AddBuyer";
+import BuyerDetails from "../pages/admin/BuyerDetails";
+import EditBuyer from "../pages/admin/EditBuyer";
+import Reports from "../pages/admin/Reports";
+import AdminManagement from "../pages/admin/AdminManagement";
+import AddAdmin from "../pages/admin/AddAdmin";
+import AdminSettings  from "../pages/admin/Settings";
 
 function AppRoutes() {
   return (
@@ -46,26 +59,13 @@ function AppRoutes() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="my-farm" element={<MyFarm />} />
           <Route path="edit-farm" element={<EditFarm />} />
-           <Route
-            path="learning-modules"
-            element={<LearningModules />}
-          />
+          <Route path="learning-modules" element={<LearningModules />} />
 
-          <Route
-            path="learning-modules/:id"
-            element={<ModuleDetails />}
-          />
+          <Route path="learning-modules/:id" element={<ModuleDetails />} />
 
-          <Route
-            path="learning-modules/:id/start"
-            element={<StartModule />}
-          />
+          <Route path="learning-modules/:id/start" element={<StartModule />} />
 
-          <Route
-            path="learning-modules/:id/quiz"
-            element={<Quiz />}
-          />
-
+          <Route path="learning-modules/:id/quiz" element={<Quiz />} />
 
           <Route path="practice-logs" element={<PracticeLogs />} />
           <Route path="practice/add" element={<PracticeAdd />} />
@@ -87,9 +87,23 @@ function AppRoutes() {
         </Route>
 
         <Route path="/admin" element={<AdminLayout />}>
-  <Route path="dashboard" element={<AdminDashboard />} />
-  <Route path="verify-practices" element={<VerifyPractices />} />
-  </Route>
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="verify-practices" element={<VerifyPractices />} />
+          <Route path="farmers" element={<FarmerManagement />} />
+          <Route path="farmers/:id" element={<FarmerDetails />} />
+          <Route path="schemes" element={<SchemeManagement />} />
+          <Route path="schemes/add" element={<AddScheme />} />
+          <Route path="schemes/edit/:id" element={<EditScheme />} />
+          <Route path="buyers" element={<BuyerManagement />} />
+          <Route path="buyers/add" element={<AddBuyer />} />
+          <Route path="buyers/:id" element={<BuyerDetails />} />
+          <Route path="buyers/:id/edit" element={<EditBuyer />} />
+          <Route path="reports" element={<Reports />} />
+          {/* Admin Management */}
+          <Route path="admins" element={<AdminManagement />} />
+          <Route path="admins/add" element={<AddAdmin />} />
+          <Route path="settings" element={<AdminSettings  />} />
+        </Route>
 
         {/* Optional: 404 Page */}
         <Route path="*" element={<h1>404 - Page Not Found</h1>} />

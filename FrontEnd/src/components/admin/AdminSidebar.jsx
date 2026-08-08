@@ -41,7 +41,7 @@ const menuGroups = [
   {
     label: 'Account',
     items: [
-      { text: 'Admin Management', icon: <AdminPanelSettings />, path: '/admin/admin-management' },
+      { text: 'Admin Management', icon: <AdminPanelSettings />, path: '/admin/admins' },
       { text: 'Settings', icon: <Settings />, path: '/admin/settings' },
     ],
   },

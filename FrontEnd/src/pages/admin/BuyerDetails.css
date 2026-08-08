@@ -1,0 +1,145 @@
+.buyer-details-page {
+  width: 100%;
+}
+
+.buyer-details-back {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  margin-bottom: 18px;
+
+  color: var(--ink-soft, #5b6b5c);
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.buyer-details-back:hover {
+  color: var(--soil-dark, #173019);
+}
+
+.buyer-details-card {
+  max-width: 850px;
+  padding: 28px;
+
+  border: 1px solid var(--line, #e4dfcf) !important;
+  box-shadow: var(
+    --shadow,
+    0 6px 20px rgba(37, 66, 42, 0.08)
+  ) !important;
+}
+
+.buyer-details-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line, #e4dfcf);
+}
+
+.buyer-details-avatar {
+  width: 58px !important;
+  height: 58px !important;
+
+  background: #6fa83a !important;
+
+  font-size: 18px !important;
+  font-weight: 700 !important;
+}
+
+.buyer-details-title {
+  color: var(--soil-dark, #173019);
+  font-weight: 700 !important;
+}
+
+.buyer-status {
+  margin-left: auto;
+}
+
+.buyer-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+
+  padding: 26px 0;
+}
+
+.buyer-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  padding: 16px;
+
+  background: #fbf7ec;
+  border-radius: 10px;
+}
+
+.buyer-info-item span {
+  font-size: 12px;
+  color: var(--ink-soft, #5b6b5c);
+  font-weight: 600;
+}
+
+.buyer-info-item strong {
+  font-size: 14px;
+  color: var(--soil-dark, #173019);
+}
+
+.buyer-details-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  padding-top: 20px;
+  border-top: 1px solid var(--line, #e4dfcf);
+}
+
+.buyer-details-state {
+  width: 100%;
+  min-height: 300px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.not-found {
+  text-align: center;
+}
+
+.not-found h5 {
+  margin-bottom: 8px;
+}
+
+.not-found p {
+  margin-bottom: 20px;
+}
+
+@media (max-width: 650px) {
+  .buyer-details-card {
+    padding: 20px;
+  }
+
+  .buyer-details-header {
+    flex-wrap: wrap;
+  }
+
+  .buyer-status {
+    margin-left: 0;
+  }
+
+  .buyer-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .buyer-details-actions {
+    flex-direction: column;
+  }
+
+  .buyer-details-actions button {
+    width: 100%;
+  }
+}

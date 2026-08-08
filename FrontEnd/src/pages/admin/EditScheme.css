@@ -1,0 +1,50 @@
+.edit-scheme {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.edit-scheme-back {
+  margin-bottom: 8px !important;
+}
+
+.edit-scheme-card {
+  padding: 28px;
+}
+
+.edit-scheme-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.edit-scheme-row {
+  display: flex;
+  gap: 16px;
+}
+
+.edit-scheme-row > * {
+  flex: 1;
+}
+
+.edit-scheme-submit {
+  margin-top: 20px !important;
+}
+
+.edit-scheme-state {
+  display: flex;
+  justify-content: center;
+  padding: 60px 16px;
+}
+
+@media (max-width: 600px) {
+  .edit-scheme-card {
+    padding: 18px;
+  }
+
+  .edit-scheme-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}

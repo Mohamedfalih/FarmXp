@@ -1,0 +1,27 @@
+.scheme-management {
+  width: 100%;
+}
+
+.scheme-management-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.scheme-table-card {
+  border: 1px solid var(--line, #e4dfcf) !important;
+  box-shadow: var(--shadow, 0 6px 20px rgba(37, 66, 42, 0.08)) !important;
+  overflow-x: auto;
+}
+
+.scheme-table-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 16px;
+}
+
+.scheme-table-empty {
+  text-align: center;
+  padding: 24px;
+}

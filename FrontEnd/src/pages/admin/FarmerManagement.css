@@ -1,0 +1,61 @@
+.farmer-management {
+  width: 100%;
+}
+
+.farmer-management-filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.farmer-search {
+  flex: 1;
+  min-width: 240px;
+}
+
+.farmer-filter-select {
+  min-width: 160px;
+}
+
+.farmer-table-card {
+  border: 1px solid var(--line, #e4dfcf) !important;
+  box-shadow: var(--shadow, 0 6px 20px rgba(37, 66, 42, 0.08)) !important;
+  overflow-x: auto;
+}
+
+.farmer-table-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 16px;
+}
+
+.farmer-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.farmer-avatar {
+  width: 30px !important;
+  height: 30px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+.farmer-table-empty {
+  text-align: center;
+  padding: 24px;
+}
+
+@media (max-width: 700px) {
+  .farmer-management-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .farmer-filter-select {
+    min-width: 0;
+  }
+}

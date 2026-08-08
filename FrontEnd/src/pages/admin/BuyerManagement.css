@@ -1,0 +1,187 @@
+.buyer-management {
+  width: 100%;
+}
+
+/* =========================
+   Header
+========================= */
+
+.buyer-management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.buyer-page-title {
+  font-family: 'Baloo 2', sans-serif !important;
+  font-size: 25px !important;
+  font-weight: 700 !important;
+  color: var(--soil-dark, #173019) !important;
+}
+
+.buyer-page-subtitle {
+  margin-top: 3px !important;
+  color: var(--ink-soft, #5b6b5c) !important;
+  font-size: 13px !important;
+}
+
+.add-buyer-btn {
+  background: var(--sprout, #6fa83a) !important;
+  color: #ffffff !important;
+  text-transform: none !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+  padding: 9px 18px !important;
+}
+
+.add-buyer-btn:hover {
+  background: #5e9530 !important;
+}
+
+/* =========================
+   Filters
+========================= */
+
+.buyer-management-filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.buyer-search {
+  flex: 1;
+  min-width: 280px;
+}
+
+.buyer-filter-select {
+  min-width: 170px;
+}
+
+/* =========================
+   Table
+========================= */
+
+.buyer-table-card {
+  border: 1px solid var(--line, #e4dfcf) !important;
+  box-shadow: var(
+    --shadow,
+    0 6px 20px rgba(37, 66, 42, 0.08)
+  ) !important;
+  overflow-x: auto;
+}
+
+.buyer-table-card .MuiTableCell-head {
+  background: #fbf7ec;
+  color: #5b6b5c;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.buyer-table-card .MuiTableCell-body {
+  color: #39443a;
+  font-size: 13px;
+}
+
+.buyer-table-card .MuiTableRow-root:hover {
+  background: #fcfbf7;
+}
+
+/* =========================
+   Buyer
+========================= */
+
+.buyer-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 190px;
+}
+
+.buyer-avatar {
+  width: 36px !important;
+  height: 36px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+.buyer-name {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #1e2b1f !important;
+}
+
+.buyer-id {
+  font-size: 10px !important;
+  color: #8a938a !important;
+}
+
+/* =========================
+   Category
+========================= */
+
+.buyer-category-chip {
+  background: #e4f1d8 !important;
+  color: #3e6b1e !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+
+/* =========================
+   Loading
+========================= */
+
+.buyer-table-state {
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+/* =========================
+   Empty
+========================= */
+
+.buyer-table-empty {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.buyer-table-empty svg {
+  font-size: 38px;
+  color: #9aa39a;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 750px) {
+  .buyer-management-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .add-buyer-btn {
+    width: 100%;
+  }
+
+  .buyer-management-filters {
+    flex-direction: column;
+  }
+
+  .buyer-search,
+  .buyer-filter-select {
+    width: 100%;
+    min-width: 0;
+  }
+}

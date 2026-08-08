@@ -1,0 +1,111 @@
+.edit-buyer-page {
+  width: 100%;
+}
+
+.edit-buyer-back {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  margin-bottom: 18px;
+
+  color: var(--ink-soft, #5b6b5c);
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.edit-buyer-back:hover {
+  color: var(--soil-dark, #173019);
+}
+
+.edit-buyer-card {
+  max-width: 850px;
+  padding: 28px;
+
+  border: 1px solid var(--line, #e4dfcf) !important;
+
+  box-shadow:
+    var(--shadow, 0 6px 20px rgba(37, 66, 42, 0.08)) !important;
+}
+
+.edit-buyer-title {
+  color: var(--soil-dark, #173019);
+  font-weight: 700 !important;
+}
+
+.edit-buyer-subtitle {
+  margin-top: 4px !important;
+  margin-bottom: 26px !important;
+
+  color: var(--ink-soft, #5b6b5c);
+}
+
+.edit-buyer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.edit-buyer-error {
+  padding: 12px 14px;
+  margin-bottom: 20px;
+
+  border-radius: 8px;
+
+  background: #fdeaea;
+  color: #a52b2b;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.edit-buyer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  margin-top: 28px;
+  padding-top: 20px;
+
+  border-top: 1px solid var(--line, #e4dfcf);
+}
+
+.edit-buyer-state {
+  width: 100%;
+  min-height: 300px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit-buyer-not-found {
+  text-align: center;
+}
+
+.edit-buyer-not-found h5 {
+  margin-bottom: 8px;
+}
+
+.edit-buyer-not-found p {
+  margin-bottom: 20px;
+}
+
+@media (max-width: 700px) {
+  .edit-buyer-card {
+    padding: 20px;
+  }
+
+  .edit-buyer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .edit-buyer-actions {
+    flex-direction: column;
+  }
+
+  .edit-buyer-actions button {
+    width: 100%;
+  }
+}
