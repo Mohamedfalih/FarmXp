@@ -2,6 +2,9 @@ package com.farmxp.auth.entity;
 
 import jakarta.persistence.*;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -9,10 +12,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
     @SequenceGenerator(
-    	    name = "user_seq",
-    	    sequenceName = "USER_SEQ",
-    	    allocationSize = 1
-    	)
+        name = "user_seq",
+        sequenceName = "USER_SEQ",
+        allocationSize = 1
+    )
     @Column(name = "user_id")
     private Long userId;
 
@@ -30,6 +33,7 @@ public class User {
     private Role role;
 
     @Column(name = "active", nullable = false)
+    @JdbcTypeCode(SqlTypes.NUMERIC)
     private Boolean active = true;
 
     public User() {
