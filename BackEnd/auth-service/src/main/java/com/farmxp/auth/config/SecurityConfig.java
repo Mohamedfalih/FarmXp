@@ -39,17 +39,28 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
+                // Swagger / OpenAPI
+                .requestMatchers(
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/v3/api-docs/**"
+                ).permitAll()
+
+                // Public authentication APIs
                 .requestMatchers(
                     "/api/auth/register",
                     "/api/auth/login"
                 ).permitAll()
 
+                // Admin APIs
                 .requestMatchers("/api/auth/admin/**")
                 .hasRole("ADMIN")
 
+                // Farmer APIs
                 .requestMatchers("/api/auth/farmer/**")
                 .hasRole("FARMER")
 
+                // Everything else requires authentication
                 .anyRequest().authenticated()
             )
 
