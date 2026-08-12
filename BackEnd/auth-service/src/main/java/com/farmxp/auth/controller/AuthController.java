@@ -35,12 +35,12 @@ public class AuthController {
     }
 
     // ==========================================
-    // REGISTER
+    // FARMER REGISTRATION
     // ==========================================
 
     @PostMapping("/register")
     public ResponseEntity<?> register(
-           @Valid @RequestBody RegisterRequest request) {
+            @Valid @RequestBody RegisterRequest request) {
 
         try {
 
@@ -52,7 +52,7 @@ public class AuthController {
             response.put("userId", user.getUserId());
             response.put("username", user.getUsername());
             response.put("email", user.getEmail());
-            response.put("role", user.getRole());
+            response.put("role", user.getRole().name());
             response.put("active", user.getActive());
 
             return ResponseEntity
@@ -77,7 +77,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(
-           @Valid @RequestBody LoginRequest request) {
+            @Valid @RequestBody LoginRequest request) {
 
         try {
 
@@ -107,22 +107,44 @@ public class AuthController {
                     .body(response);
         }
     }
-    
+
+    // ==========================================
+    // AUTHENTICATION TEST
+    // ==========================================
+
     @GetMapping("/test")
     public ResponseEntity<?> testAuthentication() {
 
         return ResponseEntity.ok(
                 Map.of(
-                        "message", "JWT authentication successful"
+                        "message",
+                        "JWT authentication successful"
                 )
         );
     }
-    
+
+    // ==========================================
+    // CURRENT USER
+    // ==========================================
+
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(
             Authentication authentication) {
 
         try {
+
+            if (authentication == null
+                    || !authentication.isAuthenticated()) {
+
+                return ResponseEntity
+                        .status(HttpStatus.UNAUTHORIZED)
+                        .body(
+                                Map.of(
+                                        "message",
+                                        "Authentication required"
+                                )
+                        );
+            }
 
             String username = authentication.getName();
 
@@ -142,23 +164,40 @@ public class AuthController {
 
         } catch (RuntimeException e) {
 
-            Map<String, String> response =
-                    new HashMap<>();
-
-            response.put("message", e.getMessage());
-
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body(response);
+                    .body(
+                            Map.of(
+                                    "message",
+                                    e.getMessage()
+                            )
+                    );
         }
     }
-    
+
+    // ==========================================
+    // CHANGE PASSWORD
+    // ==========================================
+
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(
             Authentication authentication,
             @Valid @RequestBody ChangePasswordRequest request) {
 
         try {
+
+            if (authentication == null
+                    || !authentication.isAuthenticated()) {
+
+                return ResponseEntity
+                        .status(HttpStatus.UNAUTHORIZED)
+                        .body(
+                                Map.of(
+                                        "message",
+                                        "Authentication required"
+                                )
+                        );
+            }
 
             authService.changePassword(
                     authentication.getName(),
@@ -177,13 +216,19 @@ public class AuthController {
 
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of(
-                            "message",
-                            e.getMessage()
-                    ));
+                    .body(
+                            Map.of(
+                                    "message",
+                                    e.getMessage()
+                            )
+                    );
         }
     }
-    
+
+    // ==========================================
+    // FARMER AUTHORIZATION TEST
+    // ==========================================
+
     @GetMapping("/farmer/test")
     public ResponseEntity<?> farmerTest() {
 
@@ -194,7 +239,11 @@ public class AuthController {
                 )
         );
     }
-    
+
+    // ==========================================
+    // ADMIN AUTHORIZATION TEST
+    // ==========================================
+
     @GetMapping("/admin/test")
     public ResponseEntity<?> adminTest() {
 

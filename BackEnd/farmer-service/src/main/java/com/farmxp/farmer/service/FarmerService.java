@@ -101,6 +101,15 @@ public class FarmerService {
 
         return convertToResponse(updated);
     }
+    
+	 // ==========================================
+	 // CHECK PROFILE EXISTS
+	 // ==========================================
+	
+	 public boolean profileExists(Long userId) {
+	
+	     return farmerProfileRepository.existsByUserId(userId);
+	 }
 
     // ==========================================
     // ENTITY → RESPONSE DTO

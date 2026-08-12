@@ -19,7 +19,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
 
-    public JwtAuthenticationFilter(JwtService jwtService) {
+    public JwtAuthenticationFilter(
+            JwtService jwtService) {
+
         this.jwtService = jwtService;
     }
 
@@ -30,17 +32,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
+        String authorizationHeader =
+                request.getHeader("Authorization");
 
-        // No JWT token
-        if (authHeader == null ||
-            !authHeader.startsWith("Bearer ")) {
+        if (authorizationHeader == null
+                || !authorizationHeader.startsWith("Bearer ")) {
 
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7);
+        String token =
+                authorizationHeader
+                        .substring(7)
+                        .trim();
+
+        if (token.isEmpty()) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         try {
 
@@ -52,24 +63,41 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String role =
                         jwtService.extractRole(token);
 
-                SimpleGrantedAuthority authority =
-                        new SimpleGrantedAuthority("ROLE_" + role);
+                if (username != null
+                        && role != null
+                        && SecurityContextHolder
+                                .getContext()
+                                .getAuthentication() == null) {
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                username,
-                                null,
-                                List.of(authority)
-                        );
+                    String authority =
+                            role.startsWith("ROLE_")
+                                    ? role
+                                    : "ROLE_" + role;
 
-                SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(authentication);
+                    UsernamePasswordAuthenticationToken
+                            authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    username,
+                                    null,
+                                    List.of(
+                                            new SimpleGrantedAuthority(
+                                                    authority
+                                            )
+                                    )
+                            );
+
+                    SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(
+                                    authentication
+                            );
+                }
             }
 
         } catch (Exception e) {
 
-            SecurityContextHolder.clearContext();
+            SecurityContextHolder
+                    .clearContext();
         }
 
         filterChain.doFilter(request, response);

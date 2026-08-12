@@ -2,6 +2,7 @@ package com.farmxp.auth.service;
 
 import com.farmxp.auth.dto.LoginRequest;
 import com.farmxp.auth.dto.RegisterRequest;
+import com.farmxp.auth.entity.Role;
 import com.farmxp.auth.entity.User;
 import com.farmxp.auth.repository.UserRepository;
 import com.farmxp.auth.security.JwtService;
@@ -27,7 +28,7 @@ public class AuthService {
     }
 
     // =========================
-    // REGISTER
+    // FARMER REGISTRATION
     // =========================
 
     public User register(RegisterRequest request) {
@@ -45,12 +46,13 @@ public class AuthService {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
 
-        // Never store plain-text passwords
         user.setPassword(
                 passwordEncoder.encode(request.getPassword())
         );
 
-        user.setRole(request.getRole());
+        // Public registration can create FARMER only
+        user.setRole(Role.FARMER);
+
         user.setActive(true);
 
         return userRepository.save(user);
@@ -65,9 +67,12 @@ public class AuthService {
         User user = userRepository
                 .findByUsername(request.getUsername())
                 .orElseThrow(() ->
-                        new RuntimeException("Invalid username or password"));
+                        new RuntimeException(
+                                "Invalid username or password"
+                        )
+                );
 
-        if (!user.getActive()) {
+        if (!Boolean.TRUE.equals(user.getActive())) {
             throw new RuntimeException("Account is inactive");
         }
 
@@ -75,7 +80,9 @@ public class AuthService {
                 request.getPassword(),
                 user.getPassword())) {
 
-            throw new RuntimeException("Invalid username or password");
+            throw new RuntimeException(
+                    "Invalid username or password"
+            );
         }
 
         return user;
@@ -93,14 +100,24 @@ public class AuthService {
                 user.getRole().name()
         );
     }
-    
+
+    // =========================
+    // GET USER
+    // =========================
+
     public User getUserByUsername(String username) {
 
-        return userRepository.findByUsername(username)
+        return userRepository
+                .findByUsername(username)
                 .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+                        new RuntimeException("User not found")
+                );
     }
-    
+
+    // =========================
+    // CHANGE PASSWORD
+    // =========================
+
     public void changePassword(
             String username,
             String currentPassword,
@@ -109,9 +126,10 @@ public class AuthService {
         User user = userRepository
                 .findByUsername(username)
                 .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+                        new RuntimeException("User not found")
+                );
 
-        if (!user.getActive()) {
+        if (!Boolean.TRUE.equals(user.getActive())) {
             throw new RuntimeException("Account is inactive");
         }
 
@@ -119,7 +137,9 @@ public class AuthService {
                 currentPassword,
                 user.getPassword())) {
 
-            throw new RuntimeException("Current password is incorrect");
+            throw new RuntimeException(
+                    "Current password is incorrect"
+            );
         }
 
         if (passwordEncoder.matches(
@@ -127,7 +147,8 @@ public class AuthService {
                 user.getPassword())) {
 
             throw new RuntimeException(
-                    "New password must be different from current password");
+                    "New password must be different from current password"
+            );
         }
 
         user.setPassword(

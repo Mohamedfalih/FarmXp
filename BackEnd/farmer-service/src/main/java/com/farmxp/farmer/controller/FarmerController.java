@@ -63,8 +63,7 @@ public class FarmerController {
 
         try {
 
-            Long userId =
-                    getUserId(authentication);
+            Long userId = getUserId(authentication);
 
             FarmerProfileResponse response =
                     farmerService.createProfile(
@@ -99,8 +98,7 @@ public class FarmerController {
 
         try {
 
-            Long userId =
-                    getUserId(authentication);
+            Long userId = getUserId(authentication);
 
             FarmerProfileResponse response =
                     farmerService.getProfile(userId);
@@ -121,6 +119,41 @@ public class FarmerController {
     }
 
     // ==========================================
+    // CHECK PROFILE EXISTS
+    // ==========================================
+
+    @GetMapping("/profile/exists")
+    public ResponseEntity<?> profileExists(
+            Authentication authentication) {
+
+        try {
+
+            Long userId = getUserId(authentication);
+
+            boolean exists =
+                    farmerService.profileExists(userId);
+
+            return ResponseEntity.ok(
+                    Map.of(
+                            "userId", userId,
+                            "profileExists", exists
+                    )
+            );
+
+        } catch (RuntimeException e) {
+
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(
+                            Map.of(
+                                    "message",
+                                    e.getMessage()
+                            )
+                    );
+        }
+    }
+
+    // ==========================================
     // UPDATE PROFILE
     // ==========================================
 
@@ -131,8 +164,7 @@ public class FarmerController {
 
         try {
 
-            Long userId =
-                    getUserId(authentication);
+            Long userId = getUserId(authentication);
 
             FarmerProfileResponse response =
                     farmerService.updateProfile(
@@ -162,17 +194,26 @@ public class FarmerController {
     private Long getUserId(
             Authentication authentication) {
 
-        String username =
+        if (authentication == null
+                || !authentication.isAuthenticated()) {
+
+            throw new RuntimeException(
+                    "Authentication required"
+            );
+        }
+
+        String principal =
                 authentication.getName();
 
-        /*
-         * The current Authentication contains
-         * the username. We need the JWT userId.
-         *
-         * Therefore the filter stores the userId
-         * as the authentication principal.
-         */
+        try {
 
-        return Long.parseLong(username);
+            return Long.parseLong(principal);
+
+        } catch (NumberFormatException e) {
+
+            throw new RuntimeException(
+                    "Invalid user information in token"
+            );
+        }
     }
 }
