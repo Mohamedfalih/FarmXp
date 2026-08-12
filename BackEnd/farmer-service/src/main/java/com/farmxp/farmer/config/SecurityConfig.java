@@ -30,7 +30,16 @@ public class SecurityConfig {
             HttpSecurity http) throws Exception {
 
         http
+
+            // ==========================================
+            // CSRF
+            // ==========================================
+
             .csrf(csrf -> csrf.disable())
+
+            // ==========================================
+            // STATELESS SESSION
+            // ==========================================
 
             .sessionManagement(session ->
                 session.sessionCreationPolicy(
@@ -38,26 +47,124 @@ public class SecurityConfig {
                 )
             )
 
+            // ==========================================
+            // AUTHORIZATION
+            // ==========================================
+
             .authorizeHttpRequests(auth -> auth
-            		
-            		// Swagger / OpenAPI
-                    .requestMatchers(
-                        "/swagger-ui/**",
-                        "/swagger-ui.html",
-                        "/v3/api-docs/**"
-                    ).permitAll()
 
-                // Health/test endpoint
-                .requestMatchers("/api/farmers/test")
-                .permitAll()
+                // ======================================
+                // SWAGGER / OPENAPI
+                // ======================================
 
-                // All farmer APIs require JWT
-                .requestMatchers("/api/farmers/**")
-                .hasRole("FARMER")
+                .requestMatchers(
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/v3/api-docs/**"
+                ).permitAll()
+
+                // ======================================
+                // TEST ENDPOINT
+                // ======================================
+
+                .requestMatchers(
+                    "/api/farmers/test"
+                ).permitAll()
+
+                // ======================================
+                // FARMER PROFILE
+                // FARMER + ADMIN CAN READ
+                // ======================================
+
+                .requestMatchers(
+                    org.springframework.http.HttpMethod.GET,
+                    "/api/farmers/profile",
+                    "/api/farmers/profile/exists"
+                ).hasAnyRole(
+                    "FARMER",
+                    "ADMIN"
+                )
+
+                // ======================================
+                // FARMER PROFILE CREATE / UPDATE
+                // FARMER ONLY
+                // ======================================
+
+                .requestMatchers(
+                    org.springframework.http.HttpMethod.POST,
+                    "/api/farmers/profile"
+                ).hasRole("FARMER")
+
+                .requestMatchers(
+                    org.springframework.http.HttpMethod.PUT,
+                    "/api/farmers/profile"
+                ).hasRole("FARMER")
+
+                // ======================================
+                // CROP - READ
+                // FARMER + ADMIN
+                // ======================================
+
+                .requestMatchers(
+                    org.springframework.http.HttpMethod.GET,
+                    "/api/farmers/crops/**"
+                ).hasAnyRole(
+                    "FARMER",
+                    "ADMIN"
+                )
+
+                // ======================================
+                // CROP - CREATE
+                // FARMER ONLY
+                // ======================================
+
+                .requestMatchers(
+                    org.springframework.http.HttpMethod.POST,
+                    "/api/farmers/crops"
+                ).hasRole("FARMER")
+
+                // ======================================
+                // CROP - UPDATE
+                // FARMER ONLY
+                // ======================================
+
+                .requestMatchers(
+                    org.springframework.http.HttpMethod.PUT,
+                    "/api/farmers/crops/**"
+                ).hasRole("FARMER")
+
+                // ======================================
+                // CROP - DELETE
+                // FARMER ONLY
+                // ======================================
+
+                .requestMatchers(
+                    org.springframework.http.HttpMethod.DELETE,
+                    "/api/farmers/crops/**"
+                ).hasRole("FARMER")
+
+                // ======================================
+                // ANY OTHER FARMER API
+                // ======================================
+
+                .requestMatchers(
+                    "/api/farmers/**"
+                ).hasAnyRole(
+                    "FARMER",
+                    "ADMIN"
+                )
+
+                // ======================================
+                // EVERYTHING ELSE
+                // ======================================
 
                 .anyRequest()
                 .authenticated()
             )
+
+            // ==========================================
+            // JWT FILTER
+            // ==========================================
 
             .addFilterBefore(
                 jwtAuthenticationFilter,
