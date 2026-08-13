@@ -7,11 +7,8 @@ import org.springframework.context.annotation.Configuration;
 
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
 import org.springframework.security.config.http.SessionCreationPolicy;
-
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -44,17 +41,37 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
-                		
-                		// Swagger / OpenAPI
+
+                        // ==============================
+                        // Swagger / OpenAPI
+                        // ==============================
+
                         .requestMatchers(
-                            "/swagger-ui/**",
-                            "/swagger-ui.html",
-                            "/v3/api-docs/**"
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**"
                         ).permitAll()
+
+                        // ==============================
+                        // Test API
+                        // ==============================
 
                         .requestMatchers(
                                 "/api/sustainability/test"
                         ).permitAll()
+
+                        // ==============================
+                        // Leaderboard
+                        // ==============================
+
+                        .requestMatchers(
+                                "/api/sustainability/leaderboard/**"
+                        )
+                        .hasAnyRole("FARMER", "ADMIN")
+
+                        // ==============================
+                        // Other Sustainability APIs
+                        // ==============================
 
                         .anyRequest()
                         .authenticated()

@@ -1,5 +1,7 @@
 package com.farmxp.farmer.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.farmxp.farmer.dto.FarmerProfileRequest;
@@ -130,5 +132,26 @@ public class FarmerService {
                 profile.getFarmSize(),
                 profile.getFarmSizeUnit()
         );
+    }
+    
+    public List<FarmerProfileResponse> getAllFarmers() {
+
+        return farmerProfileRepository.findAll()
+                .stream()
+                .map(this::convertToResponse)
+                .toList();
+    }
+
+    public FarmerProfileResponse getFarmerById(
+            Long farmerId) {
+
+        FarmerProfile profile =
+                farmerProfileRepository.findById(
+                        farmerId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Farmer not found"));
+
+        return convertToResponse(profile);
     }
 }

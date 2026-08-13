@@ -1,9 +1,12 @@
 package com.farmxp.auth.repository;
 
-import com.farmxp.auth.entity.User;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import com.farmxp.auth.entity.Role;
+import com.farmxp.auth.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -14,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
+    
+    List<User> findByRole(Role role);
 }
