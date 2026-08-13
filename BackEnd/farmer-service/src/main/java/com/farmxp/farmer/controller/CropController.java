@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/farmers/crops")
-@CrossOrigin(origins = "http://localhost:5173")
+
 public class CropController {
 
     private final CropService cropService;

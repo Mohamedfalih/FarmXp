@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/farmers/dashboard")
-@CrossOrigin(origins = "http://localhost:5173")
+
 public class DashboardController {
 
     private final DashboardService dashboardService;

@@ -15,7 +15,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/notifications")
-@CrossOrigin(origins = "http://localhost:5173")
+//@CrossOrigin(origins = "http://localhost:5173")
 public class NotificationController {
 
     private final NotificationService notificationService;

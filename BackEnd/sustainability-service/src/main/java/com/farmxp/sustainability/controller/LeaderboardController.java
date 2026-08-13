@@ -15,7 +15,7 @@ import com.farmxp.sustainability.service.LeaderboardService;
 
 @RestController
 @RequestMapping("/api/sustainability/leaderboard")
-@CrossOrigin(origins = "http://localhost:5173")
+//@CrossOrigin(origins = "http://localhost:5173")
 public class LeaderboardController {
 
     private final LeaderboardService leaderboardService;

@@ -68,16 +68,27 @@ public class AuthService {
 
     public User login(LoginRequest request) {
 
-        User user = userRepository
-                .findByUsername(request.getUsername())
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Invalid username or password"
-                        )
-                );
+        String identifier =
+                request.getUsername().trim();
+
+        User user =
+                userRepository
+                        .findByUsername(identifier)
+                        .orElseGet(() ->
+                                userRepository
+                                        .findByEmail(identifier)
+                                        .orElseThrow(() ->
+                                                new RuntimeException(
+                                                        "Invalid username/email or password"
+                                                )
+                                        )
+                        );
 
         if (!Boolean.TRUE.equals(user.getActive())) {
-            throw new RuntimeException("Account is inactive");
+
+            throw new RuntimeException(
+                    "Account is inactive"
+            );
         }
 
         if (!passwordEncoder.matches(
@@ -85,13 +96,12 @@ public class AuthService {
                 user.getPassword())) {
 
             throw new RuntimeException(
-                    "Invalid username or password"
+                    "Invalid username/email or password"
             );
         }
 
         return user;
     }
-
     // =========================
     // GENERATE JWT
     // =========================
