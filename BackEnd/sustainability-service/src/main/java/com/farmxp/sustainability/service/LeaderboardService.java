@@ -1,15 +1,20 @@
 package com.farmxp.sustainability.service;
 
-import com.farmxp.sustainability.dto.LeaderboardResponse;
-import com.farmxp.sustainability.entity.CertifiedPracticeLog;
-import com.farmxp.sustainability.enums.PracticeStatus;
-import com.farmxp.sustainability.enums.SustainabilityCategory;
-import com.farmxp.sustainability.repository.CertifiedPracticeLogRepository;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import com.farmxp.sustainability.dto.LeaderboardResponse;
+import com.farmxp.sustainability.entity.CertifiedPracticeLog;
+import com.farmxp.sustainability.enums.LeaderboardPeriod;
+import com.farmxp.sustainability.enums.PracticeStatus;
+import com.farmxp.sustainability.enums.SustainabilityCategory;
+import com.farmxp.sustainability.repository.CertifiedPracticeLogRepository;
 
 @Service
 public class LeaderboardService {
@@ -25,17 +30,47 @@ public class LeaderboardService {
         this.practiceRepository = practiceRepository;
     }
 
-    public List<LeaderboardResponse> getLeaderboard() {
+    public List<LeaderboardResponse> getLeaderboard(
+            LeaderboardPeriod period) {
 
-        List<CertifiedPracticeLog> verifiedPractices =
-                practiceRepository.findByStatus(
-                        PracticeStatus.VERIFIED
-                );
+        List<CertifiedPracticeLog> verifiedPractices;
 
-        /*
-         * Group verified practices by farmer.
-         */
-        Map<Long, List<CertifiedPracticeLog>> farmerPractices =
+        if (period == LeaderboardPeriod.WEEK) {
+
+            LocalDateTime start =
+                    LocalDateTime.now()
+                            .minusDays(7);
+
+            verifiedPractices =
+                    practiceRepository
+                            .findByStatusAndVerifiedAtAfter(
+                                    PracticeStatus.VERIFIED,
+                                    start
+                            );
+
+        } else if (period == LeaderboardPeriod.MONTH) {
+
+            LocalDateTime start =
+                    LocalDateTime.now()
+                            .minusDays(30);
+
+            verifiedPractices =
+                    practiceRepository
+                            .findByStatusAndVerifiedAtAfter(
+                                    PracticeStatus.VERIFIED,
+                                    start
+                            );
+
+        } else {
+
+            verifiedPractices =
+                    practiceRepository.findByStatus(
+                            PracticeStatus.VERIFIED
+                    );
+        }
+
+        Map<Long, List<CertifiedPracticeLog>>
+                farmerPractices =
                 verifiedPractices.stream()
                         .collect(
                                 Collectors.groupingBy(
@@ -48,14 +83,17 @@ public class LeaderboardService {
                         .stream()
                         .map(entry -> {
 
-                            Long farmerId = entry.getKey();
+                            Long farmerId =
+                                    entry.getKey();
 
-                            List<CertifiedPracticeLog> practices =
+                            List<CertifiedPracticeLog>
+                                    practices =
                                     entry.getValue();
 
-                            int score = calculateScore(
-                                    practices
-                            );
+                            int score =
+                                    calculateScore(
+                                            practices
+                                    );
 
                             return new LeaderboardResponse(
                                     0,
@@ -67,21 +105,24 @@ public class LeaderboardService {
                         .sorted(
                                 Comparator
                                         .comparing(
-                                                LeaderboardResponse::getScore
+                                                LeaderboardResponse
+                                                        ::getScore
                                         )
                                         .reversed()
                                         .thenComparing(
-                                                LeaderboardResponse::getFarmerId
+                                                LeaderboardResponse
+                                                        ::getFarmerId
                                         )
                         )
-                        .collect(Collectors.toList());
+                        .collect(
+                                Collectors.toList()
+                        );
 
-        /*
-         * Assign ranks after sorting.
-         */
         int rank = 1;
 
-        for (LeaderboardResponse response : leaderboard) {
+        for (LeaderboardResponse response :
+                leaderboard) {
+
             response.setRank(rank++);
         }
 

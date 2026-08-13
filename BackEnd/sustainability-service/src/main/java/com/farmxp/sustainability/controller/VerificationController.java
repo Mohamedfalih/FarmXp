@@ -3,15 +3,14 @@ package com.farmxp.sustainability.controller;
 import com.farmxp.sustainability.dto.PracticeLogResponse;
 import com.farmxp.sustainability.dto.PracticeVerificationRequest;
 import com.farmxp.sustainability.dto.PracticeVerificationResponse;
+import com.farmxp.sustainability.enums.PracticeStatus;
 import com.farmxp.sustainability.service.VerificationService;
 
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +29,10 @@ public class VerificationController {
                 verificationService;
     }
 
+    // =====================================================
+    // EXISTING API - DO NOT REMOVE
+    // =====================================================
+
     @GetMapping("/pending")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<PracticeLogResponse>>
@@ -39,6 +42,26 @@ public class VerificationController {
                 verificationService.getPendingPractices()
         );
     }
+
+    // =====================================================
+    // NEW API - GET VERIFICATION HISTORY BY STATUS
+    // =====================================================
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<PracticeLogResponse>>
+    getPracticesByStatus(
+            @RequestParam PracticeStatus status) {
+
+        return ResponseEntity.ok(
+                verificationService
+                        .getPracticesByStatus(status)
+        );
+    }
+
+    // =====================================================
+    // EXISTING API - DO NOT REMOVE
+    // =====================================================
 
     @PutMapping("/{practiceId}")
     @PreAuthorize("hasRole('ADMIN')")

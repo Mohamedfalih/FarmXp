@@ -1,6 +1,7 @@
 package com.farmxp.sustainability.controller;
 
 import com.farmxp.sustainability.dto.LeaderboardResponse;
+import com.farmxp.sustainability.enums.LeaderboardPeriod;
 import com.farmxp.sustainability.service.LeaderboardService;
 
 import org.springframework.http.ResponseEntity;
@@ -22,12 +23,21 @@ public class LeaderboardController {
                 leaderboardService;
     }
 
+    // =====================================================
+    // EXISTING API
+    // =====================================================
+
     @GetMapping
     public ResponseEntity<List<LeaderboardResponse>>
-    getLeaderboard() {
+    getLeaderboard(
+            @RequestParam(
+                    defaultValue = "ALL"
+            )
+            LeaderboardPeriod period) {
 
         return ResponseEntity.ok(
-                leaderboardService.getLeaderboard()
+                leaderboardService
+                        .getLeaderboard(period)
         );
     }
 }

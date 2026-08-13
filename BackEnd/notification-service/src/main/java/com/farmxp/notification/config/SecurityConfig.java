@@ -1,4 +1,3 @@
-
 package com.farmxp.notification.config;
 
 import com.farmxp.notification.security.JwtAuthenticationFilter;
@@ -9,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -33,9 +31,17 @@ public class SecurityConfig {
             HttpSecurity http) throws Exception {
 
         http
+                // ==========================
+                // CSRF
+                // ==========================
+
                 .csrf(csrf ->
                         csrf.disable()
                 )
+
+                // ==========================
+                // SESSION
+                // ==========================
 
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
@@ -43,72 +49,36 @@ public class SecurityConfig {
                         )
                 )
 
+                // ==========================
+                // AUTHORIZATION
+                // ==========================
+
                 .authorizeHttpRequests(auth -> auth
-                		
-                		// Swagger / OpenAPI
+
+                        // Swagger
                         .requestMatchers(
-                            "/swagger-ui/**",
-                            "/swagger-ui.html",
-                            "/v3/api-docs/**"
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**"
                         ).permitAll()
 
-                        // ==========================
-                        // ACTUATOR
-                        // ==========================
-
+                        // Actuator
                         .requestMatchers(
                                 "/actuator/**"
-                        )
-                        .permitAll()
+                        ).permitAll()
 
-                        // ==========================
-                        // CREATE NOTIFICATION
-                        // TEMPORARILY AUTHENTICATED
-                        // ==========================
-
+                        // Notification APIs
                         .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/notifications"
-                        )
-                        .authenticated()
-
-                        // ==========================
-                        // READ NOTIFICATIONS
-                        // ==========================
-
-                        .requestMatchers(
-                                HttpMethod.GET,
                                 "/api/notifications/**"
-                        )
-                        .authenticated()
+                        ).authenticated()
 
-                        // ==========================
-                        // MARK READ
-                        // ==========================
-
-                        .requestMatchers(
-                                HttpMethod.PATCH,
-                                "/api/notifications/**"
-                        )
-                        .authenticated()
-
-                        // ==========================
-                        // DELETE
-                        // ==========================
-
-                        .requestMatchers(
-                                HttpMethod.DELETE,
-                                "/api/notifications/**"
-                        )
-                        .authenticated()
-
-                        // ==========================
-                        // EVERYTHING ELSE
-                        // ==========================
-
-                        .anyRequest()
-                        .authenticated()
+                        // Everything else
+                        .anyRequest().authenticated()
                 )
+
+                // ==========================
+                // JWT FILTER
+                // ==========================
 
                 .addFilterBefore(
                         jwtAuthenticationFilter,
@@ -118,4 +88,3 @@ public class SecurityConfig {
         return http.build();
     }
 }
-

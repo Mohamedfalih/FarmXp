@@ -15,6 +15,20 @@ public class ModuleRequest {
 
     private String thumbnailUrl;
 
+    private String category;
+
+    private String icon;
+
+    private String videoUrl;
+
+    @PositiveOrZero(message = "Duration cannot be negative")
+    private Integer durationMinutes;
+
+    @PositiveOrZero(message = "XP reward cannot be negative")
+    private Integer xpReward;
+
+    private String objectives;
+
     @NotNull(message = "Module status is required")
     private ModuleStatus status;
 
@@ -47,6 +61,54 @@ public class ModuleRequest {
 
     public void setThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
+    public Integer getDurationMinutes() {
+        return durationMinutes;
+    }
+
+    public void setDurationMinutes(Integer durationMinutes) {
+        this.durationMinutes = durationMinutes;
+    }
+
+    public Integer getXpReward() {
+        return xpReward;
+    }
+
+    public void setXpReward(Integer xpReward) {
+        this.xpReward = xpReward;
+    }
+
+    public String getObjectives() {
+        return objectives;
+    }
+
+    public void setObjectives(String objectives) {
+        this.objectives = objectives;
     }
 
     public ModuleStatus getStatus() {

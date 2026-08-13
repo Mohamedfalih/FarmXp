@@ -1,82 +1,86 @@
 package com.farmxp.notification.controller;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import com.farmxp.notification.dto.NotificationRequest;
 import com.farmxp.notification.dto.NotificationResponse;
-import com.farmxp.notification.security.JwtService;
 import com.farmxp.notification.service.NotificationService;
 
 import jakarta.validation.Valid;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/notifications")
+@CrossOrigin(origins = "http://localhost:5173")
 public class NotificationController {
 
     private final NotificationService notificationService;
-    private final JwtService jwtService;
 
     public NotificationController(
-            NotificationService notificationService,
-            JwtService jwtService) {
+            NotificationService notificationService) {
 
         this.notificationService =
                 notificationService;
-
-        this.jwtService = jwtService;
     }
 
-    /*
-     * ADMIN / INTERNAL
-     * Create notification
-     */
+    // ==========================================
+    // CREATE
+    // ==========================================
+
     @PostMapping
-    public ResponseEntity<NotificationResponse>
-    createNotification(
+    public ResponseEntity<?> createNotification(
             @Valid @RequestBody NotificationRequest request) {
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(
-                        notificationService
-                                .createNotification(request)
-                );
+        try {
+
+            NotificationResponse response =
+                    notificationService
+                            .createNotification(request);
+
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(response);
+
+        } catch (RuntimeException e) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(
+                            Map.of(
+                                    "message",
+                                    e.getMessage()
+                            )
+                    );
+        }
     }
 
-    /*
-     * Get notifications for logged-in user
-     */
-    @GetMapping
-    public ResponseEntity<List<NotificationResponse>>
-    getMyNotifications(
-            @RequestHeader("Authorization")
-            String authorizationHeader) {
+    // ==========================================
+    // GET USER NOTIFICATIONS
+    // ==========================================
 
-        Long userId =
-                extractUserId(authorizationHeader);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<NotificationResponse>>
+    getUserNotifications(
+            @PathVariable Long userId) {
 
         return ResponseEntity.ok(
                 notificationService
-                        .getNotificationsByUser(userId)
+                        .getUserNotifications(userId)
         );
     }
 
-    /*
-     * Get unread notifications
-     */
-    @GetMapping("/unread")
+    // ==========================================
+    // GET UNREAD
+    // ==========================================
+
+    @GetMapping("/unread/{userId}")
     public ResponseEntity<List<NotificationResponse>>
     getUnreadNotifications(
-            @RequestHeader("Authorization")
-            String authorizationHeader) {
-
-        Long userId =
-                extractUserId(authorizationHeader);
+            @PathVariable Long userId) {
 
         return ResponseEntity.ok(
                 notificationService
@@ -84,87 +88,104 @@ public class NotificationController {
         );
     }
 
-    /*
-     * Get unread notification count
-     */
-    @GetMapping("/unread/count")
-    public ResponseEntity<Long>
-    getUnreadCount(
-            @RequestHeader("Authorization")
-            String authorizationHeader) {
+    // ==========================================
+    // COUNT UNREAD
+    // ==========================================
 
-        Long userId =
-                extractUserId(authorizationHeader);
+    @GetMapping("/unread/count/{userId}")
+    public ResponseEntity<?> countUnread(
+            @PathVariable Long userId) {
+
+        long count =
+                notificationService
+                        .countUnreadNotifications(userId);
 
         return ResponseEntity.ok(
-                notificationService
-                        .getUnreadCount(userId)
+                Map.of(
+                        "userId", userId,
+                        "unreadCount", count
+                )
         );
     }
 
-    /*
-     * Mark one notification as read
-     */
-    @PatchMapping("/{notificationId}/read")
-    public ResponseEntity<NotificationResponse>
-    markAsRead(
-            @PathVariable Long notificationId) {
+    // ==========================================
+    // MARK AS READ
+    // ==========================================
 
-        return ResponseEntity.ok(
-                notificationService
-                        .markAsRead(notificationId)
-        );
+    @PutMapping("/{notificationId}/read")
+    public ResponseEntity<?> markAsRead(
+            @PathVariable String notificationId) {
+
+        try {
+
+            NotificationResponse response =
+                    notificationService
+                            .markAsRead(notificationId);
+
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException e) {
+
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(
+                            Map.of(
+                                    "message",
+                                    e.getMessage()
+                            )
+                    );
+        }
     }
 
-    /*
-     * Mark all notifications as read
-     */
-    @PatchMapping("/read-all")
-    public ResponseEntity<Void>
-    markAllAsRead(
-            @RequestHeader("Authorization")
-            String authorizationHeader) {
+    // ==========================================
+    // MARK ALL AS READ
+    // ==========================================
 
-        Long userId =
-                extractUserId(authorizationHeader);
+    @PutMapping("/user/{userId}/read-all")
+    public ResponseEntity<?> markAllAsRead(
+            @PathVariable Long userId) {
 
         notificationService
                 .markAllAsRead(userId);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(
+                Map.of(
+                        "message",
+                        "All notifications marked as read"
+                )
+        );
     }
 
-    /*
-     * Delete notification
-     */
+    // ==========================================
+    // DELETE
+    // ==========================================
+
     @DeleteMapping("/{notificationId}")
-    public ResponseEntity<Void>
-    deleteNotification(
-            @PathVariable Long notificationId) {
+    public ResponseEntity<?> deleteNotification(
+            @PathVariable String notificationId) {
 
-        notificationService
-                .deleteNotification(notificationId);
+        try {
 
-        return ResponseEntity.noContent().build();
-    }
+            notificationService
+                    .deleteNotification(notificationId);
 
-    private Long extractUserId(
-            String authorizationHeader) {
-
-        if (authorizationHeader == null
-                || !authorizationHeader.startsWith(
-                        "Bearer ")) {
-
-            throw new RuntimeException(
-                    "Invalid Authorization header"
+            return ResponseEntity.ok(
+                    Map.of(
+                            "message",
+                            "Notification deleted successfully"
+                    )
             );
+
+        } catch (RuntimeException e) {
+
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(
+                            Map.of(
+                                    "message",
+                                    e.getMessage()
+                            )
+                    );
         }
-
-        String token =
-                authorizationHeader
-                        .substring(7)
-                        .trim();
-
-        return jwtService.extractUserId(token);
     }
 }

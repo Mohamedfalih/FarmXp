@@ -10,6 +10,12 @@ public class ModuleResponse {
     private String title;
     private String description;
     private String thumbnailUrl;
+    private String category;
+    private String icon;
+    private String videoUrl;
+    private Integer durationMinutes;
+    private Integer xpReward;
+    private String objectives;
     private ModuleStatus status;
     private Integer displayOrder;
     private LocalDateTime createdAt;
@@ -22,6 +28,12 @@ public class ModuleResponse {
             String title,
             String description,
             String thumbnailUrl,
+            String category,
+            String icon,
+            String videoUrl,
+            Integer durationMinutes,
+            Integer xpReward,
+            String objectives,
             ModuleStatus status,
             Integer displayOrder,
             LocalDateTime createdAt) {
@@ -30,6 +42,12 @@ public class ModuleResponse {
         this.title = title;
         this.description = description;
         this.thumbnailUrl = thumbnailUrl;
+        this.category = category;
+        this.icon = icon;
+        this.videoUrl = videoUrl;
+        this.durationMinutes = durationMinutes;
+        this.xpReward = xpReward;
+        this.objectives = objectives;
         this.status = status;
         this.displayOrder = displayOrder;
         this.createdAt = createdAt;
@@ -49,6 +67,30 @@ public class ModuleResponse {
 
     public String getThumbnailUrl() {
         return thumbnailUrl;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public Integer getDurationMinutes() {
+        return durationMinutes;
+    }
+
+    public Integer getXpReward() {
+        return xpReward;
+    }
+
+    public String getObjectives() {
+        return objectives;
     }
 
     public ModuleStatus getStatus() {

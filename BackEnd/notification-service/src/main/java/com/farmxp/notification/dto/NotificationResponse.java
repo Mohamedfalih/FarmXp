@@ -1,13 +1,13 @@
 package com.farmxp.notification.dto;
 
+import java.time.LocalDateTime;
+
 import com.farmxp.notification.entity.Notification;
 import com.farmxp.notification.enums.NotificationType;
 
-import java.time.LocalDateTime;
-
 public record NotificationResponse(
 
-        Long notificationId,
+        String notificationId,
 
         Long userId,
 
@@ -31,7 +31,9 @@ public record NotificationResponse(
                 notification.getUserId(),
                 notification.getTitle(),
                 notification.getMessage(),
-                notification.getNotificationType(),
+                NotificationType.valueOf(
+                        notification.getNotificationType()
+                ),
                 notification.getRead(),
                 notification.getCreatedAt()
         );

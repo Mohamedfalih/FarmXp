@@ -140,4 +140,14 @@ public class VerificationService {
 
         return response;
     }
+    
+    public List<PracticeLogResponse> getPracticesByStatus(
+            PracticeStatus status) {
+
+        return repository
+                .findByStatus(status)
+                .stream()
+                .map(this::convertToResponse)
+                .toList();
+    }
 }

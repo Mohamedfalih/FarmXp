@@ -1,37 +1,159 @@
 package com.farmxp.notification.service;
 
-import com.farmxp.notification.dto.NotificationRequest;
-import com.farmxp.notification.dto.NotificationResponse;
-
+import java.time.LocalDateTime;
 import java.util.List;
 
-public interface NotificationService {
+import org.springframework.stereotype.Service;
 
-    NotificationResponse createNotification(
-            NotificationRequest request
-    );
+import com.farmxp.notification.dto.NotificationRequest;
+import com.farmxp.notification.dto.NotificationResponse;
+import com.farmxp.notification.entity.Notification;
+import com.farmxp.notification.repository.NotificationRepository;
 
-    List<NotificationResponse> getNotificationsByUser(
-            Long userId
-    );
+@Service
+public class NotificationService {
 
-    List<NotificationResponse> getUnreadNotifications(
-            Long userId
-    );
+    private final NotificationRepository notificationRepository;
 
-    long getUnreadCount(
-            Long userId
-    );
+    public NotificationService(
+            NotificationRepository notificationRepository) {
 
-    NotificationResponse markAsRead(
-            Long notificationId
-    );
+        this.notificationRepository =
+                notificationRepository;
+    }
 
-    void markAllAsRead(
-            Long userId
-    );
+    // ==========================================
+    // CREATE NOTIFICATION
+    // ==========================================
 
-    void deleteNotification(
-            Long notificationId
-    );
+    public NotificationResponse createNotification(
+            NotificationRequest request) {
+
+        Notification notification =
+                new Notification(
+                        request.userId(),
+                        request.title(),
+                        request.message(),
+                        request.notificationType().name()
+                );
+
+        notification.setCreatedAt(
+                LocalDateTime.now()
+        );
+
+        notification.setRead(false);
+
+        Notification saved =
+                notificationRepository.save(notification);
+
+        return NotificationResponse.fromEntity(saved);
+    }
+
+    // ==========================================
+    // GET ALL USER NOTIFICATIONS
+    // ==========================================
+
+    public List<NotificationResponse> getUserNotifications(
+            Long userId) {
+
+        return notificationRepository
+                .findByUserIdOrderByCreatedAtDesc(userId)
+                .stream()
+                .map(NotificationResponse::fromEntity)
+                .toList();
+    }
+
+    // ==========================================
+    // GET UNREAD NOTIFICATIONS
+    // ==========================================
+
+    public List<NotificationResponse> getUnreadNotifications(
+            Long userId) {
+
+        return notificationRepository
+                .findByUserIdAndReadFalseOrderByCreatedAtDesc(
+                        userId
+                )
+                .stream()
+                .map(NotificationResponse::fromEntity)
+                .toList();
+    }
+
+    // ==========================================
+    // COUNT UNREAD
+    // ==========================================
+
+    public long countUnreadNotifications(
+            Long userId) {
+
+        return notificationRepository
+                .countByUserIdAndReadFalse(userId);
+    }
+
+    // ==========================================
+    // MARK AS READ
+    // ==========================================
+
+    public NotificationResponse markAsRead(
+            String notificationId) {
+
+        Notification notification =
+                notificationRepository
+                        .findById(notificationId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Notification not found: "
+                                                + notificationId
+                                )
+                        );
+
+        notification.setRead(true);
+
+        Notification updated =
+                notificationRepository.save(notification);
+
+        return NotificationResponse.fromEntity(updated);
+    }
+
+    // ==========================================
+    // MARK ALL AS READ
+    // ==========================================
+
+    public void markAllAsRead(
+            Long userId) {
+
+        List<Notification> notifications =
+                notificationRepository
+                        .findByUserIdAndReadFalseOrderByCreatedAtDesc(
+                                userId
+                        );
+
+        notifications.forEach(
+                notification ->
+                        notification.setRead(true)
+        );
+
+        notificationRepository.saveAll(notifications);
+    }
+
+    // ==========================================
+    // DELETE
+    // ==========================================
+
+    public void deleteNotification(
+            String notificationId) {
+
+        if (!notificationRepository
+                .existsById(notificationId)) {
+
+            throw new RuntimeException(
+                    "Notification not found: "
+                            + notificationId
+            );
+        }
+
+        notificationRepository.deleteById(
+                notificationId
+        );
+    }
 }

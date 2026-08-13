@@ -12,14 +12,21 @@ public record NotificationRequest(
         Long userId,
 
         @NotBlank(message = "Title is required")
-        @Size(max = 150, message = "Title must not exceed 150 characters")
+        @Size(
+                max = 150,
+                message = "Title must not exceed 150 characters"
+        )
         String title,
 
         @NotBlank(message = "Message is required")
-        @Size(max = 1000, message = "Message must not exceed 1000 characters")
+        @Size(
+                max = 1000,
+                message = "Message must not exceed 1000 characters"
+        )
         String message,
 
         @NotNull(message = "Notification type is required")
         NotificationType notificationType
+
 ) {
 }

@@ -1,66 +1,26 @@
 package com.farmxp.notification.entity;
 
-import com.farmxp.notification.enums.NotificationType;
-
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "notification")
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "notifications")
 public class Notification {
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "notification_seq_generator"
-    )
-    @SequenceGenerator(
-            name = "notification_seq_generator",
-            sequenceName = "NOTIFICATION_SEQ",
-            allocationSize = 1
-    )
-    @Column(name = "notification_id")
-    private Long notificationId;
+    private String notificationId;
 
-    @Column(
-            name = "user_id",
-            nullable = false
-    )
     private Long userId;
 
-    @Column(
-            name = "title",
-            nullable = false,
-            length = 150
-    )
     private String title;
 
-    @Column(
-            name = "message",
-            nullable = false,
-            length = 1000
-    )
     private String message;
 
-    @Enumerated(EnumType.STRING)
-    @Column(
-            name = "notification_type",
-            nullable = false,
-            length = 50
-    )
-    private NotificationType notificationType;
+    private String notificationType;
 
-    @Column(
-            name = "is_read",
-            nullable = false
-    )
-    private Boolean read = false;
+    private boolean read;
 
-    @Column(
-            name = "created_at",
-            nullable = false
-    )
     private LocalDateTime createdAt;
 
     public Notification() {
@@ -70,7 +30,7 @@ public class Notification {
             Long userId,
             String title,
             String message,
-            NotificationType notificationType) {
+            String notificationType) {
 
         this.userId = userId;
         this.title = title;
@@ -80,23 +40,11 @@ public class Notification {
         this.createdAt = LocalDateTime.now();
     }
 
-    @PrePersist
-    protected void onCreate() {
-
-        if (createdAt == null) {
-            createdAt = LocalDateTime.now();
-        }
-
-        if (read == null) {
-            read = false;
-        }
-    }
-
-    public Long getNotificationId() {
+    public String getNotificationId() {
         return notificationId;
     }
 
-    public void setNotificationId(Long notificationId) {
+    public void setNotificationId(String notificationId) {
         this.notificationId = notificationId;
     }
 
@@ -124,21 +72,19 @@ public class Notification {
         this.message = message;
     }
 
-    public NotificationType getNotificationType() {
+    public String getNotificationType() {
         return notificationType;
     }
 
-    public void setNotificationType(
-            NotificationType notificationType) {
-
+    public void setNotificationType(String notificationType) {
         this.notificationType = notificationType;
     }
 
-    public Boolean getRead() {
+    public boolean getRead() {
         return read;
     }
 
-    public void setRead(Boolean read) {
+    public void setRead(boolean read) {
         this.read = read;
     }
 
@@ -146,9 +92,7 @@ public class Notification {
         return createdAt;
     }
 
-    public void setCreatedAt(
-            LocalDateTime createdAt) {
-
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }

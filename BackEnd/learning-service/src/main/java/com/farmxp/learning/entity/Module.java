@@ -11,8 +11,10 @@ import java.time.LocalDateTime;
 public class Module {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "module_seq")
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "module_seq"
+    )
     @SequenceGenerator(
             name = "module_seq",
             sequenceName = "LEARNING_MODULE_SEQ",
@@ -24,11 +26,29 @@ public class Module {
     @Column(nullable = false, length = 150)
     private String title;
 
-    @Column(length = 500)
+    @Column(length = 1000)
     private String description;
 
     @Column(length = 1000)
     private String thumbnailUrl;
+
+    @Column(length = 100)
+    private String category;
+
+    @Column(length = 100)
+    private String icon;
+
+    @Column(length = 1000)
+    private String videoUrl;
+
+    @Column
+    private Integer durationMinutes;
+
+    @Column
+    private Integer xpReward;
+
+    @Column(length = 2000)
+    private String objectives;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -47,6 +67,7 @@ public class Module {
 
     @PrePersist
     public void prePersist() {
+
         createdAt = LocalDateTime.now();
 
         if (status == null) {
@@ -89,6 +110,54 @@ public class Module {
 
     public void setThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
+    public Integer getDurationMinutes() {
+        return durationMinutes;
+    }
+
+    public void setDurationMinutes(Integer durationMinutes) {
+        this.durationMinutes = durationMinutes;
+    }
+
+    public Integer getXpReward() {
+        return xpReward;
+    }
+
+    public void setXpReward(Integer xpReward) {
+        this.xpReward = xpReward;
+    }
+
+    public String getObjectives() {
+        return objectives;
+    }
+
+    public void setObjectives(String objectives) {
+        this.objectives = objectives;
     }
 
     public ModuleStatus getStatus() {
