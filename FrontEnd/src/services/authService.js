@@ -1,37 +1,231 @@
-// TEMP MOCK — replace with real axios calls once Spring Boot is ready.
-// Signatures stay the same so pages never need to change when swapped.
+import axiosInstance from "../api/axiosInstance";
 
-const mockLogin = ({ identifier, password, role }) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (!identifier || !password) {
-        reject(new Error('Invalid credentials'));
-        return;
-      }
-      resolve({
-        token: 'mock-token',
-        role,
-        farmerId: role === 'FARMER' ? 'mock-1' : null,
-      });
-    }, 800);
-  });
-};
 
-const mockRegister = (formData) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (formData.name && formData.phone && formData.email && formData.password) {
-        resolve({ token: 'mock-token', role: 'FARMER', farmerId: 'mock-1' });
-      } else {
-        reject(new Error('Registration failed'));
-      }
-    }, 800);
-  });
-};
+/*
+ * ============================================================
+ * AUTH SERVICE
+ * ============================================================
+ */
+
 
 const authService = {
-  login: mockLogin,
-  register: mockRegister,
+
+  // ==========================================================
+  // LOGIN
+  // ==========================================================
+
+  login: async ({
+    identifier,
+    email,
+    username,
+    password,
+    role
+  }) => {
+
+    const loginData = {
+      identifier:
+        identifier ||
+        email ||
+        username,
+
+      password,
+      role
+    };
+
+    const response = await axiosInstance.post(
+      "/api/auth/login",
+      loginData
+    );
+
+    const data = response.data;
+
+
+    /*
+     * Store JWT.
+     *
+     * Different backend response versions may use:
+     * token / accessToken / jwt
+     */
+
+    const token =
+      data.token ||
+      data.accessToken ||
+      data.jwt;
+
+    if (token) {
+      localStorage.setItem(
+        "token",
+        token
+      );
+    }
+
+
+    if (data.role) {
+      localStorage.setItem(
+        "role",
+        data.role
+      );
+    }
+
+
+    if (data.farmerId) {
+      localStorage.setItem(
+        "farmerId",
+        String(data.farmerId)
+      );
+    }
+
+
+    return data;
+  },
+
+
+  // ==========================================================
+  // REGISTER
+  // ==========================================================
+
+  register: async (formData) => {
+
+    const response = await axiosInstance.post(
+      "/api/auth/register",
+      formData
+    );
+
+    const data = response.data;
+
+
+    const token =
+      data.token ||
+      data.accessToken ||
+      data.jwt;
+
+    if (token) {
+      localStorage.setItem(
+        "token",
+        token
+      );
+    }
+
+
+    if (data.role) {
+      localStorage.setItem(
+        "role",
+        data.role
+      );
+    }
+
+
+    if (data.farmerId) {
+      localStorage.setItem(
+        "farmerId",
+        String(data.farmerId)
+      );
+    }
+
+
+    return data;
+  },
+
+
+  // ==========================================================
+  // CURRENT USER
+  // ==========================================================
+
+  getCurrentUser: async () => {
+
+    const response = await axiosInstance.get(
+      "/api/auth/me"
+    );
+
+    return response.data;
+  },
+
+
+  // ==========================================================
+  // CHANGE PASSWORD
+  // ==========================================================
+
+  updatePassword: async (
+    passwordData
+  ) => {
+
+    const response = await axiosInstance.post(
+      "/api/auth/change-password",
+      passwordData
+    );
+
+    return response.data;
+  },
+
+
+  // ==========================================================
+  // LOGOUT
+  // ==========================================================
+
+  logout: () => {
+
+    localStorage.removeItem(
+      "token"
+    );
+
+    localStorage.removeItem(
+      "accessToken"
+    );
+
+    localStorage.removeItem(
+      "role"
+    );
+
+    localStorage.removeItem(
+      "farmerId"
+    );
+
+    sessionStorage.removeItem(
+      "token"
+    );
+  },
+
+
+  // ==========================================================
+  // TOKEN
+  // ==========================================================
+
+  getToken: () => {
+
+    return (
+      localStorage.getItem("token") ||
+      localStorage.getItem("accessToken") ||
+      sessionStorage.getItem("token")
+    );
+  },
+
+
+  // ==========================================================
+  // ROLE
+  // ==========================================================
+
+  getRole: () => {
+
+    return localStorage.getItem(
+      "role"
+    );
+  },
+
+
+  // ==========================================================
+  // AUTHENTICATED
+  // ==========================================================
+
+  isAuthenticated: () => {
+
+    return Boolean(
+      localStorage.getItem("token") ||
+      localStorage.getItem("accessToken") ||
+      sessionStorage.getItem("token")
+    );
+  }
+
 };
+
 
 export default authService;

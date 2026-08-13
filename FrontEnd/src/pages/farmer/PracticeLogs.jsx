@@ -17,7 +17,7 @@ import ScienceIcon from "@mui/icons-material/Science";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { getPracticeLogs } from "../../services/farmerService";
+import farmerService from "../../services/farmerService";
 import "./PracticeLogs.css";
 
 // Page-specific constants — only Practice Logs uses these, so they live here
