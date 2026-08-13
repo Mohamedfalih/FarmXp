@@ -10,7 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import ScienceIcon from "@mui/icons-material/Science";
-import { submitPractice } from "../../services/farmerService";
+import farmerService from "../../services/farmerService";
 import "./PracticeAdd.css";
 
 // Page-specific constants — only this page uses these
@@ -46,7 +46,7 @@ const PracticeAdd = () => {
     setSubmitting(true);
 
     try {
-      const newLog = await submitPractice({
+      const newLog = await farmerService.submitPractice({
         type: practiceType,
         description,
         datePracticed,
