@@ -15,6 +15,12 @@ import {
   MenuItem,
   IconButton as IconBtn,
 } from '@mui/material';
+
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Edit from '@mui/icons-material/Edit';
+import Delete from '@mui/icons-material/Delete';
+
 import authService from '../../services/authService';
 import './RegisterPage.css';
 
