@@ -30,50 +30,54 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
-
-        // No JWT token
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String token = authHeader.substring(7);
-
         try {
+            String authHeader = request.getHeader("Authorization");
 
-            if (jwtService.isTokenValid(token)) {
+            // No JWT token
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 
-
-                String role =
-                        jwtService.extractRole(token);
-
-                SimpleGrantedAuthority authority =
-                        new SimpleGrantedAuthority(
-                                "ROLE_" + role
-                        );
-
-                Long userId =
-                        jwtService.extractUserId(token);
-
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userId.toString(),
-                                null,
-                                List.of(authority)
-                        );
-
-                SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(authentication);
+                filterChain.doFilter(request, response);
+                return;
             }
 
-        } catch (Exception e) {
+            String token = authHeader.substring(7);
 
+            try {
+
+                if (jwtService.isTokenValid(token)) {
+
+
+                    String role =
+                            jwtService.extractRole(token);
+
+                    SimpleGrantedAuthority authority =
+                            new SimpleGrantedAuthority(
+                                    "ROLE_" + role
+                            );
+
+                    Long userId =
+                            jwtService.extractUserId(token);
+
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userId.toString(),
+                                    null,
+                                    List.of(authority)
+                            );
+
+                    SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(authentication);
+                }
+
+            } catch (Exception e) {
+
+                SecurityContextHolder.clearContext();
+            }
+
+            filterChain.doFilter(request, response);
+        } finally {
             SecurityContextHolder.clearContext();
         }
-
-        filterChain.doFilter(request, response);
     }
 }

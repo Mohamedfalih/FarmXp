@@ -10,11 +10,11 @@ import {
   Button,
   CircularProgress,
 } from '@mui/material';
+import { getSchemeById, updateScheme, formatDateForFrontend } from '../../services/adminService';
+import './EditScheme.css';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import SaveIcon from '@mui/icons-material/Save';
-import { getSchemeById, updateScheme } from '../../services/adminService';
-import './EditScheme.css';
 
 // Page-specific constants — only this page uses these
 const CATEGORIES = [
@@ -42,6 +42,7 @@ const EditScheme = () => {
   const [eligibility, setEligibility] = useState('');
   const [minFarmSize, setMinFarmSize] = useState('');
   const [applicableCrops, setApplicableCrops] = useState('');
+  const [officialWebsiteUrl, setOfficialWebsiteUrl] = useState('');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -53,13 +54,21 @@ const EditScheme = () => {
         return;
       }
       setSchemeName(scheme.title || '');
-      setCategory(scheme.category || '');
-      setDeadline(scheme.deadline || '');
-      setStatus(scheme.status || 'Active');
-      setBenefitSummary(scheme.benefitSummary || '');
+      setCategory(scheme.department || scheme.category || '');
+      
+      setDeadline(formatDateForFrontend(scheme.lastDate || scheme.deadline));
+      
+      setStatus(
+        scheme.status === 'INACTIVE' ? 'Draft' : 
+        scheme.status === 'ACTIVE' ? 'Active' : 
+        scheme.status || 'Active'
+      );
+      // backend field is 'description' — map to benefitSummary state
+      setBenefitSummary(scheme.description || '');
       setEligibility(scheme.eligibility || '');
       setMinFarmSize(scheme.minFarmSize || '');
       setApplicableCrops(scheme.applicableCrops || '');
+      setOfficialWebsiteUrl(scheme.officialWebsiteUrl || '');
       setLoading(false);
     });
   }, [id]);
@@ -75,12 +84,15 @@ const EditScheme = () => {
       await updateScheme(id, {
         schemeName,
         category,
+        // pass benefitSummary as description so adminService maps it to the backend 'description' field
+        description: benefitSummary,
+        benefits: benefitSummary,
         deadline,
         status,
-        benefitSummary,
         eligibility,
         minFarmSize,
         applicableCrops,
+        officialWebsiteUrl,
       });
       navigate('/admin/schemes');
     } finally {
@@ -147,6 +159,8 @@ const EditScheme = () => {
 
           <TextField
             fullWidth
+            type="date"
+            InputLabelProps={{ shrink: true }}
             label="Deadline"
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
@@ -186,6 +200,15 @@ const EditScheme = () => {
           label="Eligibility criteria"
           value={eligibility}
           onChange={(e) => setEligibility(e.target.value)}
+          margin="normal"
+        />
+
+        <TextField
+          fullWidth
+          label="Official Website URL"
+          placeholder="e.g. https://pmksy.gov.in/"
+          value={officialWebsiteUrl}
+          onChange={(e) => setOfficialWebsiteUrl(e.target.value)}
           margin="normal"
         />
 

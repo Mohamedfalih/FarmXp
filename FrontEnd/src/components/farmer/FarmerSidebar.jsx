@@ -1,18 +1,7 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Box, Drawer, List, ListItemButton, Typography } from '@mui/material';
-import {
-  Dashboard,
-  Person,
-  MenuBook,
-  EmojiEvents,
-  WaterDrop,
-  AccountBalance,
-  SmartToy,
-  Storefront,
-  Notifications,
-  Settings,
-} from "@mui/icons-material";
+import authService from '../../services/authService';
 
 const drawerWidth = 250;
 
@@ -20,38 +9,38 @@ const menuGroups = [
   {
     label: null,
     items: [
-      { text: 'Dashboard', icon: <Dashboard />, path: '/farmer/dashboard' },
-      { text: 'Farmer Profile', icon: <Person />, path: '/farmer/my-farm' },
+      { text: 'Dashboard', icon: '🏠', path: '/farmer/dashboard' },
+      { text: 'Farmer Profile', icon: '👤', path: '/farmer/my-farm' },
     ],
   },
   {
     label: 'Learn & Grow',
     items: [
-      { text: 'Learning Modules', icon: <MenuBook />, path: '/farmer/learning-modules' },
+      { text: 'Learning Modules', icon: '📚', path: '/farmer/learning-modules' },
       { text: 'Progress', icon: '📈', path: '/farmer/progress' },
-      { text: 'Leaderboard', icon: <EmojiEvents /> , path: '/farmer/leaderboard' },
+      { text: 'Leaderboard', icon: '🏆' , path: '/farmer/leaderboard' },
     ],
   },
   {
     label: 'Sustainability',
     items: [
       { text: 'Certified Practices', icon: '🧪', path: '/farmer/practice-logs' },
-      { text: 'Sustainability Metrics', icon: <WaterDrop />, path: '/farmer/sustainability-metrics' },
+      { text: 'Sustainability Metrics', icon: '💧', path: '/farmer/sustainability-metrics' },
     ],
   },
   {
     label: 'Opportunities',
     items: [
-      { text: 'Govt. Schemes', icon: <AccountBalance />, path: '/farmer/govt-schemes' },
-      { text: 'AI Assistant', icon: <SmartToy />, path: '/farmer/ai-assistant' },
-      { text: 'Market Buyers', icon: <Storefront />, path: '/farmer/market-buyers' },
+      { text: 'Govt. Schemes', icon: '🏛️', path: '/farmer/govt-schemes' },
+      { text: 'AI Assistant', icon: '🤖', path: '/farmer/ai-assistant' },
+      { text: 'Market Buyers', icon: '🏪', path: '/farmer/market-buyers' },
     ],
   },
   {
     label: 'Account',
     items: [
-      { text: 'Notifications', icon: <Notifications />, path: '/farmer/notifications' },
-      { text: 'Settings', icon: <Settings />, path: '/farmer/settings' },
+      { text: 'Notifications', icon: '🔔', path: '/farmer/notifications' },
+      { text: 'Settings', icon: '⚙️', path: '/farmer/settings' },
     ],
   },
 ];
@@ -89,6 +78,12 @@ const SideItem = ({ icon, text, path, isSelected, onClick }) => (
 
 const FarmerSidebar = ({ mobileOpen, onClose }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    authService.logout();
+    navigate('/login');
+  };
 
   const drawerContent = (
     <Box
@@ -133,7 +128,7 @@ const FarmerSidebar = ({ mobileOpen, onClose }) => {
               icon={item.icon}
               text={item.text}
               path={item.path}
-              isSelected={location.pathname === item.path}
+              isSelected={location.pathname === item.path || (item.path !== '/farmer/dashboard' && location.pathname.startsWith(item.path))}
               onClick={onClose}
             />
           ))}
@@ -141,7 +136,10 @@ const FarmerSidebar = ({ mobileOpen, onClose }) => {
       ))}
 
       <Box sx={{ marginTop: 'auto', paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-        <SideItem icon="🚪" text="Log Out" path="/login" isSelected={false} onClick={() => {}} />
+        <SideItem icon="🚪" text="Log Out" path="/login" isSelected={false} onClick={(e) => {
+          e.preventDefault();
+          handleLogout();
+        }} />
       </Box>
     </Box>
   );

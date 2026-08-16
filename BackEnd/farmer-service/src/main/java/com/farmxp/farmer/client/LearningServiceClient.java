@@ -14,4 +14,9 @@ public interface LearningServiceClient {
             "/api/learning/progress/summary"
     )
     LearningSummaryResponse getLearningSummary();
+
+    @GetMapping(
+            "/api/learning/progress/admin/summary/{farmerId}"
+    )
+    LearningSummaryResponse getFarmerSummary(@org.springframework.web.bind.annotation.PathVariable("farmerId") Long farmerId);
 }

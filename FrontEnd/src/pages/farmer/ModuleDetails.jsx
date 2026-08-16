@@ -1,246 +1,725 @@
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import learningService from '../../services/learningService';
 import './ModuleDetails.css';
 
-// Mock data — same 6 modules used in LearningModules.jsx, same IDs.
-// Later this becomes: learningService.getModuleById(id)
-const MODULES = [
-  {
-    id: 1,
-    icon: '🌱',
-    bg: 'var(--sprout-light)',
-    tag: 'SOIL HEALTH',
-    tagBg: 'var(--sprout-light)',
-    tagCol: 'var(--sprout)',
-    title: 'Understanding Soil pH',
-    duration: '8 min',
-    xp: 100,
-    prog: 100,
-    diff: 'Beginner',
-    description:
-      'Soil pH determines how well your crops can absorb nutrients from the ground. This module teaches you how to test your soil\'s pH level using simple, affordable methods, how to read the results, and what steps to take if your soil is too acidic or too alkaline for your crops.',
-    objectives: [
-      'Test soil pH using a home testing kit or DIY method',
-      'Understand the ideal pH range for common crops like paddy and millets',
-      'Learn which natural amendments raise or lower soil pH',
-      'Identify early signs of pH-related nutrient deficiency in plants',
-    ],
-  },
-  {
-    id: 2,
-    icon: '💧',
-    bg: 'var(--sky-light)',
-    tag: 'WATER MGMT',
-    tagBg: 'var(--sky-light)',
-    tagCol: 'var(--sky, #3E8FA0)',
-    title: 'Efficient Drip Irrigation',
-    duration: '12 min',
-    xp: 150,
-    prog: 60,
-    diff: 'Beginner',
-    description:
-      'Drip irrigation delivers water directly to the root zone, cutting water usage significantly compared to flood irrigation. This module walks you through setting up a basic drip system, spacing emitters correctly, and scheduling watering based on crop stage and weather.',
-    objectives: [
-      'Understand how drip irrigation reduces water waste vs. flood irrigation',
-      'Learn correct emitter spacing for paddy, millets, and vegetables',
-      'Build a simple watering schedule based on crop growth stage',
-      'Spot and fix common drip line clogging issues',
-    ],
-  },
-  {
-    id: 3,
-    icon: '🧪',
-    bg: 'var(--clay-light)',
-    tag: 'ORGANIC',
-    tagBg: 'var(--clay-light)',
-    tagCol: 'var(--clay, #C1552E)',
-    title: 'Making Bio-Pesticides',
-    duration: '10 min',
-    xp: 120,
-    prog: 0,
-    diff: 'Intermediate',
-    description:
-      'Learn how to prepare effective, low-cost bio-pesticides from neem, garlic, and other locally available materials. This module covers safe preparation, correct dilution ratios, and application timing so you can protect crops without relying on chemical pesticides.',
-    objectives: [
-      'Prepare neem-based bio-pesticide from raw neem leaves or seeds',
-      'Understand safe dilution ratios for different pest severities',
-      'Learn the best time of day to apply bio-pesticides for maximum effect',
-      'Identify which pests respond best to organic treatment methods',
-    ],
-  },
-  {
-    id: 4,
-    icon: '🐛',
-    bg: 'var(--harvest-light)',
-    tag: 'PEST CONTROL',
-    tagBg: 'var(--harvest-light)',
-    tagCol: '#9A6A0E',
-    title: 'Natural Pest Deterrents',
-    duration: '9 min',
-    xp: 110,
-    prog: 30,
-    diff: 'Beginner',
-    description:
-      'Beyond sprays, many pests can be discouraged using companion planting, physical barriers, and natural repellents. This module introduces low-effort, low-cost techniques to keep common pests away from paddy and vegetable crops throughout the season.',
-    objectives: [
-      'Use companion planting to naturally repel common pests',
-      'Set up simple physical barriers and traps',
-      'Recognize early pest activity before it spreads',
-      'Combine natural deterrents with your existing practices for best results',
-    ],
-  },
-  {
-    id: 5,
-    icon: '🌾',
-    bg: 'var(--sprout-light)',
-    tag: 'CROP CARE',
-    tagBg: 'var(--sprout-light)',
-    tagCol: 'var(--sprout)',
-    title: 'Crop Rotation Basics',
-    duration: '11 min',
-    xp: 130,
-    prog: 100,
-    diff: 'Intermediate',
-    description:
-      'Rotating crops season to season prevents soil nutrient depletion and breaks pest and disease cycles. This module explains how to plan a simple rotation schedule suited to Kerala\'s cropping seasons, using your existing crops as a starting point.',
-    objectives: [
-      'Understand why continuous mono-cropping depletes soil health',
-      'Plan a basic 2–3 season rotation using your current crops',
-      'Match rotation crops to Kharif, Rabi, and Summer seasons',
-      'Track rotation impact on soil and yield over time',
-    ],
-  },
-  {
-    id: 6,
-    icon: '♻️',
-    bg: 'var(--harvest-light)',
-    tag: 'COMPOSTING',
-    tagBg: 'var(--harvest-light)',
-    tagCol: '#9A6A0E',
-    title: 'Composting Basics',
-    duration: '7 min',
-    xp: 90,
-    prog: 0,
-    diff: 'Advanced',
-    description:
-      'Turn farm and kitchen waste into nutrient-rich compost that improves soil structure and reduces the need for external fertilizer. This module covers the ideal green-to-brown material ratio, moisture management, and how long to wait before compost is ready to use.',
-    objectives: [
-      'Build a compost pile with the correct green-to-brown material ratio',
-      'Maintain proper moisture and turning schedule',
-      'Recognize when compost is fully matured and ready to apply',
-      'Apply finished compost correctly without burning young plants',
-    ],
-  },
-];
-
 const getButtonLabel = (progress) => {
-  if (progress === 100) return 'Completed';
+  if (progress >= 100) return 'Completed';
   if (progress > 0) return 'Continue Module';
   return 'Start Module';
 };
 
+const getCategoryStyle = (category) => {
+  const value = String(category || '').toLowerCase();
+
+  if (value.includes('soil')) {
+    return {
+      bg: 'var(--sprout-light)',
+      tagBg: 'var(--sprout-light)',
+      tagCol: 'var(--sprout)',
+      icon: '🌱',
+      tag: 'SOIL HEALTH',
+    };
+  }
+
+  if (value.includes('water')) {
+    return {
+      bg: 'var(--sky-light)',
+      tagBg: 'var(--sky-light)',
+      tagCol: 'var(--sky, #3E8FA0)',
+      icon: '💧',
+      tag: 'WATER MGMT',
+    };
+  }
+
+  if (value.includes('organic')) {
+    return {
+      bg: 'var(--clay-light)',
+      tagBg: 'var(--clay-light)',
+      tagCol: 'var(--clay, #C1552E)',
+      icon: '🧪',
+      tag: 'ORGANIC',
+    };
+  }
+
+  if (value.includes('pest')) {
+    return {
+      bg: 'var(--harvest-light)',
+      tagBg: 'var(--harvest-light)',
+      tagCol: '#9A6A0E',
+      icon: '🌱',
+      tag: 'PEST CONTROL',
+    };
+  }
+
+  if (value.includes('crop')) {
+    return {
+      bg: 'var(--sprout-light)',
+      tagBg: 'var(--sprout-light)',
+      tagCol: 'var(--sprout)',
+      icon: '🌾',
+      tag: 'CROP CARE',
+    };
+  }
+
+  if (value.includes('compost')) {
+    return {
+      bg: 'var(--harvest-light)',
+      tagBg: 'var(--harvest-light)',
+      tagCol: '#9A6A0E',
+      icon: '♻️',
+      tag: 'COMPOSTING',
+    };
+  }
+
+  return {
+    bg: 'var(--sprout-light)',
+    tagBg: 'var(--sprout-light)',
+    tagCol: 'var(--sprout)',
+    icon: '🌱',
+    tag: String(category || 'LEARNING').toUpperCase(),
+  };
+};
+
+const parseObjectives = (objectives) => {
+  if (!objectives) {
+    return [];
+  }
+
+  if (Array.isArray(objectives)) {
+    return objectives;
+  }
+
+  const value = String(objectives).trim();
+
+  if (!value) {
+    return [];
+  }
+
+  // Supports JSON array stored as String
+  if (value.startsWith('[') && value.endsWith(']')) {
+    try {
+      const parsed = JSON.parse(value);
+
+      if (Array.isArray(parsed)) {
+        return parsed;
+      }
+    } catch (error) {
+      console.warn('Unable to parse objectives JSON:', error);
+    }
+  }
+
+  // Supports newline-separated objectives
+  if (value.includes('\n')) {
+    return value
+      .split('\n')
+      .map((item) => item.replace(/^[-•]\s*/, '').trim())
+      .filter(Boolean);
+  }
+
+  // Supports comma-separated objectives
+  if (value.includes(',')) {
+    return value
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return [value];
+};
+
 const ModuleDetails = () => {
+
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Later this becomes: learningService.getModuleById(id)
-  const module = MODULES.find((m) => m.id === Number(id));
+  const [module, setModule] = useState(null);
+  const [progress, setProgress] = useState(0);
 
-  const handleBack = () => {
-    navigate('/farmer/learning-modules');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  // ==========================================================
+  // LOAD MODULE
+  // ==========================================================
+
+  useEffect(() => {
+    loadModule();
+  }, [id]);
+
+  const loadModule = async () => {
+
+    setLoading(true);
+    setError('');
+
+    try {
+
+      const moduleId = Number(id);
+
+      if (!moduleId) {
+        setError('Invalid module ID.');
+        return;
+      }
+
+      console.log(
+        'Loading learning module:',
+        moduleId
+      );
+
+      const data =
+        await learningService.getModuleContent(
+          moduleId
+        );
+
+      console.log(
+        'Learning Module Content:',
+        data
+      );
+
+      setModule(data.module);
+      // We could store games, but for now we'll just attach it to module state for convenience
+      setModule({ ...data.module, games: data.games });
+
+      // ------------------------------------------------------
+      // Try to get farmer module progress
+      // ------------------------------------------------------
+
+      try {
+
+        const progressData =
+          await learningService.getModuleProgress();
+
+        console.log(
+          'Module Progress:',
+          progressData
+        );
+
+        let currentProgress = 0;
+
+        if (Array.isArray(progressData)) {
+
+          const current =
+            progressData.find(
+              (item) =>
+                Number(
+                  item.moduleId ??
+                  item.id
+                ) === moduleId
+            );
+
+          if (current) {
+
+            currentProgress =
+              Number(
+                current.progress ??
+                current.completionPercentage ??
+                current.progressPercentage ??
+                0
+              );
+
+          }
+
+        } else if (
+          progressData &&
+          Array.isArray(progressData.modules)
+        ) {
+
+          const current =
+            progressData.modules.find(
+              (item) =>
+                Number(
+                  item.moduleId ??
+                  item.id
+                ) === moduleId
+            );
+
+          if (current) {
+
+            currentProgress =
+              Number(
+                current.progress ??
+                current.completionPercentage ??
+                current.progressPercentage ??
+                0
+              );
+
+          }
+
+        }
+
+        setProgress(
+          Math.min(
+            100,
+            Math.max(
+              0,
+              currentProgress
+            )
+          )
+        );
+
+      } catch (progressError) {
+
+        // Module details should still work even if
+        // progress endpoint is unavailable.
+
+        console.warn(
+          'Could not load module progress:',
+          progressError
+        );
+
+        setProgress(0);
+      }
+
+    } catch (err) {
+
+      console.error(
+        'Failed to load learning module:',
+        err.response?.data ||
+        err.message ||
+        err
+      );
+
+      setError(
+        err.response?.data?.message ||
+        err.message ||
+        'Failed to fetch learning module.'
+      );
+
+    } finally {
+
+      setLoading(false);
+
+    }
   };
 
-  const handleStartModule = () => {
-  navigate(`/farmer/learning-modules/${module.id}/start`);
-};
+  // ==========================================================
+  // BACK
+  // ==========================================================
 
-  if (!module) {
+  const handleBack = () => {
+
+    navigate(
+      '/farmer/learning-modules'
+    );
+
+  };
+
+  // ==========================================================
+  // START MODULE
+  // ==========================================================
+
+  const handleStartModule = () => {
+
+    if (!module) {
+      return;
+    }
+
+    navigate(
+      `/farmer/learning-modules/${module.moduleId}/start`
+    );
+
+  };
+
+  // ==========================================================
+  // LOADING
+  // ==========================================================
+
+  if (loading) {
+
     return (
       <div className="module-details-page">
-        <button className="back-btn" type="button" onClick={handleBack}>
+
+        <button
+          className="back-btn"
+          type="button"
+          onClick={handleBack}
+        >
           ← Back to Learning Modules
         </button>
 
-        <div className="card not-found-card">
-          <div className="not-found-icon" aria-hidden="true">🔍</div>
-          <h2>Module Not Found</h2>
-          <p>The module you're looking for doesn't exist or may have been removed.</p>
-          <button className="btn btn-primary" type="button" onClick={handleBack}>
-            ← Back to Learning Modules
-          </button>
+        <div
+          className="card"
+          style={{
+            maxWidth: '720px',
+            padding: '40px',
+            textAlign: 'center'
+          }}
+        >
+          <p>
+            Loading module...
+          </p>
         </div>
+
       </div>
     );
   }
 
-  const buttonLabel = getButtonLabel(module.prog);
-  const isCompleted = module.prog === 100;
+  // ==========================================================
+  // ERROR
+  // ==========================================================
+
+  if (error) {
+
+    return (
+      <div className="module-details-page">
+
+        <button
+          className="back-btn"
+          type="button"
+          onClick={handleBack}
+        >
+          ← Back to Learning Modules
+        </button>
+
+        <div className="card not-found-card">
+
+          <div
+            className="not-found-icon"
+            aria-hidden="true"
+          >
+            ⚠️
+          </div>
+
+          <h2>
+            Unable to Load Module
+          </h2>
+
+          <p>
+            {error}
+          </p>
+
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '10px',
+              flexWrap: 'wrap'
+            }}
+          >
+
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={loadModule}
+            >
+              🔄 Try Again
+            </button>
+
+            <button
+              className="btn"
+              type="button"
+              onClick={handleBack}
+              style={{
+                background: 'var(--wheat)',
+                color: 'var(--soil-dark)'
+              }}
+            >
+              ← Back
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+    );
+  }
+
+  // ==========================================================
+  // MODULE NOT FOUND
+  // ==========================================================
+
+  if (!module) {
+
+    return (
+      <div className="module-details-page">
+
+        <button
+          className="back-btn"
+          type="button"
+          onClick={handleBack}
+        >
+          ← Back to Learning Modules
+        </button>
+
+        <div className="card not-found-card">
+
+          <div
+            className="not-found-icon"
+            aria-hidden="true"
+          >
+            🔍
+          </div>
+
+          <h2>
+            Module Not Found
+          </h2>
+
+          <p>
+            The module you're looking for doesn't
+            exist or may have been removed.
+          </p>
+
+          <button
+            className="btn btn-primary"
+            type="button"
+            onClick={handleBack}
+          >
+            ← Back to Learning Modules
+          </button>
+
+        </div>
+
+      </div>
+    );
+  }
+
+  // ==========================================================
+  // MODULE DISPLAY DATA
+  // ==========================================================
+
+  const style =
+    getCategoryStyle(
+      module.category
+    );
+
+  const objectives =
+    parseObjectives(
+      module.objectives
+    );
+
+  const duration =
+    module.durationMinutes ??
+    0;
+
+  const xpReward =
+    module.xpReward ??
+    0;
+
+  const safeProgress =
+    Math.min(
+      100,
+      Math.max(
+        0,
+        Number(progress) || 0
+      )
+    );
+
+  const buttonLabel =
+    getButtonLabel(
+      safeProgress
+    );
+
+  const isCompleted =
+    safeProgress >= 100;
 
   return (
+
     <div className="module-details-page">
-      <button className="back-btn" type="button" onClick={handleBack}>
+
+      {/* ====================================================
+          BACK
+      ===================================================== */}
+
+      <button
+        className="back-btn"
+        type="button"
+        onClick={handleBack}
+      >
         ← Back to Learning Modules
       </button>
 
+      {/* ====================================================
+          MODULE CARD
+      ===================================================== */}
+
       <div className="card module-details-card">
-        <div className="module-details-hero" style={{ background: module.bg }}>
-          <span aria-hidden="true">{module.icon}</span>
+
+        {/* HERO */}
+
+        <div
+          className="module-details-hero"
+          style={{
+            background:
+              module.icon
+                ? style.bg
+                : style.bg
+          }}
+        >
+
+          <span aria-hidden="true">
+
+            {module.icon ||
+              style.icon}
+
+          </span>
+
         </div>
+
+        {/* BODY */}
 
         <div className="module-details-body">
+
+          {/* TAGS */}
+
           <div className="module-details-tags">
+
             <span
               className="module-tag"
-              style={{ background: module.tagBg, color: module.tagCol }}
+              style={{
+                background:
+                  style.tagBg,
+                color:
+                  style.tagCol
+              }}
             >
-              {module.tag}
+              {style.tag}
             </span>
-            <span className={`diff-badge diff-${module.diff.toLowerCase()}`}>
-              {module.diff}
+
+            <span className="diff-badge diff-beginner">
+
+              {module.category
+                ? String(
+                    module.category
+                  )
+                    .toLowerCase()
+                    .includes('advanced')
+                  ? 'Advanced'
+                  : 'Beginner'
+                : 'Learning'}
+
             </span>
+
           </div>
 
-          <h1 className="module-details-title">{module.title}</h1>
+          {/* TITLE */}
+
+          <h1 className="module-details-title">
+
+            {module.title}
+
+          </h1>
+
+          {/* META */}
 
           <div className="module-details-meta">
-            <span>⏱️ {module.duration}</span>
-            <span>🏆 {module.xp} XP</span>
+
+            <span>
+              🌱 {duration} min
+            </span>
+
+            <span>
+              🏆 {xpReward} XP
+            </span>
+
           </div>
+
+          {/* PROGRESS */}
 
           <div className="module-details-progress">
+
             <div className="progress-bar">
-              <div className="progress-fill" style={{ width: `${module.prog}%` }} />
+
+              <div
+                className="progress-fill"
+                style={{
+                  width:
+                    `${safeProgress}%`
+                }}
+              />
+
             </div>
-            <span className="progress-pct">{module.prog}% complete</span>
+
+            <span className="progress-pct">
+
+              {safeProgress}% complete
+
+            </span>
+
           </div>
 
-          <section aria-labelledby="module-desc-heading">
-            <h2 id="module-desc-heading" className="section-heading">
+          {/* DESCRIPTION */}
+
+          <section
+            aria-labelledby="module-desc-heading"
+          >
+
+            <h2
+              id="module-desc-heading"
+              className="section-heading"
+            >
               About this module
             </h2>
-            <p className="module-details-desc">{module.description}</p>
+
+            <p className="module-details-desc">
+
+              {module.description ||
+                'No description available for this module.'}
+
+            </p>
+
           </section>
 
-          <section aria-labelledby="module-objectives-heading">
-            <h2 id="module-objectives-heading" className="section-heading">
+          {/* OBJECTIVES */}
+
+          <section
+            aria-labelledby="module-objectives-heading"
+          >
+
+            <h2
+              id="module-objectives-heading"
+              className="section-heading"
+            >
               What you'll learn
             </h2>
-            <ul className="objectives-list">
-              {module.objectives.map((obj, idx) => (
-                <li key={idx}>{obj}</li>
-              ))}
-            </ul>
+
+            {objectives.length > 0 ? (
+
+              <ul className="objectives-list">
+
+                {objectives.map(
+                  (objective, index) => (
+
+                    <li key={index}>
+                      {objective}
+                    </li>
+
+                  )
+                )}
+
+              </ul>
+
+            ) : (
+
+              <p className="module-details-desc">
+                Learning objectives will be
+                available soon.
+              </p>
+
+            )}
+
           </section>
 
-          <button
-            className={`btn btn-block ${isCompleted ? 'btn-completed' : 'btn-primary'}`}
-            type="button"
-            onClick={handleStartModule}
-            disabled={isCompleted}
-          >
-            {isCompleted ? '✅ ' : ''}{buttonLabel}
-          </button>
+            <button
+              className={`btn btn-block ${
+                isCompleted
+                  ? 'btn-completed'
+                  : 'btn-primary'
+              }`}
+              type="button"
+              onClick={handleStartModule}
+            >
+
+              {isCompleted
+                ? <>✅ Review Module</>
+                : buttonLabel}
+
+            </button>
+
         </div>
+
       </div>
+
     </div>
   );
 };

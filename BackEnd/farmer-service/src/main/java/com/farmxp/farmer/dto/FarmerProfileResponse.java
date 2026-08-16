@@ -12,6 +12,9 @@ public class FarmerProfileResponse {
     private String farmName;
     private Double farmSize;
     private String farmSizeUnit;
+    private Integer totalXp;
+    private String soilType;
+    private String irrigationType;
 
     public FarmerProfileResponse(
             Long farmerId,
@@ -23,7 +26,10 @@ public class FarmerProfileResponse {
             String village,
             String farmName,
             Double farmSize,
-            String farmSizeUnit) {
+            String farmSizeUnit,
+            Integer totalXp,
+            String soilType,
+            String irrigationType) {
 
         this.farmerId = farmerId;
         this.userId = userId;
@@ -35,6 +41,9 @@ public class FarmerProfileResponse {
         this.farmName = farmName;
         this.farmSize = farmSize;
         this.farmSizeUnit = farmSizeUnit;
+        this.totalXp = totalXp;
+        this.soilType = soilType;
+        this.irrigationType = irrigationType;
     }
 
     public Long getFarmerId() {
@@ -75,5 +84,17 @@ public class FarmerProfileResponse {
 
     public String getFarmSizeUnit() {
         return farmSizeUnit;
+    }
+
+    public Integer getTotalXp() {
+        return totalXp;
+    }
+
+    public String getSoilType() {
+        return soilType;
+    }
+
+    public String getIrrigationType() {
+        return irrigationType;
     }
 }

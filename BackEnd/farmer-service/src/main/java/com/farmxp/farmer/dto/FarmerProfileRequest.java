@@ -25,6 +25,10 @@ public class FarmerProfileRequest {
 
     private String farmSizeUnit;
 
+    private String soilType;
+
+    private String irrigationType;
+
     public FarmerProfileRequest() {
     }
 
@@ -90,5 +94,21 @@ public class FarmerProfileRequest {
 
     public void setFarmSizeUnit(String farmSizeUnit) {
         this.farmSizeUnit = farmSizeUnit;
+    }
+
+    public String getSoilType() {
+        return soilType;
+    }
+
+    public void setSoilType(String soilType) {
+        this.soilType = soilType;
+    }
+
+    public String getIrrigationType() {
+        return irrigationType;
+    }
+
+    public void setIrrigationType(String irrigationType) {
+        this.irrigationType = irrigationType;
     }
 }

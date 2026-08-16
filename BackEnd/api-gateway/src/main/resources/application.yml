@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    inetutils:
+      ignored-interfaces:
+        - vEthernet.*
+        - VirtualBox.*
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:5173"
+            allowedMethods:
+            - GET
+            - POST
+            - PUT
+            - PATCH
+            - DELETE
+            - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/auth/**
+        - id: farmer-service
+          uri: lb://FARMER-SERVICE
+          predicates:
+            - Path=/api/farmers/**
+        - id: sustainability-service
+          uri: lb://SUSTAINABILITY-SERVICE
+          predicates:
+            - Path=/api/sustainability/**
+        - id: learning-service
+          uri: lb://LEARNING-SERVICE
+          predicates:
+            - Path=/api/learning/**
+        - id: scheme-service
+          uri: lb://SCHEME-SERVICE
+          predicates:
+            - Path=/api/schemes/**
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/notifications/**
+        - id: market-service
+          uri: lb://MARKET-SERVICE
+          predicates:
+            - Path=/api/market/**
+        - id: ai-service
+          uri: lb://AI-SERVICE
+          predicates:
+            - Path=/api/ai/**
+
+server:
+  port: 9090
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true

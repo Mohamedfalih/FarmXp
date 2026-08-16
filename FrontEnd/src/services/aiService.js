@@ -29,6 +29,11 @@ const aiService = {
 
     return response.data;
   },
+
+  getMlRecommendation: async () => {
+    const response = await axiosInstance.get("/api/ai/ml-recommendation");
+    return response.data;
+  },
 };
 
 export default aiService;

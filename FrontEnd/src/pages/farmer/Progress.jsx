@@ -1,36 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import learningService from '../../services/learningService';
+import farmerService from '../../services/farmerService';
 import './Progress.css';
 
-const overallCompletion = 67; // % of all modules completed
-
-const lifetimeStats = [
-  { icon: '🏆', bg: 'var(--harvest-light)', value: '2,480 XP', label: 'Lifetime XP earned' },
-  { icon: '🔥', bg: 'var(--sprout-light)', value: '14 days', label: 'Current learning streak' },
-];
-
-// XP earned per week, last 6 weeks — drives the chart below
-const xpTrend = [
-  { week: 'W1', xp: 40 },
-  { week: 'W2', xp: 60 },
-  { week: 'W3', xp: 50 },
-  { week: 'W4', xp: 110 },
-  { week: 'W5', xp: 135 },
-  { week: 'W6', xp: 165 },
-];
-
-// Same module set as Learning Modules, shown here as a completion list
-const modules = [
-  { id: 1, icon: '🌱', bg: 'var(--sprout-light)', title: 'Understanding Soil pH', prog: 100 },
-  { id: 2, icon: '💧', bg: 'var(--sky-light)', title: 'Efficient Drip Irrigation', prog: 60 },
-  { id: 3, icon: '🧪', bg: 'var(--clay-light)', title: 'Making Bio-Pesticides', prog: 0 },
-  { id: 4, icon: '🐛', bg: 'var(--harvest-light)', title: 'Natural Pest Deterrents', prog: 30 },
-  { id: 5, icon: '🌾', bg: 'var(--sprout-light)', title: 'Crop Rotation Basics', prog: 100 },
-  { id: 6, icon: '♻️', bg: 'var(--harvest-light)', title: 'Composting Basics', prog: 0 },
-];
-
-// Build an SVG polyline path from the xpTrend data (chart area: 560x180, matching prototype)
 const buildChartPoints = (data) => {
-  const maxXp = Math.max(...data.map((d) => d.xp));
+  if (!data || data.length === 0) return [];
+  const maxXp = Math.max(...data.map((d) => d.xp), 100);
   const chartWidth = 540;
   const chartHeight = 150;
   const startX = 10;
@@ -45,9 +20,70 @@ const buildChartPoints = (data) => {
 };
 
 const Progress = () => {
+  const [overallCompletion, setOverallCompletion] = useState(0);
+  const [totalXp, setTotalXp] = useState(0);
+  const [modules, setModules] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // We don't have an XP trend endpoint, leaving empty to avoid mock data
+  const [xpTrend] = useState([]); 
+
+  useEffect(() => {
+    const loadProgressData = async () => {
+      setLoading(true);
+      try {
+        const [summaryRes, modulesRes, progressRes, dashboardRes] = await Promise.all([
+          learningService.getSummary().catch(() => null),
+          learningService.getModules().catch(() => []),
+          learningService.getModuleProgress().catch(() => []),
+          farmerService.getDashboard().catch(() => null)
+        ]);
+
+        if (summaryRes) {
+          setOverallCompletion(Math.round(summaryRes.overallCompletionPercentage || 0));
+        }
+
+        if (dashboardRes) {
+          setTotalXp(dashboardRes.farmer?.totalXp || 0);
+        }
+
+        const modulesList = Array.isArray(modulesRes) ? modulesRes : (modulesRes?.modules ?? modulesRes?.content ?? []);
+        const progressList = Array.isArray(progressRes) ? progressRes : (progressRes?.progress ?? []);
+
+        const mergedModules = modulesList.map(m => {
+          const p = progressList.find(prog => prog.moduleId === (m.moduleId || m.id));
+          return {
+            id: m.moduleId || m.id,
+            icon: m.icon || '📚',
+            title: m.title || m.moduleName,
+            bg: 'var(--sprout-light)', 
+            prog: p ? p.completionPercentage || 0 : 0
+          };
+        });
+
+        setModules(mergedModules);
+
+      } catch (err) {
+        console.error("Failed to load progress data", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProgressData();
+  }, []);
+
   const points = buildChartPoints(xpTrend);
   const linePoints = points.join(' ');
-  const areaPoints = `${points.join(' ')} 550,170 10,170`;
+  const areaPoints = points.length > 0 ? `${points.join(' ')} 550,170 10,170` : '';
+
+  const lifetimeStats = [
+    { icon: '🏆', bg: 'var(--harvest-light)', value: `${totalXp} XP`, label: 'Lifetime XP earned' },
+    { icon: '🌱', bg: 'var(--sprout-light)', value: 'Active', label: 'Learning Status' },
+  ];
+
+  if (loading) {
+    return <div className="progress-page"><div className="card"><p style={{padding:'20px'}}>Loading progress...</p></div></div>;
+  }
 
   return (
     <div className="progress-page">
@@ -91,17 +127,21 @@ const Progress = () => {
         <h3>📈 XP Over Last 6 Weeks</h3>
       </div>
       <div className="card chart-card">
-        <svg viewBox="0 0 560 180" width="100%" height="180">
-          <polyline points={linePoints} fill="none" stroke="#6FA83A" strokeWidth="4" />
-          <polygon points={areaPoints} fill="#E4F1D8" opacity="0.7" />
-          <g fill="#25422A" fontSize="11" fontFamily="Inter">
-            {xpTrend.map((d, i) => (
-              <text key={d.week} x={10 + i * (540 / (xpTrend.length - 1))} y="178">
-                {d.week}
-              </text>
-            ))}
-          </g>
-        </svg>
+        {xpTrend.length > 0 ? (
+          <svg viewBox="0 0 560 180" width="100%" height="180">
+            <polyline points={linePoints} fill="none" stroke="#6FA83A" strokeWidth="4" />
+            <polygon points={areaPoints} fill="#E4F1D8" opacity="0.7" />
+            <g fill="#25422A" fontSize="11" fontFamily="Inter">
+              {xpTrend.map((d, i) => (
+                <text key={d.week} x={10 + i * (540 / (xpTrend.length - 1))} y="178">
+                  {d.week}
+                </text>
+              ))}
+            </g>
+          </svg>
+        ) : (
+          <p style={{textAlign:'center', color:'var(--ink-soft)', padding:'40px'}}>XP history data is currently not available.</p>
+        )}
       </div>
 
       {/* Module completion list */}
@@ -109,7 +149,7 @@ const Progress = () => {
         <h3>✅ Module Completion</h3>
       </div>
       <div className="card module-list-card">
-        {modules.map((m) => (
+        {modules.length > 0 ? modules.map((m) => (
           <div className="module-progress-row" key={m.id}>
             <div className="icon-badge" style={{ background: m.bg }}>{m.icon}</div>
             <div className="module-progress-info">
@@ -120,7 +160,9 @@ const Progress = () => {
             </div>
             <span className="module-progress-pct">{m.prog}%</span>
           </div>
-        ))}
+        )) : (
+          <p style={{padding:'20px'}}>No learning modules found.</p>
+        )}
       </div>
     </div>
   );

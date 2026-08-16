@@ -56,6 +56,12 @@ public class Scheme {
     private String applicationUrl;
 
     @Column(
+            name = "OFFICIAL_WEBSITE_URL",
+            length = 1000
+    )
+    private String officialWebsiteUrl;
+
+    @Column(
             name = "DEPARTMENT",
             length = 200
     )
@@ -66,6 +72,15 @@ public class Scheme {
             length = 100
     )
     private String state;
+
+    @Column(name = "MIN_FARM_SIZE")
+    private Double minFarmSize;
+
+    @Column(
+            name = "APPLICABLE_CROPS",
+            length = 500
+    )
+    private String applicableCrops;
 
     @Column(name = "LAST_DATE")
     private LocalDate lastDate;
@@ -156,6 +171,14 @@ public class Scheme {
         this.applicationUrl = applicationUrl;
     }
 
+    public String getOfficialWebsiteUrl() {
+        return officialWebsiteUrl;
+    }
+
+    public void setOfficialWebsiteUrl(String officialWebsiteUrl) {
+        this.officialWebsiteUrl = officialWebsiteUrl;
+    }
+
     public String getDepartment() {
         return department;
     }
@@ -170,6 +193,22 @@ public class Scheme {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public Double getMinFarmSize() {
+        return minFarmSize;
+    }
+
+    public void setMinFarmSize(Double minFarmSize) {
+        this.minFarmSize = minFarmSize;
+    }
+
+    public String getApplicableCrops() {
+        return applicableCrops;
+    }
+
+    public void setApplicableCrops(String applicableCrops) {
+        this.applicableCrops = applicableCrops;
     }
 
     public LocalDate getLastDate() {

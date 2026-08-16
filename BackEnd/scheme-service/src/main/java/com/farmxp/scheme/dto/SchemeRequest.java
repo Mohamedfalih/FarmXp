@@ -21,9 +21,15 @@ public class SchemeRequest {
 
     private String applicationUrl;
 
+    private String officialWebsiteUrl;
+
     private String department;
 
     private String state;
+
+    private Double minFarmSize;
+
+    private String applicableCrops;
 
     private LocalDate lastDate;
 
@@ -73,6 +79,14 @@ public class SchemeRequest {
         this.applicationUrl = applicationUrl;
     }
 
+    public String getOfficialWebsiteUrl() {
+        return officialWebsiteUrl;
+    }
+
+    public void setOfficialWebsiteUrl(String officialWebsiteUrl) {
+        this.officialWebsiteUrl = officialWebsiteUrl;
+    }
+
     public String getDepartment() {
         return department;
     }
@@ -87,6 +101,22 @@ public class SchemeRequest {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public Double getMinFarmSize() {
+        return minFarmSize;
+    }
+
+    public void setMinFarmSize(Double minFarmSize) {
+        this.minFarmSize = minFarmSize;
+    }
+
+    public String getApplicableCrops() {
+        return applicableCrops;
+    }
+
+    public void setApplicableCrops(String applicableCrops) {
+        this.applicableCrops = applicableCrops;
     }
 
     public LocalDate getLastDate() {

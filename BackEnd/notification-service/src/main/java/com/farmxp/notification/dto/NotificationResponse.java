@@ -6,8 +6,7 @@ import com.farmxp.notification.entity.Notification;
 import com.farmxp.notification.enums.NotificationType;
 
 public record NotificationResponse(
-
-        String notificationId,
+        Long notificationId,
 
         Long userId,
 

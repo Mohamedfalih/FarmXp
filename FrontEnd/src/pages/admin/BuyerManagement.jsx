@@ -20,14 +20,14 @@ import {
   Typography,
 } from '@mui/material';
 
-import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add';
-import StorefrontIcon from '@mui/icons-material/Storefront';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import { getBuyers } from '../../services/adminService';
 
 import './BuyerManagement.css';
+import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from '@mui/icons-material/Search';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import StorefrontIcon from '@mui/icons-material/Storefront';
 
 const CATEGORIES = [
   'All Categories',
@@ -100,14 +100,14 @@ const BuyerManagement = () => {
         categoryFilter === 'All Categories' ||
         buyer.category === categoryFilter;
 
-      const matchesStatus =
+      const statusMatches =
         statusFilter === 'All Status' ||
-        buyer.status === statusFilter;
+        (buyer.status && buyer.status.toUpperCase() === statusFilter.toUpperCase());
 
       return (
         matchesSearch &&
         matchesCategory &&
-        matchesStatus
+        statusMatches
       );
     });
   }, [
@@ -173,12 +173,14 @@ const BuyerManagement = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="buyer-search"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }
           }}
         />
 
@@ -350,6 +352,8 @@ const BuyerManagement = () => {
                         color={
                           STATUS_COLOR[
                             buyer.status
+                              ? buyer.status.charAt(0).toUpperCase() + buyer.status.slice(1).toLowerCase()
+                              : ''
                           ] || 'default'
                         }
                         size="small"

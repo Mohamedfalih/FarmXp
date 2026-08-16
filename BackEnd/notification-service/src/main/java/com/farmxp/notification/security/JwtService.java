@@ -44,8 +44,10 @@ public class JwtService {
     public Long extractUserId(
             String token) {
 
-        return extractAllClaims(token)
-                .get("userId", Long.class);
+        Number userId = extractAllClaims(token)
+                .get("userId", Number.class);
+                
+        return userId != null ? userId.longValue() : null;
     }
 
     public boolean isTokenValid(

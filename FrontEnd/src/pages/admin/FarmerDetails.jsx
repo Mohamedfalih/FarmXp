@@ -1,20 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  ArrowBack,
-  Agriculture,
-  LocationOn,
-  Phone,
-  Email,
-  CalendarToday,
-  WaterDrop,
-  Park,
-  BugReport,
-  Grass,
-  CheckCircle,
-  Pending,
-  EmojiEvents,
-} from '@mui/icons-material';
 
 import {
   Box,
@@ -28,7 +13,15 @@ import {
   LinearProgress,
 } from '@mui/material';
 
-import { getFarmerById } from '../../services/adminService';
+import ArrowBack from "@mui/icons-material/ArrowBack";
+import LocationOn from "@mui/icons-material/LocationOn";
+import Phone from "@mui/icons-material/Phone";
+import Email from "@mui/icons-material/Email";
+import CalendarToday from "@mui/icons-material/CalendarToday";
+import BugReport from "@mui/icons-material/BugReport";
+import Park from "@mui/icons-material/Park";
+import Pending from "@mui/icons-material/Pending";
+import { getFarmerById, formatDateForFrontend } from '../../services/adminService';
 import './FarmerDetails.css';
 
 const STATUS_COLOR = {
@@ -56,7 +49,36 @@ const FarmerDetails = () => {
     const loadFarmer = async () => {
       try {
         const data = await getFarmerById(id);
-        setFarmer(data);
+        
+        // Normalize the backend AdminFarmerDetailResponse
+        const normalizedFarmer = {
+          id: data.profile?.farmerId || id,
+          name: data.profile?.fullName || 'Unknown',
+          status: data.profile?.status || 'Active',
+          location: data.profile?.village || data.profile?.district || 'Unknown',
+          phone: data.profile?.phone || 'Not available',
+          email: data.email || 'Not available',
+          joinedDate: data.joinedDate ? formatDateForFrontend(data.joinedDate) : 'Not available',
+          farmSize: data.profile?.farmSize || 0,
+          primaryCrop: data.primaryCrop || 'Not available',
+          farmingType: data.farmingType || 'Not available',
+          sustainabilityScore: data.sustainability?.totalScore || 0,
+          metrics: {
+            water: data.sustainability?.categoryScores?.find(c => c.category === 'WATER')?.score || 0,
+            soil: data.sustainability?.categoryScores?.find(c => c.category === 'SOIL')?.score || 0,
+            pestControl: data.sustainability?.categoryScores?.find(c => c.category === 'PEST_CONTROL')?.score || 0,
+            cropDiversity: data.sustainability?.categoryScores?.find(c => c.category === 'CROP_DIVERSITY')?.score || 0,
+          },
+          learning: {
+            completed: data.learning?.completedModules || 0,
+            inProgress: data.learning?.inProgressModules || 0,
+            total: data.learning?.totalModules || 0,
+            xp: data.profile?.totalXp || 0
+          },
+          recentPractices: data.sustainability?.recentPractices || []
+        };
+        
+        setFarmer(normalizedFarmer);
       } catch (error) {
         console.error('Failed to load farmer:', error);
         setFarmer(null);
@@ -234,7 +256,7 @@ const FarmerDetails = () => {
       <Card className="farmer-details-card">
 
         <Box className="card-heading">
-          <Agriculture />
+          <span>🌾</span>
 
           <Box>
             <Typography className="card-title">
@@ -303,7 +325,7 @@ const FarmerDetails = () => {
       <Card className="farmer-details-card">
 
         <Box className="card-heading">
-          <EmojiEvents />
+          <span>🏆</span>
 
           <Box>
             <Typography className="card-title">
@@ -347,7 +369,7 @@ const FarmerDetails = () => {
         <Box className="metric-grid">
 
           <Box className="metric-item">
-            <WaterDrop className="metric-icon water-icon" />
+            <span className="metric-icon water-icon">💧</span>
 
             <Box>
               <Typography className="metric-label">
@@ -361,7 +383,7 @@ const FarmerDetails = () => {
           </Box>
 
           <Box className="metric-item">
-            <Grass className="metric-icon soil-icon" />
+            <span className="metric-icon soil-icon">🌱</span>
 
             <Box>
               <Typography className="metric-label">
@@ -412,7 +434,7 @@ const FarmerDetails = () => {
       <Card className="farmer-details-card">
 
         <Box className="card-heading">
-          <EmojiEvents />
+          <span>🏆</span>
 
           <Box>
             <Typography className="card-title">
@@ -479,7 +501,7 @@ const FarmerDetails = () => {
       <Card className="farmer-details-card">
 
         <Box className="card-heading">
-          <CheckCircle />
+          <span>✅</span>
 
           <Box>
             <Typography className="card-title">
@@ -516,7 +538,7 @@ const FarmerDetails = () => {
                 <Chip
                   icon={
                     practice.status === 'Verified'
-                      ? <CheckCircle />
+                      ? <span>✅</span>
                       : <Pending />
                   }
                   label={practice.status}

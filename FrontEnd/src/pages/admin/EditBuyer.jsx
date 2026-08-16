@@ -16,6 +16,7 @@ import {
 import {
   getBuyerById,
   updateBuyer,
+  updateBuyerStatus,
 } from '../../services/adminService';
 
 import './EditBuyer.css';
@@ -32,6 +33,9 @@ const EditBuyer = () => {
     contactPerson: '',
     phone: '',
     email: '',
+    district: '',
+    state: '',
+    category: '',
   });
 
   const [loading, setLoading] = useState(true);
@@ -56,6 +60,9 @@ const EditBuyer = () => {
           contactPerson: buyer.contactPerson || '',
           phone: buyer.phone || '',
           email: buyer.email || '',
+          district: buyer.district || '',
+          state: buyer.state || '',
+          category: buyer.category || '',
         });
       } catch (err) {
         console.error('Failed to load buyer:', err);
@@ -98,6 +105,7 @@ const EditBuyer = () => {
       setSaving(true);
 
       await updateBuyer(id, formData);
+      await updateBuyerStatus(id, formData.status);
 
       navigate(`/admin/buyers/${id}`);
     } catch (err) {
@@ -228,12 +236,8 @@ const EditBuyer = () => {
                   Active
                 </MenuItem>
 
-                <MenuItem value="Pending">
-                  Pending
-                </MenuItem>
-
-                <MenuItem value="Suspended">
-                  Suspended
+                <MenuItem value="Inactive">
+                  Inactive
                 </MenuItem>
               </Select>
             </FormControl>

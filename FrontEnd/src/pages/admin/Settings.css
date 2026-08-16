@@ -419,6 +419,13 @@
    PASSWORD FORM
 ========================================================= */
 
+.settings-page {
+  /* padding removed to inherit AdminLayout padding */
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 .password-form {
   display: flex;
   flex-direction: column;

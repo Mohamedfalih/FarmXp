@@ -1,11 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Badge, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
+import authService from '../../services/authService';
+
+import farmerService from '../../services/farmerService';
 import MenuIcon from '@mui/icons-material/Menu';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 const Navbar = ({ onMenuClick, pageTitle = 'Dashboard' }) => {
-  const farmerName = 'Guest Farmer';
+  const [farmerName, setFarmerName] = useState('Guest Farmer');
   const notificationCount = 0;
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const user = await authService.getCurrentUser();
+        if (user) {
+          if (user.role === 'ADMIN') {
+             setFarmerName(user.sub || 'Admin');
+             return;
+          }
+          const profile = await farmerService.getProfile();
+          if (profile && profile.fullName) {
+            setFarmerName(profile.fullName);
+          } else {
+             setFarmerName(user.sub || 'Farmer');
+          }
+        }
+      } catch (e) {
+        const user = await authService.getCurrentUser();
+        if (user && user.sub) {
+           setFarmerName(user.sub);
+        }
+      }
+    };
+    fetchProfile();
+  }, []);
 
   return (
     <Box
@@ -52,10 +82,9 @@ const Navbar = ({ onMenuClick, pageTitle = 'Dashboard' }) => {
             justifyContent: 'center',
             fontSize: '15px',
             position: 'relative',
-            textDecoration: 'none',
           }}
         >
-          🔔
+          <NotificationsIcon sx={{ fontSize: '20px' }} />
           {notificationCount > 0 && (
             <Badge
               variant="dot"

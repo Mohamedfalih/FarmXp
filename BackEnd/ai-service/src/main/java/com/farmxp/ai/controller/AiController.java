@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/ai")
-@CrossOrigin(origins = "http://localhost:5173")
 public class AiController {
 
     private final AiService aiService;
@@ -22,10 +21,13 @@ public class AiController {
     @PostMapping("/chat")
     public ResponseEntity<ChatResponse> chat(
             @Valid @RequestBody
-            ChatRequest request) {
+            ChatRequest request,
+            jakarta.servlet.http.HttpServletRequest httpRequest) {
 
+        String token = httpRequest.getHeader("Authorization");
+        Long farmerId = extractFarmerIdFromHeader(token);
         return ResponseEntity.ok(
-                aiService.chat(request)
+                aiService.chat(request, farmerId, token)
         );
     }
 
@@ -39,5 +41,35 @@ public class AiController {
                 aiService.recommendation(
                         request)
         );
+    }
+
+    @GetMapping("/ml-recommendation")
+    public ResponseEntity<MlRecommendationResponse> mlRecommendation(jakarta.servlet.http.HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        Long farmerId = extractFarmerIdFromHeader(token);
+        return ResponseEntity.ok(aiService.getMlRecommendation(farmerId, token));
+    }
+
+    private Long extractFarmerIdFromHeader(String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            try {
+                String token = authHeader.substring(7);
+                String[] parts = token.split("\\.");
+                if (parts.length == 3) {
+                    String payload = new String(java.util.Base64.getUrlDecoder().decode(parts[1]));
+                    // Extract "sub":"..."
+                    java.util.regex.Matcher m = java.util.regex.Pattern.compile("\"userId\"\\s*:\\s*(\\d+)").matcher(payload);
+                    if (m.find()) {
+                        return Long.parseLong(m.group(1));
+                    }
+                    // Fallback to sub if userId is missing but sub is numeric
+                    m = java.util.regex.Pattern.compile("\"sub\"\\s*:\\s*\"?(\\d+)\"?").matcher(payload);
+                    if (m.find()) {
+                        return Long.parseLong(m.group(1));
+                    }
+                }
+            } catch (Exception e) {}
+        }
+        return null;
     }
 }

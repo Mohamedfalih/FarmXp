@@ -9,11 +9,11 @@ import {
   IconButton,
   Button,
 } from '@mui/material';
+import { addScheme } from '../../services/adminService';
+import './AddScheme.css';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import SaveIcon from '@mui/icons-material/Save';
-import { addScheme } from '../../services/adminService';
-import './AddScheme.css';
 
 // Page-specific constants — only this page uses these
 const CATEGORIES = [
@@ -34,6 +34,7 @@ const AddScheme = () => {
   const [eligibility, setEligibility] = useState('');
   const [minFarmSize, setMinFarmSize] = useState('');
   const [applicableCrops, setApplicableCrops] = useState('');
+  const [officialWebsiteUrl, setOfficialWebsiteUrl] = useState('');
   const [saving, setSaving] = useState(false);
 
   const handleBack = () => navigate('/admin/schemes');
@@ -53,6 +54,7 @@ const AddScheme = () => {
         eligibility,
         minFarmSize,
         applicableCrops,
+        officialWebsiteUrl,
       });
       navigate('/admin/schemes');
     } finally {
@@ -126,6 +128,15 @@ const AddScheme = () => {
           placeholder="e.g. Farmers with valid land records, up to 5 acres"
           value={eligibility}
           onChange={(e) => setEligibility(e.target.value)}
+          margin="normal"
+        />
+
+        <TextField
+          fullWidth
+          label="Official Website URL"
+          placeholder="e.g. https://pmksy.gov.in/"
+          value={officialWebsiteUrl}
+          onChange={(e) => setOfficialWebsiteUrl(e.target.value)}
           margin="normal"
         />
 

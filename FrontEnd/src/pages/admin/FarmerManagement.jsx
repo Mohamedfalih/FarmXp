@@ -18,40 +18,71 @@ import {
   CircularProgress,
   Typography,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import { getFarmers } from '../../services/adminService';
 import './FarmerManagement.css';
+import SearchIcon from '@mui/icons-material/Search';
 
-// Page-specific filter options — only this page uses these
-const DISTRICTS = ['All Districts', 'Coimbatore', 'Erode', 'Salem'];
-const STATUSES = ['All Status', 'Active', 'New', 'Suspended'];
+// Using actual backend statuses for Farmer profile:
+const STATUSES = ['All Status', 'ACTIVE', 'PENDING', 'SUSPENDED'];
 
 // Maps a farmer's status to its Chip color
 const STATUS_COLOR = {
-  Active: 'success',
-  New: 'warning',
-  Suspended: 'error',
+  ACTIVE: 'success',
+  PENDING: 'warning',
+  SUSPENDED: 'error',
 };
 
-// Deterministic avatar tint based on farmer id — matches the Figma design's
-// varied avatar colors without needing a color field in the data itself
+// Deterministic avatar tint based on index
 const AVATAR_COLORS = ['#6FA83A', '#3E8FA0', '#C1552E', '#8FBF9E', '#B7A6E0'];
+
+const normalizeFarmer = (raw) => ({
+  id: raw.id ?? raw.farmerId ?? raw.userId,
+  name: raw.name ?? raw.fullName ?? 'Unknown Farmer',
+  location: raw.location ?? raw.village ?? raw.district ?? 'Unknown',
+  district: raw.district ?? 'Unknown',
+  primaryCrop: raw.primaryCrop ?? raw.crop ?? 'Not specified',
+  sustainabilityScore: raw.sustainabilityScore ?? raw.score ?? '—',
+  status: raw.status ?? raw.accountStatus ?? 'PENDING',
+});
 
 const FarmerManagement = () => {
   const navigate = useNavigate();
 
   const [farmers, setFarmers] = useState([]);
+  const [districts, setDistricts] = useState(['All Districts']);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [districtFilter, setDistrictFilter] = useState('All Districts');
   const [statusFilter, setStatusFilter] = useState('All Status');
 
   useEffect(() => {
-    getFarmers().then((data) => {
-      setFarmers(data);
-      setLoading(false);
-    });
+    loadFarmers();
   }, []);
+
+  const loadFarmers = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const data = await getFarmers();
+      const list = Array.isArray(data) ? data : (data?.farmers ?? data?.content ?? []);
+      const normalized = list.map(normalizeFarmer);
+      setFarmers(normalized);
+      
+      // Dynamically extract districts from backend data
+      const uniqueDistricts = [...new Set(normalized.map(f => f.district).filter(Boolean))];
+      setDistricts(['All Districts', ...uniqueDistricts.sort()]);
+    } catch (err) {
+      console.error('Failed to load farmers:', err);
+      setError(
+        err?.response?.data?.message ||
+        err?.message ||
+        'Unable to load farmers.'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredFarmers = useMemo(() => {
     const text = search.toLowerCase();
@@ -60,9 +91,9 @@ const FarmerManagement = () => {
         farmer.name.toLowerCase().includes(text) ||
         farmer.location.toLowerCase().includes(text);
       const matchesDistrict =
-        districtFilter === 'All Districts' || farmer.location === districtFilter;
+        districtFilter === 'All Districts' || farmer.district === districtFilter;
       const matchesStatus =
-        statusFilter === 'All Status' || farmer.status === statusFilter;
+        statusFilter === 'All Status' || farmer.status.toUpperCase() === statusFilter;
       return matchesSearch && matchesDistrict && matchesStatus;
     });
   }, [farmers, search, districtFilter, statusFilter]);
@@ -71,13 +102,11 @@ const FarmerManagement = () => {
     navigate(`/admin/farmers/${farmerId}`);
   };
 
-  const getInitials = (name) =>
-    name
-      .split(' ')
-      .map((part) => part[0])
-      .join('')
-      .slice(0, 2)
-      .toUpperCase();
+  const getInitials = (name) => {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+  };
 
   return (
     <Box className="farmer-management">
@@ -88,12 +117,14 @@ const FarmerManagement = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="farmer-search"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon fontSize="small" />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }
           }}
         />
 
@@ -103,7 +134,7 @@ const FarmerManagement = () => {
           onChange={(e) => setDistrictFilter(e.target.value)}
           className="farmer-filter-select"
         >
-          {DISTRICTS.map((d) => (
+          {districts.map((d) => (
             <MenuItem key={d} value={d}>
               {d}
             </MenuItem>
@@ -128,6 +159,11 @@ const FarmerManagement = () => {
         {loading ? (
           <Box className="farmer-table-state">
             <CircularProgress color="success" />
+          </Box>
+        ) : error ? (
+          <Box className="farmer-table-state">
+            <Typography variant="body2" color="error">{error}</Typography>
+            <Button size="small" onClick={loadFarmers} sx={{ mt: 1 }}>Retry</Button>
           </Box>
         ) : (
           <Table>
@@ -159,11 +195,11 @@ const FarmerManagement = () => {
                   </TableCell>
                   <TableCell>{farmer.location}</TableCell>
                   <TableCell>{farmer.primaryCrop}</TableCell>
-                  <TableCell>{farmer.sustainabilityScore ?? '—'}</TableCell>
+                  <TableCell>{farmer.sustainabilityScore}</TableCell>
                   <TableCell>
                     <Chip
                       label={farmer.status}
-                      color={STATUS_COLOR[farmer.status]}
+                      color={STATUS_COLOR[farmer.status.toUpperCase()] || 'default'}
                       size="small"
                     />
                   </TableCell>

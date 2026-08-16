@@ -14,4 +14,9 @@ public interface SustainabilityServiceClient {
             "/api/sustainability/score"
     )
     SustainabilityScoreResponse getSustainabilityScore();
+
+    @GetMapping(
+            "/api/sustainability/score/admin/{farmerId}"
+    )
+    SustainabilityScoreResponse getFarmerScore(@org.springframework.web.bind.annotation.PathVariable("farmerId") Long farmerId);
 }

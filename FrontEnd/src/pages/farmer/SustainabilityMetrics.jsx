@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import sustainabilityService from '../../services/sustainabilityService';
+import farmerService from '../../services/farmerService';
 import './SustainabilityMetrics.css';
 
 const METRIC_TYPES = [
@@ -14,40 +16,30 @@ const METRIC_TYPES = [
   },
 ];
 
+// Maps a raw backend metric to the shape the UI expects
+const normalizeMetric = (raw) => {
+  const type = (raw.metricType || raw.type || '').toLowerCase();
+  const isWater = type.includes('water');
+  return {
+    id: raw.id ?? raw.metricId ?? Date.now(),
+    type: isWater ? 'water' : 'chemical',
+    icon: isWater ? '💧' : '🧪',
+    bg: isWater ? 'var(--sky-light)' : 'var(--clay-light)',
+    baseline: Number(raw.baselineValue ?? raw.baseline ?? 0),
+    current: Number(raw.currentValue ?? raw.current ?? 0),
+    unit: raw.unit || (isWater ? 'Litres' : 'Kilograms'),
+    label: `${isWater ? 'Water use' : 'Chemical input'} vs baseline`,
+    recordedAt: raw.recordedAt || raw.createdAt || null,
+  };
+};
+
 const SustainabilityMetrics = () => {
-  // Mock data — matches the prototype's overview stats.
-  // Later this becomes: metricsService.getMetrics().then(setMetrics)
-  const [metrics, setMetrics] = useState([
-    {
-      id: 1,
-      type: 'water',
-      icon: '💧',
-      bg: 'var(--sky-light)',
-      baseline: 12000,
-      current: 8100,
-      unit: 'Litres',
-      label: 'Water use vs baseline',
-    },
-    {
-      id: 2,
-      type: 'chemical',
-      icon: '🧪',
-      bg: 'var(--clay-light)',
-      baseline: 40,
-      current: 22,
-      unit: 'Kilograms',
-      label: 'Chemical input vs baseline',
-    },
-  ]);
-
-  const waterTrend = [
-    { month: 'Jan', value: 30 },
-    { month: 'Feb', value: 50 },
-    { month: 'Mar', value: 70 },
-    { month: 'Apr', value: 100 },
-    { month: 'May', value: 120 },
-  ];
-
+  const [metrics, setMetrics] = useState([]);
+  const [totalXp, setTotalXp] = useState(0);
+  const [overallScore, setOverallScore] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
 
   const [metricForm, setMetricForm] = useState({
@@ -58,22 +50,57 @@ const SustainabilityMetrics = () => {
     notes: '',
   });
 
-  // Overall sustainability score
-  // Formula: (baseline - current) / baseline * 100
-  const overallScore = Math.round(
-    metrics.reduce((sum, metric) => {
-      if (!metric.baseline) return sum;
+  // ── Load metrics from backend ──────────────────────────────
+  useEffect(() => {
+    loadMetrics();
+  }, []);
 
-      const percentage =
-        ((metric.baseline - metric.current) / metric.baseline) * 100;
+  const loadMetrics = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const [data, dashboardRes] = await Promise.all([
+        sustainabilityService.getMetrics(),
+        farmerService.getDashboard().catch(() => null)
+      ]);
+      const list = Array.isArray(data) ? data : (data?.metrics ?? []);
+      setMetrics(list.map(normalizeMetric));
+      
+      if (dashboardRes) {
+        setTotalXp(dashboardRes.farmer?.totalXp || 0);
+        
+        const score = dashboardRes.sustainability?.score ?? 
+                      dashboardRes.sustainability?.sustainabilityScore ?? 
+                      dashboardRes.sustainability?.overallScore ?? 
+                      dashboardRes.sustainability?.totalScore ?? 0;
+        setOverallScore(Math.min(100, Math.max(0, score)));
+      }
+    } catch (err) {
+      console.error('Failed to load metrics:', err);
+      setError(
+        err?.response?.data?.message ||
+        err?.message ||
+        'Unable to load metrics.'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      return sum + percentage;
-    }, 0) / (metrics.length || 1)
-  );
+  // ── Derived chart data from real water metrics ─────────────
+  const waterMetrics = metrics.filter((m) => m.type === 'water');
+  const waterTrend =
+    waterMetrics.length > 0
+      ? waterMetrics.map((m, idx) => ({
+          month: m.recordedAt
+            ? new Date(m.recordedAt).toLocaleString('default', { month: 'short' })
+            : `Entry ${idx + 1}`,
+          value: m.current,
+        }))
+      : [{ month: '—', value: 0 }];
 
   const getPercentChange = (metric) => {
     if (!metric.baseline) return 0;
-
     return Math.round(
       ((metric.baseline - metric.current) / metric.baseline) * 100
     );
@@ -81,20 +108,12 @@ const SustainabilityMetrics = () => {
 
   const handleFormChange = (event) => {
     const { name, value } = event.target;
-
-    setMetricForm((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
+    setMetricForm((previous) => ({ ...previous, [name]: value }));
   };
 
   const handleTypeChange = (event) => {
     const type = event.target.value;
-
-    const matchedType = METRIC_TYPES.find(
-      (metricType) => metricType.key === type
-    );
-
+    const matchedType = METRIC_TYPES.find((mt) => mt.key === type);
     setMetricForm((previous) => ({
       ...previous,
       type,
@@ -102,45 +121,34 @@ const SustainabilityMetrics = () => {
     }));
   };
 
-  const handleSaveMetric = (event) => {
+  const handleSaveMetric = async (event) => {
     event.preventDefault();
+    if (!metricForm.baseline || !metricForm.current) return;
 
-    if (!metricForm.baseline || !metricForm.current) {
-      return;
+    setSaving(true);
+    try {
+      const payload = {
+        metricType: metricForm.type === 'water' ? 'WATER_USE' : 'CHEMICAL_INPUT',
+        baselineValue: Number(metricForm.baseline),
+        currentValue: Number(metricForm.current),
+        unit: metricForm.unit,
+        recordedDate: new Date().toISOString().split('T')[0],
+        notes: metricForm.notes,
+      };
+      const created = await sustainabilityService.createMetric(payload);
+      setMetrics((prev) => [...prev, normalizeMetric(created)]);
+      setMetricForm({ type: 'water', baseline: '', current: '', unit: 'Litres', notes: '' });
+      setShowAddForm(false);
+    } catch (err) {
+      console.error('Failed to save metric:', err);
+      alert(
+        err?.response?.data?.message ||
+        err?.message ||
+        'Failed to save metric.'
+      );
+    } finally {
+      setSaving(false);
     }
-
-    // Later this becomes:
-    // metricsService.addMetric(metricForm)
-
-    const typeInfo = METRIC_TYPES.find(
-      (metricType) => metricType.key === metricForm.type
-    );
-
-    const newMetric = {
-      id: Date.now(),
-      type: metricForm.type,
-      icon: metricForm.type === 'water' ? '💧' : '🧪',
-      bg:
-        metricForm.type === 'water'
-          ? 'var(--sky-light)'
-          : 'var(--clay-light)',
-      baseline: Number(metricForm.baseline),
-      current: Number(metricForm.current),
-      unit: metricForm.unit,
-      label: `${typeInfo.label.split(' ').slice(1).join(' ')} vs baseline`,
-    };
-
-    setMetrics((previous) => [...previous, newMetric]);
-
-    setMetricForm({
-      type: 'water',
-      baseline: '',
-      current: '',
-      unit: 'Litres',
-      notes: '',
-    });
-
-    setShowAddForm(false);
   };
 
   // Build chart points from waterTrend data
@@ -174,6 +182,29 @@ const SustainabilityMetrics = () => {
   const linePoints = points
     .map((point) => `${point.x},${point.y}`)
     .join(' ');
+
+
+  if (loading) {
+    return (
+      <div className="sustainability-metrics-page">
+        <div className="card" style={{ padding: '24px', textAlign: 'center' }}>Loading metrics...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="sustainability-metrics-page">
+        <div className="card" style={{ padding: '24px', color: 'var(--clay)', textAlign: 'center' }}>
+          {error}
+          <br />
+          <button className="btn btn-outline btn-sm" type="button" onClick={loadMetrics} style={{ marginTop: 12 }}>
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="sustainability-metrics-page">
@@ -233,6 +264,19 @@ const SustainabilityMetrics = () => {
 
               <div className="stat-label">
                 Sustainability Score
+              </div>
+            </div>
+
+            {/* Total XP Card */}
+            <div className="card stat-card">
+              <div className="stat-icon" style={{ background: 'var(--harvest-light)' }}>
+                🏆
+              </div>
+              <div className="stat-value positive">
+                {totalXp} XP
+              </div>
+              <div className="stat-label">
+                Total Gamification XP
               </div>
             </div>
 
@@ -317,7 +361,7 @@ const SustainabilityMetrics = () => {
 
           {/* Logged Metrics */}
           <div className="section-title">
-            <h3>📋 Logged Metrics</h3>
+            <h3>🌱 Logged Metrics</h3>
           </div>
 
           <div className="card metrics-list-card">
@@ -471,8 +515,9 @@ const SustainabilityMetrics = () => {
               <button
                 className="btn btn-primary btn-block"
                 type="submit"
+                disabled={saving}
               >
-                Save Metric
+                {saving ? 'Saving...' : 'Save Metric'}
               </button>
             </form>
           </div>

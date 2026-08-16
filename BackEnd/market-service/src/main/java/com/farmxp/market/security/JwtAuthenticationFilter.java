@@ -30,70 +30,73 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authorizationHeader =
-                request.getHeader("Authorization");
-
-        if (authorizationHeader == null
-                || !authorizationHeader.startsWith("Bearer ")) {
-
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String token =
-                authorizationHeader.substring(7).trim();
-
-        if (token.isEmpty()) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         try {
+            String authorizationHeader =
+                    request.getHeader("Authorization");
 
-            if (jwtService.isTokenValid(token)) {
+            if (authorizationHeader == null
+                    || !authorizationHeader.startsWith("Bearer ")) {
 
-                String username =
-                        jwtService.extractUsername(token);
-
-                String role =
-                        jwtService.extractRole(token);
-
-                if (username != null
-                        && role != null
-                        && SecurityContextHolder
-                        .getContext()
-                        .getAuthentication() == null) {
-
-                    String authority;
-
-                    if (role.startsWith("ROLE_")) {
-                        authority = role;
-                    } else {
-                        authority = "ROLE_" + role;
-                    }
-
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(
-                                    username,
-                                    null,
-                                    Collections.singletonList(
-                                            new SimpleGrantedAuthority(
-                                                    authority
-                                            )
-                                    )
-                            );
-
-                    SecurityContextHolder
-                            .getContext()
-                            .setAuthentication(authentication);
-                }
+                filterChain.doFilter(request, response);
+                return;
             }
 
-        } catch (Exception exception) {
+            String token =
+                    authorizationHeader.substring(7).trim();
 
+            if (token.isEmpty()) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            try {
+
+                if (jwtService.isTokenValid(token)) {
+
+                    Long userId = jwtService.extractUserId(token);
+
+                    String role =
+                            jwtService.extractRole(token);
+
+                    if (userId != null
+                            && role != null
+                            && SecurityContextHolder
+                            .getContext()
+                            .getAuthentication() == null) {
+
+                        String authority;
+
+                        if (role.startsWith("ROLE_")) {
+                            authority = role;
+                        } else {
+                            authority = "ROLE_" + role;
+                        }
+
+                        UsernamePasswordAuthenticationToken authentication =
+                                new UsernamePasswordAuthenticationToken(
+                                        userId.toString(),
+                                        null,
+                                        Collections.singletonList(
+                                                new SimpleGrantedAuthority(
+                                                        authority
+                                                )
+                                        )
+                                );
+
+                        SecurityContextHolder
+                                .getContext()
+                                .setAuthentication(authentication);
+                    }
+                }
+
+            } catch (Exception exception) {
+
+                SecurityContextHolder.clearContext();
+            }
+
+            filterChain.doFilter(request, response);
+        } finally {
             SecurityContextHolder.clearContext();
         }
-
-        filterChain.doFilter(request, response);
     }
 }

@@ -102,11 +102,6 @@ const authService = {
           "farmxp_userId",
           String(data.userId)
         );
-
-        localStorage.setItem(
-          "farmerId",
-          String(data.userId)
-        );
       }
 
       // ======================================================
@@ -339,6 +334,21 @@ const authService = {
     const response =
       await axiosInstance.get(
         "/api/auth/me"
+      );
+
+    return response.data;
+  },
+
+  // ==========================================================
+  // UPDATE PROFILE
+  // ==========================================================
+
+  updateProfile: async (profileData) => {
+
+    const response =
+      await axiosInstance.put(
+        "/api/auth/profile",
+        profileData
       );
 
     return response.data;

@@ -37,67 +37,70 @@ public class JwtAuthenticationFilter
             FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authorizationHeader =
-                request.getHeader("Authorization");
-
-        if (authorizationHeader == null
-                || !authorizationHeader.startsWith("Bearer ")) {
-
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String token =
-                authorizationHeader.substring(7);
-
         try {
+            String authorizationHeader =
+                    request.getHeader("Authorization");
 
-            Claims claims =
-                    Jwts.parser()
-                            .verifyWith(
-                                    io.jsonwebtoken.security.Keys.hmacShaKeyFor(
-                                            jwtSecret.getBytes()
-                                    )
-                            )
-                            .build()
-                            .parseSignedClaims(token)
-                            .getPayload();
+            if (authorizationHeader == null
+                    || !authorizationHeader.startsWith("Bearer ")) {
 
-            String username =
-                    claims.getSubject();
-
-            Collection<SimpleGrantedAuthority>
-                    authorities =
-                    extractAuthorities(claims);
-
-            if (username != null
-                    && !authorities.isEmpty()) {
-
-                UsernamePasswordAuthenticationToken
-                        authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                username,
-                                null,
-                                authorities
-                        );
-
-                SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(
-                                authentication
-                        );
+                filterChain.doFilter(request, response);
+                return;
             }
 
-        } catch (Exception exception) {
+            String token =
+                    authorizationHeader.substring(7);
 
-            SecurityContextHolder
-                    .clearContext();
+            try {
+
+                Claims claims =
+                        Jwts.parser()
+                                .verifyWith(
+                                        io.jsonwebtoken.security.Keys.hmacShaKeyFor(
+                                                jwtSecret.getBytes()
+                                        )
+                                )
+                                .build()
+                                .parseSignedClaims(token)
+                                .getPayload();
+
+                Object userIdObj = claims.get("userId");
+
+                Collection<SimpleGrantedAuthority>
+                        authorities =
+                        extractAuthorities(claims);
+
+                if (userIdObj != null
+                        && !authorities.isEmpty()) {
+
+                    UsernamePasswordAuthenticationToken
+                            authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userIdObj.toString(),
+                                    null,
+                                    authorities
+                            );
+
+                    SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(
+                                    authentication
+                            );
+                }
+
+            } catch (Exception exception) {
+
+                SecurityContextHolder
+                        .clearContext();
+            }
+
+            filterChain.doFilter(
+                    request,
+                    response
+            );
+        } finally {
+            SecurityContextHolder.clearContext();
         }
-
-        filterChain.doFilter(
-                request,
-                response
-        );
     }
 
     private Collection<SimpleGrantedAuthority>

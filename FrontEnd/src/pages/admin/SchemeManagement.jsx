@@ -13,9 +13,9 @@ import {
   CircularProgress,
   Typography,
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import { getSchemes } from '../../services/adminService';
+import { getSchemes, formatDateForFrontend } from '../../services/adminService';
 import './SchemeManagement.css';
+import AddIcon from '@mui/icons-material/Add';
 
 // Maps a scheme's status to its Chip color
 const STATUS_COLOR = {
@@ -63,23 +63,21 @@ const SchemeManagement = () => {
               <TableRow>
                 <TableCell>Scheme</TableCell>
                 <TableCell>Category</TableCell>
-                <TableCell>Linked Modules</TableCell>
                 <TableCell>Deadline</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell align="right"></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {schemes.map((scheme) => (
-                <TableRow key={scheme.id}>
+              {schemes.map((scheme, index) => (
+                <TableRow key={scheme.schemeId || scheme.id || index}>
                   <TableCell>
                     <Typography variant="body2" fontWeight={700}>
                       {scheme.title}
                     </Typography>
                   </TableCell>
-                  <TableCell>{scheme.category}</TableCell>
-                  <TableCell>{scheme.linkedModules}</TableCell>
-                  <TableCell>{scheme.deadline}</TableCell>
+                  <TableCell>{scheme.department}</TableCell>
+                  <TableCell>{formatDateForFrontend(scheme.lastDate) || '-'}</TableCell>
                   <TableCell>
                     <Chip
                       label={scheme.status}
@@ -91,7 +89,7 @@ const SchemeManagement = () => {
                     <Button
                       variant="outlined"
                       size="small"
-                      onClick={() => handleEdit(scheme.id)}
+                      onClick={() => handleEdit(scheme.schemeId || scheme.id)}
                     >
                       Edit
                     </Button>
@@ -101,7 +99,7 @@ const SchemeManagement = () => {
 
               {schemes.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6}>
+                  <TableCell colSpan={5}>
                     <Box className="scheme-table-empty">
                       <Typography variant="body2" color="text.secondary">
                         No schemes added yet.

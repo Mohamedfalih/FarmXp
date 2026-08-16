@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.farmxp.notification.dto.NotificationRequest;
 import com.farmxp.notification.dto.NotificationResponse;
 import com.farmxp.notification.entity.Notification;
+import com.farmxp.notification.dto.NotificationBulkRequest;
 import com.farmxp.notification.repository.NotificationRepository;
 
 @Service
@@ -50,6 +51,28 @@ public class NotificationService {
     }
 
     // ==========================================
+    // CREATE BULK NOTIFICATIONS
+    // ==========================================
+
+    public void createBulkNotifications(
+            NotificationBulkRequest request) {
+
+        List<Notification> notifications = request.userIds().stream().map(userId -> {
+            Notification notification = new Notification(
+                    userId,
+                    request.title(),
+                    request.message(),
+                    request.notificationType().name()
+            );
+            notification.setCreatedAt(LocalDateTime.now());
+            notification.setRead(false);
+            return notification;
+        }).toList();
+
+        notificationRepository.saveAll(notifications);
+    }
+
+    // ==========================================
     // GET ALL USER NOTIFICATIONS
     // ==========================================
 
@@ -71,9 +94,7 @@ public class NotificationService {
             Long userId) {
 
         return notificationRepository
-                .findByUserIdAndReadFalseOrderByCreatedAtDesc(
-                        userId
-                )
+                .findByUserIdAndReadFalseOrderByCreatedAtDesc(userId)
                 .stream()
                 .map(NotificationResponse::fromEntity)
                 .toList();
@@ -95,7 +116,7 @@ public class NotificationService {
     // ==========================================
 
     public NotificationResponse markAsRead(
-            String notificationId) {
+            Long notificationId) {
 
         Notification notification =
                 notificationRepository
@@ -124,9 +145,7 @@ public class NotificationService {
 
         List<Notification> notifications =
                 notificationRepository
-                        .findByUserIdAndReadFalseOrderByCreatedAtDesc(
-                                userId
-                        );
+                        .findByUserIdAndReadFalseOrderByCreatedAtDesc(userId);
 
         notifications.forEach(
                 notification ->
@@ -141,7 +160,7 @@ public class NotificationService {
     // ==========================================
 
     public void deleteNotification(
-            String notificationId) {
+            Long notificationId) {
 
         if (!notificationRepository
                 .existsById(notificationId)) {

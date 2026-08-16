@@ -63,11 +63,46 @@ public class SustainabilityScoreService {
                         )
                         .sum();
 
-        return new SustainabilityScoreResponse(
+        int totalVerified =
+                practiceRepository
+                        .findByFarmerIdAndStatus(
+                                farmerId,
+                                PracticeStatus.VERIFIED
+                        )
+                        .size();
+
+        int totalPending =
+                practiceRepository
+                        .findByFarmerIdAndStatus(
+                                farmerId,
+                                PracticeStatus.PENDING
+                        )
+                        .size();
+
+        SustainabilityScoreResponse response = new SustainabilityScoreResponse(
                 farmerId,
                 totalScore,
                 100,
-                categoryScores
+                categoryScores,
+                totalVerified,
+                totalPending
         );
+
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("MMM dd, yyyy");
+        List<SustainabilityScoreResponse.RecentPractice> recentPractices = practiceRepository
+                .findByFarmerId(farmerId)
+                .stream()
+                .sorted(java.util.Comparator.comparing(com.farmxp.sustainability.entity.CertifiedPracticeLog::getCreatedAt).reversed())
+                .limit(5)
+                .map(p -> new SustainabilityScoreResponse.RecentPractice(
+                        p.getPracticeLogId(),
+                        p.getPracticeName(),
+                        p.getCreatedAt().format(formatter),
+                        p.getStatus().name()
+                ))
+                .toList();
+        response.setRecentPractices(recentPractices);
+
+        return response;
     }
 }

@@ -14,16 +14,16 @@ const navLinks = [
 ];
 
 const features = [
-  { icon: "🌱", bg: "#E4F1D8", title: "Sustainable Farming", desc: "Practices that protect soil & water" },
-  { icon: "🤖", bg: "#F8E1D6", title: "AI Farming Assistant", desc: "Ask questions, get instant guidance" },
-  { icon: "📚", bg: "#FCEDD3", title: "Learning Modules", desc: "Bite-sized, practical lessons" },
-  { icon: "🏆", bg: "#DFF0F2", title: "XP Rewards & Badges", desc: "Progress feels like a game" },
-  { icon: "📈", bg: "#E4F1D8", title: "Sustainability Score", desc: "A clear score for your farm" },
-  { icon: "📊", bg: "#FCEDD3", title: "Progress Analytics", desc: "See growth over every season" },
-  { icon: "🏛️", bg: "#DFF0F2", title: "Government Schemes", desc: "Find schemes you qualify for" },
-  { icon: "🛒", bg: "#F8E1D6", title: "Market Buyers", desc: "Connect with verified buyers" },
-  { icon: "🔔", bg: "#E4F1D8", title: "Notifications", desc: "Never miss a deadline" },
-  { icon: "📱", bg: "#DFF0F2", title: "Mobile Friendly", desc: "Works anywhere on the farm" },
+  { icon: '🌱', bg: "#E4F1D8", title: "Sustainable Farming", desc: "Practices that protect soil & water" },
+  { icon: '🤖', bg: "#F8E1D6", title: "AI Farming Assistant", desc: "Ask questions, get instant guidance" },
+  { icon: '📚', bg: "#FCEDD3", title: "Learning Modules", desc: "Bite-sized, practical lessons" },
+  { icon: '🏆', bg: "#DFF0F2", title: "XP Rewards & Badges", desc: "Progress feels like a game" },
+  { icon: '📈', bg: "#E4F1D8", title: "Sustainability Score", desc: "A clear score for your farm" },
+  { icon: '📊', bg: "#FCEDD3", title: "Progress Analytics", desc: "See growth over every season" },
+  { icon: '🏛️', bg: "#DFF0F2", title: "Government Schemes", desc: "Find schemes you qualify for" },
+  { icon: '🛒', bg: "#F8E1D6", title: "Market Buyers", desc: "Connect with verified buyers" },
+  { icon: '🔔', bg: "#E4F1D8", title: "Notifications", desc: "Never miss a deadline" },
+  { icon: '📱', bg: "#DFF0F2", title: "Mobile Friendly", desc: "Works anywhere on the farm" },
 ];
 
 const steps = [
@@ -37,36 +37,36 @@ const benefits = [
   {
     key: "farmer",
     className: "farmer",
-    title: "🌾 Farmer Benefits",
+    title: '🌾 Farmer Benefits',
     items: ["Learn modern farming techniques", "Reduce chemical usage", "Improve water management", "Increase productivity"],
   },
   {
     key: "gov",
     className: "gov",
-    title: "🏛️ Government Benefits",
+    title: '🏛️ Government Benefits',
     items: ["Monitor sustainable adoption", "Promote sustainable agriculture", "Better outreach to farmers"],
   },
   {
     key: "buyer",
     className: "buyer",
-    title: "🛒 Market Buyer Benefits",
+    title: '🛒 Market Buyer Benefits',
     items: ["Discover verified sustainable farmers", "Transparent sustainability score"],
   },
 ];
 
 const modules = [
-  { icon: "🏠", bg: "#E4F1D8", title: "Dashboard" },
-  { icon: "🤖", bg: "#F8E1D6", title: "AI Assistant" },
-  { icon: "📚", bg: "#FCEDD3", title: "Learning Modules" },
-  { icon: "🎮", bg: "#DFF0F2", title: "Quiz" },
-  { icon: "📈", bg: "#E4F1D8", title: "Progress" },
-  { icon: "🏆", bg: "#FCEDD3", title: "Leaderboard" },
-  { icon: "🧪", bg: "#DFF0F2", title: "Certified Practices" },
-  { icon: "💧", bg: "#E4F1D8", title: "Sustainability Metrics" },
-  { icon: "🏛️", bg: "#F8E1D6", title: "Government Schemes" },
-  { icon: "🛒", bg: "#FCEDD3", title: "Market Buyers" },
-  { icon: "🔔", bg: "#DFF0F2", title: "Notifications" },
-  { icon: "⚙️", bg: "#E4F1D8", title: "Settings" },
+  { icon: '🏠', bg: "#E4F1D8", title: "Dashboard" },
+  { icon: '🤖', bg: "#F8E1D6", title: "AI Assistant" },
+  { icon: '📚', bg: "#FCEDD3", title: "Learning Modules" },
+  { icon: '🎮', bg: "#DFF0F2", title: "Quiz" },
+  { icon: '📈', bg: "#E4F1D8", title: "Progress" },
+  { icon: '🏆', bg: "#FCEDD3", title: "Leaderboard" },
+  { icon: '🧪', bg: "#DFF0F2", title: "Certified Practices" },
+  { icon: '💧', bg: "#E4F1D8", title: "Sustainability Metrics" },
+  { icon: '🏛️', bg: "#F8E1D6", title: "Government Schemes" },
+  { icon: '🛒', bg: "#FCEDD3", title: "Market Buyers" },
+  { icon: '🔔', bg: "#DFF0F2", title: "Notifications" },
+  { icon: '⚙️', bg: "#E4F1D8", title: "Settings" },
 ];
 
 const stats = [

@@ -7,39 +7,32 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import CameraAltIcon from "@mui/icons-material/CameraAlt";
-import ScienceIcon from "@mui/icons-material/Science";
 import farmerService from "../../services/farmerService";
 import "./PracticeAdd.css";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ScienceIcon from '@mui/icons-material/Science';
 
-// Page-specific constants — only this page uses these
-const PRACTICE_TYPES = [
-  "Organic mulching",
-  "Drip irrigation",
-  "Bio-pesticide use",
-  "Crop rotation",
-  "Rainwater harvesting",
+// Page-specific constants
+const CATEGORIES = [
+  { value: "SOIL", label: "Soil Health (e.g., Organic mulching, crop rotation)" },
+  { value: "WATER", label: "Water Management (e.g., Drip irrigation, rainwater harvesting)" },
+  { value: "PEST_CONTROL", label: "Pest Control (e.g., Bio-pesticides)" },
+  { value: "CROP_DIVERSITY", label: "Crop Diversity (e.g., Intercropping)" },
 ];
 
-// Kept as a named constant instead of a raw string — swap for ROUTES.PRACTICE_LOGS
-// if a routes.js file gets introduced later
 const PRACTICE_LOGS_ROUTE = "/farmer/practice-logs";
 
 const PracticeAdd = () => {
   const navigate = useNavigate();
 
-  const [practiceType, setPracticeType] = useState("");
+  const [category, setCategory] = useState("");
+  const [practiceName, setPracticeName] = useState("");
   const [description, setDescription] = useState("");
-  const [datePracticed, setDatePracticed] = useState("");
-  const [photo, setPhoto] = useState(null);
+  const [evidence, setEvidence] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const handleBack = () => navigate(PRACTICE_LOGS_ROUTE);
-
-  const handlePhotoChange = (event) => {
-    const file = event.target.files?.[0];
-    if (file) setPhoto(file);
+  const handleBack = () => {
+    navigate(PRACTICE_LOGS_ROUTE);
   };
 
   const handleSubmit = async () => {
@@ -47,20 +40,20 @@ const PracticeAdd = () => {
 
     try {
       const newLog = await farmerService.submitPractice({
-        type: practiceType,
+        category,
+        practiceName,
         description,
-        datePracticed,
-        photo,
+        evidence: evidence || "No evidence provided",
       });
 
-      navigate(`${PRACTICE_LOGS_ROUTE}/status/${newLog.id}`);
+      navigate(PRACTICE_LOGS_ROUTE);
     } finally {
       setSubmitting(false);
     }
   };
 
   const isFormValid =
-    practiceType.trim() && description.trim() && datePracticed;
+    category.trim() && practiceName.trim() && description.trim();
 
   return (
     <Box className="practice-add">
@@ -74,75 +67,66 @@ const PracticeAdd = () => {
           <Typography variant="h6">Submit a Sustainable Practice</Typography>
         </Box>
 
-        <TextField
-          select
-          fullWidth
-          label="Practice type"
-          value={practiceType}
-          onChange={(e) => setPracticeType(e.target.value)}
-          margin="normal"
-        >
-          {PRACTICE_TYPES.map((type) => (
-            <MenuItem key={type} value={type}>
-              {type}
-            </MenuItem>
-          ))}
-        </TextField>
-
-        <TextField
-          fullWidth
-          multiline
-          rows={3}
-          label="Description"
-          placeholder="Briefly describe what you did..."
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          margin="normal"
-        />
-
-        <Box className="practice-add-upload">
-          <Typography variant="body2" className="practice-add-upload-label">
-            Upload evidence photo
-          </Typography>
-
-          <Box
-            component="label"
-            className={`practice-add-upload-box ${photo ? "has-photo" : ""}`}
+        <form className="practice-add-form" onSubmit={(e) => e.preventDefault()}>
+          <TextField
+            select
+            fullWidth
+            label="Practice Category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            margin="normal"
+            slotProps={{ inputLabel: { shrink: true } }}
           >
-            <CameraAltIcon fontSize="large" color="disabled" />
-            <Typography variant="caption" color="text.secondary">
-              {photo ? photo.name : "Choose Image"}
-            </Typography>
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={handlePhotoChange}
-            />
-          </Box>
-        </Box>
+            {CATEGORIES.map((cat) => (
+              <MenuItem key={cat.value} value={cat.value}>
+                {cat.label}
+              </MenuItem>
+            ))}
+          </TextField>
 
-        <TextField
-          fullWidth
-          type="date"
-          label="Date practiced"
-          value={datePracticed}
-          onChange={(e) => setDatePracticed(e.target.value)}
-          InputLabelProps={{ shrink: true }}
-          margin="normal"
-        />
+          <TextField
+            fullWidth
+            label="Practice Name"
+            placeholder="e.g. Drip Irrigation System"
+            value={practiceName}
+            onChange={(e) => setPracticeName(e.target.value)}
+            margin="normal"
+            slotProps={{ inputLabel: { shrink: true } }}
+          />
 
-        <Button
-          fullWidth
-          variant="contained"
-          color="success"
-          size="large"
-          disabled={!isFormValid || submitting}
-          onClick={handleSubmit}
-          className="practice-add-submit"
-        >
-          {submitting ? "Submitting..." : "Submit for Verification"}
-        </Button>
+          <TextField
+            fullWidth
+            label="Description"
+            multiline
+            rows={4}
+            placeholder="Describe how you implemented this practice..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            margin="normal"
+            slotProps={{ inputLabel: { shrink: true } }}
+          />
+
+          <TextField
+            fullWidth
+            label="Evidence (Optional link or note)"
+            placeholder="Link to photo or document"
+            value={evidence}
+            onChange={(e) => setEvidence(e.target.value)}
+            margin="normal"
+            slotProps={{ inputLabel: { shrink: true } }}
+          />
+
+          <Button
+            variant="contained"
+            color="success"
+            size="large"
+            disabled={!isFormValid || submitting}
+            onClick={handleSubmit}
+            className="practice-add-submit"
+          >
+            {submitting ? "Submitting..." : "Submit for Verification"}
+          </Button>
+        </form>
       </Card>
     </Box>
   );

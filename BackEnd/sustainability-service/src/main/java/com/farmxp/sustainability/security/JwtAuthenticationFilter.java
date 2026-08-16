@@ -36,58 +36,62 @@ public class JwtAuthenticationFilter
             FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authorization =
-                request.getHeader("Authorization");
+        try {
+            String authorization =
+                    request.getHeader("Authorization");
 
-        if (authorization == null
-                || !authorization.startsWith("Bearer ")) {
+            if (authorization == null
+                    || !authorization.startsWith("Bearer ")) {
+
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            try {
+
+                String token =
+                        authorization.substring(7);
+
+                Claims claims =
+                        jwtService.extractClaims(token);
+
+                Long userId =
+                        jwtService.extractUserId(token);
+
+                String role =
+                        jwtService.extractRole(token);
+
+                List<SimpleGrantedAuthority> authorities =
+                        role == null
+                                ? List.of()
+                                : List.of(
+                                        new SimpleGrantedAuthority(
+                                                role.startsWith("ROLE_")
+                                                        ? role
+                                                        : "ROLE_" + role
+                                        )
+                                );
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                userId.toString(),
+                                null,
+                                authorities
+                        );
+
+                SecurityContextHolder
+                        .getContext()
+                        .setAuthentication(authentication);
+
+            } catch (Exception e) {
+
+                SecurityContextHolder
+                        .clearContext();
+            }
 
             filterChain.doFilter(request, response);
-            return;
+        } finally {
+            SecurityContextHolder.clearContext();
         }
-
-        try {
-
-            String token =
-                    authorization.substring(7);
-
-            Claims claims =
-                    jwtService.extractClaims(token);
-
-            Long userId =
-                    jwtService.extractUserId(token);
-
-            String role =
-                    jwtService.extractRole(token);
-
-            List<SimpleGrantedAuthority> authorities =
-                    role == null
-                            ? List.of()
-                            : List.of(
-                                    new SimpleGrantedAuthority(
-                                            role.startsWith("ROLE_")
-                                                    ? role
-                                                    : "ROLE_" + role
-                                    )
-                            );
-
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            userId.toString(),
-                            null,
-                            authorities
-                    );
-
-            SecurityContextHolder
-                    .getContext()
-                    .setAuthentication(authentication);
-
-        } catch (Exception e) {
-
-            SecurityContextHolder
-                    .clearContext();
-        }
-
-        filterChain.doFilter(request, response);
     }
 }

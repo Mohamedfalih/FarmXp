@@ -17,42 +17,13 @@ import {
   Typography,
 } from '@mui/material';
 
-import SearchIcon from '@mui/icons-material/Search';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 import { useNavigate } from 'react-router-dom';
+import { getAdmins, updateAdminStatus } from '../../services/adminService';
 import './AdminManagement.css';
-
-const INITIAL_ADMINS = [
-  {
-    id: 1,
-    name: 'System Administrator',
-    email: 'admin@farmxp.com',
-    phone: '9876543210',
-    role: 'SUPER_ADMIN',
-    status: 'Active',
-    joinedDate: '01 Aug 2026',
-  },
-  {
-    id: 2,
-    name: 'FarmXP Admin',
-    email: 'manager@farmxp.com',
-    phone: '9876543211',
-    role: 'ADMIN',
-    status: 'Active',
-    joinedDate: '03 Aug 2026',
-  },
-  {
-    id: 3,
-    name: 'Support Admin',
-    email: 'support@farmxp.com',
-    phone: '9876543212',
-    role: 'ADMIN',
-    status: 'Suspended',
-    joinedDate: '04 Aug 2026',
-  },
-];
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import SearchIcon from '@mui/icons-material/Search';
 
 const STATUS_OPTIONS = ['All Status', 'Active', 'Suspended'];
 
@@ -71,20 +42,28 @@ const AdminManagement = () => {
   const [statusFilter, setStatusFilter] = useState('All Status');
 
   useEffect(() => {
-    /*
-      Later replace this with:
-
-      adminService.getAdmins()
-        .then((data) => setAdmins(data))
-        .finally(() => setLoading(false));
-    */
-
-    const timer = setTimeout(() => {
-      setAdmins(INITIAL_ADMINS);
-      setLoading(false);
-    }, 400);
-
-    return () => clearTimeout(timer);
+    const fetchAdmins = async () => {
+      try {
+        setLoading(true);
+        const data = await getAdmins();
+        const normalized = data.map((admin) => ({
+          id: admin.userId,
+          name: admin.username,
+          email: admin.email,
+          phone: 'Not available',
+          role: admin.role,
+          status: admin.active ? 'Active' : 'Suspended',
+          joinedDate: 'Not available',
+        }));
+        setAdmins(normalized);
+      } catch (error) {
+        console.error('Failed to load admins', error);
+        setAdmins([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAdmins();
   }, []);
 
   const filteredAdmins = useMemo(() => {
@@ -116,28 +95,29 @@ const AdminManagement = () => {
       .toUpperCase();
   };
 
-  const handleToggleStatus = (adminId) => {
-    setAdmins((currentAdmins) =>
-      currentAdmins.map((admin) => {
-        if (admin.id !== adminId) {
-          return admin;
-        }
+  const handleToggleStatus = async (adminId) => {
+    const adminToUpdate = admins.find(a => a.id === adminId);
+    if (!adminToUpdate) return;
+    
+    const newStatus = adminToUpdate.status === 'Active' ? false : true;
 
-        return {
-          ...admin,
-          status:
-            admin.status === 'Active'
-              ? 'Suspended'
-              : 'Active',
-        };
-      })
-    );
-
-    /*
-      Later:
-
-      adminService.updateAdminStatus(adminId, newStatus);
-    */
+    try {
+      await updateAdminStatus(adminId, newStatus);
+      
+      setAdmins((currentAdmins) =>
+        currentAdmins.map((admin) => {
+          if (admin.id !== adminId) {
+            return admin;
+          }
+          return {
+            ...admin,
+            status: newStatus ? 'Active' : 'Suspended',
+          };
+        })
+      );
+    } catch (error) {
+      console.error('Failed to update admin status', error);
+    }
   };
 
   const handleAddAdmin = () => {
@@ -214,12 +194,14 @@ const AdminManagement = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="admin-search"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon fontSize="small" />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="small" />
+                </InputAdornment>
+              ),
+            }
           }}
         />
 

@@ -187,6 +187,34 @@ public class FarmerController {
     }
 
     // ==========================================
+    // DELETE PROFILE
+    // ==========================================
+
+    @org.springframework.web.bind.annotation.DeleteMapping("/profile")
+    public ResponseEntity<?> deleteProfile(
+            Authentication authentication) {
+
+        try {
+
+            Long userId = getUserId(authentication);
+            farmerService.deleteProfile(userId);
+
+            return ResponseEntity.ok(
+                    Map.of("message", "Profile and account deleted successfully")
+            );
+
+        } catch (RuntimeException e) {
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", e.getMessage());
+
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(response);
+        }
+    }
+
+    // ==========================================
     // GET USER ID FROM JWT
     // ==========================================
 

@@ -10,17 +10,19 @@ import {
   Chip,
 } from "@mui/material";
 
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import VerifiedIcon from "@mui/icons-material/Verified";
-import PeopleIcon from "@mui/icons-material/People";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import StorefrontIcon from "@mui/icons-material/Storefront";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import SettingsIcon from "@mui/icons-material/Settings";
-import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
-
+import authService from "../../services/authService";
 import "./AdminSidebar.css";
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import VerifiedIcon from '@mui/icons-material/Verified';
+import PeopleIcon from '@mui/icons-material/People';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import SchoolIcon from '@mui/icons-material/School';
+import StorefrontIcon from '@mui/icons-material/Storefront';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import SettingsIcon from '@mui/icons-material/Settings';
+import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const drawerWidth = 250;
 
@@ -59,6 +61,11 @@ const menuGroups = [
         text: "Government Scheme Mgmt",
         icon: <AccountBalanceIcon />,
         path: "/admin/schemes",
+      },
+      {
+        text: "Learning Modules",
+        icon: <SchoolIcon />,
+        path: "/admin/learning-modules",
       },
       {
         text: "Market Buyer Mgmt",
@@ -139,10 +146,7 @@ const AdminSidebar = ({ mobileOpen, onClose }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Later:
-    // localStorage.removeItem("token");
-    // localStorage.removeItem("user");
-
+    authService.logout();
     navigate("/login");
   };
 
@@ -151,7 +155,7 @@ const AdminSidebar = ({ mobileOpen, onClose }) => {
       {/* Logo */}
       <Box className="admin-sidebar-logo">
         <span className="admin-sidebar-mark">
-          🌾
+          🌱
         </span>
 
         <Typography className="admin-sidebar-word">
@@ -185,7 +189,7 @@ const AdminSidebar = ({ mobileOpen, onClose }) => {
               text={item.text}
               path={item.path}
               isSelected={
-                location.pathname === item.path
+                location.pathname === item.path || (item.path !== '/admin/dashboard' && location.pathname.startsWith(item.path))
               }
               onClick={onClose}
             />
@@ -196,7 +200,7 @@ const AdminSidebar = ({ mobileOpen, onClose }) => {
       {/* Logout */}
       <Box className="admin-sidebar-bottom">
         <SideItem
-          icon="🚪"
+          icon={<LogoutIcon />}
           text="Log Out"
           path="/login"
           isSelected={false}

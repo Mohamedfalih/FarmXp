@@ -41,6 +41,12 @@ axiosInstance.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
+    if (config.method?.toUpperCase() === "GET") {
+      config.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+      config.headers['Pragma'] = 'no-cache';
+      config.headers['Expires'] = '0';
+    }
+
     console.log(
       "FarmXP API Request:",
       config.method?.toUpperCase(),
@@ -107,6 +113,10 @@ axiosInstance.interceptors.response.use(
       console.error(
         "Make sure API Gateway is running on http://localhost:9090"
       );
+
+      console.error(
+        "If the browser reports a CORS error, check CORS configuration in API Gateway."
+      );
     }
 
     // --------------------------------------------------------
@@ -143,11 +153,12 @@ axiosInstance.interceptors.response.use(
     // --------------------------------------------------------
 
     if (status === 404) {
-
-      console.warn(
-        "FarmXP: API endpoint not found:",
-        error.config?.url
-      );
+      const serverMessage = data?.message || '';
+      if (serverMessage) {
+        console.warn(`FarmXP Resource Not Found: ${serverMessage} (${error.config?.url})`);
+      } else {
+        console.warn("FarmXP: API endpoint not found:", error.config?.url);
+      }
     }
 
     // --------------------------------------------------------

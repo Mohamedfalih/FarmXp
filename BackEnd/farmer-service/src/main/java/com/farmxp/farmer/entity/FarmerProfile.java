@@ -38,6 +38,15 @@ public class FarmerProfile {
     @Column(name = "FARM_SIZE_UNIT")
     private String farmSizeUnit;
 
+    @Column(name = "TOTAL_XP", nullable = false)
+    private Integer totalXp = 0;
+
+    @Column(name = "SOIL_TYPE")
+    private String soilType;
+
+    @Column(name = "IRRIGATION_TYPE")
+    private String irrigationType;
+
     public FarmerProfile() {
     }
 
@@ -119,5 +128,29 @@ public class FarmerProfile {
 
     public void setFarmSizeUnit(String farmSizeUnit) {
         this.farmSizeUnit = farmSizeUnit;
+    }
+
+    public Integer getTotalXp() {
+        return totalXp;
+    }
+
+    public void setTotalXp(Integer totalXp) {
+        this.totalXp = totalXp;
+    }
+
+    public String getSoilType() {
+        return soilType;
+    }
+
+    public void setSoilType(String soilType) {
+        this.soilType = soilType;
+    }
+
+    public String getIrrigationType() {
+        return irrigationType;
+    }
+
+    public void setIrrigationType(String irrigationType) {
+        this.irrigationType = irrigationType;
     }
 }

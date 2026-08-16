@@ -23,7 +23,7 @@ public class AdminFarmerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FarmerProfileResponse>>
+    public ResponseEntity<List<com.farmxp.farmer.dto.AdminFarmerListResponse>>
     getAllFarmers() {
 
         return ResponseEntity.ok(
@@ -32,12 +32,12 @@ public class AdminFarmerController {
     }
 
     @GetMapping("/{farmerId}")
-    public ResponseEntity<FarmerProfileResponse>
+    public ResponseEntity<com.farmxp.farmer.dto.AdminFarmerDetailResponse>
     getFarmer(
             @PathVariable Long farmerId) {
 
         return ResponseEntity.ok(
-                farmerService.getFarmerById(
+                farmerService.getAdminFarmerDetails(
                         farmerId)
         );
     }

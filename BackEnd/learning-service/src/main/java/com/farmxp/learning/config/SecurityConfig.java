@@ -62,6 +62,11 @@ public class SecurityConfig {
                         ).permitAll()
                         
                         .requestMatchers(
+                            org.springframework.http.HttpMethod.OPTIONS,
+                            "/**"
+                        ).permitAll()
+                        
+                        .requestMatchers(
                                 "/api/learning/modules/**",
                                 "/api/learning/games/**"
                         )

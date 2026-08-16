@@ -33,101 +33,108 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authorizationHeader =
-                request.getHeader("Authorization");
-
-        if (authorizationHeader == null
-                || !authorizationHeader.startsWith("Bearer ")) {
-
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String token =
-                authorizationHeader
-                        .substring(7)
-                        .trim();
-
-        if (token.isEmpty()) {
-
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         try {
+            String authorizationHeader =
+                    request.getHeader("Authorization");
 
-            if (jwtService.isTokenValid(token)) {
+            if (authorizationHeader == null
+                    || !authorizationHeader.startsWith("Bearer ")) {
 
-                String username =
-                        jwtService.extractUsername(token);
-
-                String role =
-                        jwtService.extractRole(token);
-
-                // Temporary diagnostic output
-                System.out.println(
-                        "JWT USERNAME = " + username
-                );
-
-                System.out.println(
-                        "JWT ROLE = " + role
-                );
-
-                if (username != null
-                        && role != null
-                        && SecurityContextHolder
-                        .getContext()
-                        .getAuthentication() == null) {
-
-                    String authority =
-                            role.startsWith("ROLE_")
-                                    ? role
-                                    : "ROLE_" + role;
-
-                    System.out.println(
-                            "SPRING AUTHORITY = " + authority
-                    );
-
-                    UsernamePasswordAuthenticationToken
-                            authentication =
-                            new UsernamePasswordAuthenticationToken(
-                                    username,
-                                    null,
-                                    Collections.singletonList(
-                                            new SimpleGrantedAuthority(
-                                                    authority
-                                            )
-                                    )
-                            );
-
-                    SecurityContextHolder
-                            .getContext()
-                            .setAuthentication(
-                                    authentication
-                            );
-                }
-
-            } else {
-
-                System.out.println(
-                        "JWT TOKEN = INVALID"
-                );
+                filterChain.doFilter(request, response);
+                return;
             }
 
-        } catch (Exception exception) {
+            String token =
+                    authorizationHeader
+                            .substring(7)
+                            .trim();
 
-            System.out.println(
-                    "JWT ERROR = "
-                            + exception.getMessage()
+            if (token.isEmpty()) {
+
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            try {
+
+                if (jwtService.isTokenValid(token)) {
+
+                    String username =
+                            jwtService.extractUsername(token);
+
+                    String role =
+                            jwtService.extractRole(token);
+
+                    // Temporary diagnostic output
+                    System.out.println(
+                            "JWT USERNAME = " + username
+                    );
+
+                    System.out.println(
+                            "JWT ROLE = " + role
+                    );
+
+                    if (username != null
+                            && role != null
+                            && SecurityContextHolder
+                            .getContext()
+                            .getAuthentication() == null) {
+
+                        String authority =
+                                role.startsWith("ROLE_")
+                                        ? role
+                                        : "ROLE_" + role;
+
+                        System.out.println(
+                                "SPRING AUTHORITY = " + authority
+                        );
+
+                        Long userId =
+                                jwtService.extractUserId(token);
+
+                        UsernamePasswordAuthenticationToken
+                                authentication =
+                                new UsernamePasswordAuthenticationToken(
+                                        userId.toString(),
+                                        null,
+                                        Collections.singletonList(
+                                                new SimpleGrantedAuthority(
+                                                        authority
+                                                )
+                                        )
+                                );
+
+                        SecurityContextHolder
+                                .getContext()
+                                .setAuthentication(
+                                        authentication
+                                );
+                    }
+
+                } else {
+
+                    System.out.println(
+                            "JWT TOKEN = INVALID"
+                    );
+                }
+
+            } catch (Exception exception) {
+
+                System.out.println(
+                        "JWT ERROR = "
+                                + exception.getMessage()
+                );
+
+                SecurityContextHolder
+                        .clearContext();
+            }
+
+            filterChain.doFilter(
+                    request,
+                    response
             );
-
-            SecurityContextHolder
-                    .clearContext();
+        } finally {
+            SecurityContextHolder.clearContext();
         }
-
-        filterChain.doFilter(
-                request,
-                response
-        );
     }
 }

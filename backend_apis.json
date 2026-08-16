@@ -1,0 +1,387 @@
+[
+  {
+    "file": "AiController.java",
+    "method": "POST",
+    "path": "/api/ai/chat"
+  },
+  {
+    "file": "AiController.java",
+    "method": "POST",
+    "path": "/api/ai/recommendations"
+  },
+  {
+    "file": "AdminUserController.java",
+    "method": "GET",
+    "path": "/api/auth/admin/users/{userId}"
+  },
+  {
+    "file": "AdminUserController.java",
+    "method": "PATCH",
+    "path": "/api/auth/admin/users/{userId}/status"
+  },
+  {
+    "file": "AdminUserController.java",
+    "method": "DELETE",
+    "path": "/api/auth/admin/users/{userId}"
+  },
+  {
+    "file": "AuthController.java",
+    "method": "POST",
+    "path": "/api/auth/register"
+  },
+  {
+    "file": "AuthController.java",
+    "method": "POST",
+    "path": "/api/auth/login"
+  },
+  {
+    "file": "AuthController.java",
+    "method": "GET",
+    "path": "/api/auth/test"
+  },
+  {
+    "file": "AuthController.java",
+    "method": "GET",
+    "path": "/api/auth/me"
+  },
+  {
+    "file": "AuthController.java",
+    "method": "POST",
+    "path": "/api/auth/change-password"
+  },
+  {
+    "file": "AuthController.java",
+    "method": "GET",
+    "path": "/api/auth/farmer/test"
+  },
+  {
+    "file": "AuthController.java",
+    "method": "GET",
+    "path": "/api/auth/admin/test"
+  },
+  {
+    "file": "AdminFarmerController.java",
+    "method": "GET",
+    "path": "/api/farmers/admin/{farmerId}"
+  },
+  {
+    "file": "CropController.java",
+    "method": "GET",
+    "path": "/api/farmers/crops/{cropId}"
+  },
+  {
+    "file": "CropController.java",
+    "method": "PUT",
+    "path": "/api/farmers/crops/{cropId}"
+  },
+  {
+    "file": "CropController.java",
+    "method": "DELETE",
+    "path": "/api/farmers/crops/{cropId}"
+  },
+  {
+    "file": "FarmerController.java",
+    "method": "GET",
+    "path": "/api/farmers/test"
+  },
+  {
+    "file": "FarmerController.java",
+    "method": "POST",
+    "path": "/api/farmers/profile"
+  },
+  {
+    "file": "FarmerController.java",
+    "method": "GET",
+    "path": "/api/farmers/profile"
+  },
+  {
+    "file": "FarmerController.java",
+    "method": "GET",
+    "path": "/api/farmers/profile/exists"
+  },
+  {
+    "file": "FarmerController.java",
+    "method": "PUT",
+    "path": "/api/farmers/profile"
+  },
+  {
+    "file": "FarmerInternalController.java",
+    "method": "GET",
+    "path": "/api/farmers/internal/{farmerId}"
+  },
+  {
+    "file": "AdminLearningController.java",
+    "method": "GET",
+    "path": "/api/learning/admin/modules"
+  },
+  {
+    "file": "AdminLearningController.java",
+    "method": "POST",
+    "path": "/api/learning/admin/modules"
+  },
+  {
+    "file": "AdminLearningController.java",
+    "method": "PUT",
+    "path": "/api/learning/admin/modules/{moduleId}"
+  },
+  {
+    "file": "AdminLearningController.java",
+    "method": "DELETE",
+    "path": "/api/learning/admin/modules/{moduleId}"
+  },
+  {
+    "file": "AdminLearningController.java",
+    "method": "POST",
+    "path": "/api/learning/admin/modules/{moduleId}/games"
+  },
+  {
+    "file": "AdminLearningController.java",
+    "method": "GET",
+    "path": "/api/learning/admin/modules/{moduleId}/games"
+  },
+  {
+    "file": "AdminLearningController.java",
+    "method": "PUT",
+    "path": "/api/learning/admin/games/{gameId}"
+  },
+  {
+    "file": "AdminLearningController.java",
+    "method": "DELETE",
+    "path": "/api/learning/admin/games/{gameId}"
+  },
+  {
+    "file": "AdminLearningController.java",
+    "method": "POST",
+    "path": "/api/learning/admin/games/{gameId}/questions"
+  },
+  {
+    "file": "AdminLearningController.java",
+    "method": "PUT",
+    "path": "/api/learning/admin/questions/{questionId}"
+  },
+  {
+    "file": "AdminLearningController.java",
+    "method": "DELETE",
+    "path": "/api/learning/admin/questions/{questionId}"
+  },
+  {
+    "file": "GameController.java",
+    "method": "POST",
+    "path": "/api/learning/games/module/{moduleId}"
+  },
+  {
+    "file": "GameController.java",
+    "method": "GET",
+    "path": "/api/learning/games/{gameId}"
+  },
+  {
+    "file": "GameController.java",
+    "method": "POST",
+    "path": "/api/learning/games/{gameId}/questions"
+  },
+  {
+    "file": "GameController.java",
+    "method": "GET",
+    "path": "/api/learning/games/{gameId}/questions"
+  },
+  {
+    "file": "LearningModuleController.java",
+    "method": "GET",
+    "path": "/api/learning/modules/{moduleId}"
+  },
+  {
+    "file": "LearningModuleController.java",
+    "method": "GET",
+    "path": "/api/learning/modules/{moduleId}/content"
+  },
+  {
+    "file": "ProgressController.java",
+    "method": "POST",
+    "path": "/api/learning/progress/modules/{moduleId}/games/{gameId}/start"
+  },
+  {
+    "file": "ProgressController.java",
+    "method": "POST",
+    "path": "/api/learning/progress/modules/{moduleId}/games/{gameId}/submit"
+  },
+  {
+    "file": "ProgressController.java",
+    "method": "GET",
+    "path": "/api/learning/progress/modules"
+  },
+  {
+    "file": "ProgressController.java",
+    "method": "GET",
+    "path": "/api/learning/progress/summary"
+  },
+  {
+    "file": "QuestionController.java",
+    "method": "POST",
+    "path": "/api/learning/questions/check-answer"
+  },
+  {
+    "file": "MarketBuyerController.java",
+    "method": "GET",
+    "path": "/api/market/buyers/active"
+  },
+  {
+    "file": "MarketBuyerController.java",
+    "method": "GET",
+    "path": "/api/market/buyers/district/{district}"
+  },
+  {
+    "file": "MarketBuyerController.java",
+    "method": "GET",
+    "path": "/api/market/buyers/state/{state}"
+  },
+  {
+    "file": "MarketBuyerController.java",
+    "method": "GET",
+    "path": "/api/market/buyers/{buyerId}"
+  },
+  {
+    "file": "MarketBuyerController.java",
+    "method": "PUT",
+    "path": "/api/market/buyers/{buyerId}"
+  },
+  {
+    "file": "MarketBuyerController.java",
+    "method": "PATCH",
+    "path": "/api/market/buyers/{buyerId}/status"
+  },
+  {
+    "file": "MarketBuyerController.java",
+    "method": "DELETE",
+    "path": "/api/market/buyers/{buyerId}"
+  },
+  {
+    "file": "MarketInquiryController.java",
+    "method": "GET",
+    "path": "/api/market/inquiries/my"
+  },
+  {
+    "file": "MarketInquiryController.java",
+    "method": "GET",
+    "path": "/api/market/inquiries/{inquiryId}"
+  },
+  {
+    "file": "MarketMatchController.java",
+    "method": "GET",
+    "path": "/api/market/matches/farmer/{farmerId}"
+  },
+  {
+    "file": "MarketMatchController.java",
+    "method": "GET",
+    "path": "/api/market/matches/buyer/{buyerId}"
+  },
+  {
+    "file": "MarketMatchController.java",
+    "method": "GET",
+    "path": "/api/market/matches/status/{status}"
+  },
+  {
+    "file": "MarketMatchController.java",
+    "method": "GET",
+    "path": "/api/market/matches/{matchId}"
+  },
+  {
+    "file": "MarketMatchController.java",
+    "method": "PATCH",
+    "path": "/api/market/matches/{matchId}/status"
+  },
+  {
+    "file": "MarketMatchController.java",
+    "method": "DELETE",
+    "path": "/api/market/matches/{matchId}"
+  },
+  {
+    "file": "MyNotificationController.java",
+    "method": "GET",
+    "path": "/api/notifications/my/unread"
+  },
+  {
+    "file": "MyNotificationController.java",
+    "method": "GET",
+    "path": "/api/notifications/my/unread/count"
+  },
+  {
+    "file": "MyNotificationController.java",
+    "method": "PUT",
+    "path": "/api/notifications/my/read-all"
+  },
+  {
+    "file": "NotificationController.java",
+    "method": "GET",
+    "path": "/api/notifications/user/{userId}"
+  },
+  {
+    "file": "NotificationController.java",
+    "method": "GET",
+    "path": "/api/notifications/unread/{userId}"
+  },
+  {
+    "file": "NotificationController.java",
+    "method": "GET",
+    "path": "/api/notifications/unread/count/{userId}"
+  },
+  {
+    "file": "NotificationController.java",
+    "method": "PUT",
+    "path": "/api/notifications/{notificationId}/read"
+  },
+  {
+    "file": "NotificationController.java",
+    "method": "PUT",
+    "path": "/api/notifications/user/{userId}/read-all"
+  },
+  {
+    "file": "NotificationController.java",
+    "method": "DELETE",
+    "path": "/api/notifications/{notificationId}"
+  },
+  {
+    "file": "SchemeController.java",
+    "method": "GET",
+    "path": "/api/schemes/all"
+  },
+  {
+    "file": "SchemeController.java",
+    "method": "GET",
+    "path": "/api/schemes/{schemeId}"
+  },
+  {
+    "file": "SchemeController.java",
+    "method": "GET",
+    "path": "/api/schemes/state/{state}"
+  },
+  {
+    "file": "SchemeController.java",
+    "method": "PUT",
+    "path": "/api/schemes/{schemeId}"
+  },
+  {
+    "file": "SchemeController.java",
+    "method": "DELETE",
+    "path": "/api/schemes/{schemeId}"
+  },
+  {
+    "file": "PracticeController.java",
+    "method": "GET",
+    "path": "/api/sustainability/practices/{practiceId}"
+  },
+  {
+    "file": "SustainabilityMetricController.java",
+    "method": "GET",
+    "path": "/api/sustainability/metrics/{metricId}"
+  },
+  {
+    "file": "VerificationController.java",
+    "method": "GET",
+    "path": "/api/sustainability/verification/pending"
+  },
+  {
+    "file": "VerificationController.java",
+    "method": "PUT",
+    "path": "/api/sustainability/verification/{practiceId}"
+  }
+]

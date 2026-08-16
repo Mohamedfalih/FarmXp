@@ -73,15 +73,17 @@ public class CropService {
         return toResponse(savedCrop);
     }
 
-    // ==========================================
-    // GET ALL MY CROPS
-    // ==========================================
-
     public List<CropResponse> getMyCrops(
             Long userId) {
 
         FarmerProfile farmerProfile =
-                getFarmerProfile(userId);
+                farmerProfileRepository
+                        .findByUserId(userId)
+                        .orElse(null);
+                        
+        if (farmerProfile == null) {
+            return List.of();
+        }
 
         Long farmerId =
                 farmerProfile.getFarmerId();

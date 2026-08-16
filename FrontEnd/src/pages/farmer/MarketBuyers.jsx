@@ -1,67 +1,16 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import farmerService from '../../services/farmerService';
+import sustainabilityService from '../../services/sustainabilityService';
 import './MarketBuyers.css';
 
-// Mock buyer data — kept inline in this page, matching your GovtSchemes.jsx
-// pattern. Replace the array below with a farmerService.getMarketBuyers()
-// call once the backend is ready.
-const BUYERS = [
-  {
-    id: 1,
-    icon: '🏢',
-    bg: 'var(--sky-light)',
-    companyName: 'GreenLeaf Exports',
-    cropsNeeded: ['Paddy', 'Millets'],
-    priceRange: '₹28 - ₹34 / kg',
-    location: 'Coimbatore, TN',
-    verified: true,
-    rating: 4.6,
-  },
-  {
-    id: 2,
-    icon: '🌾',
-    bg: 'var(--sprout-light)',
-    companyName: 'Organic Harvest Co.',
-    cropsNeeded: ['Banana', 'Coconut'],
-    priceRange: '₹18 - ₹22 / kg',
-    location: 'Erode, TN',
-    verified: true,
-    rating: 4.8,
-  },
-  {
-    id: 3,
-    icon: '🚚',
-    bg: 'var(--harvest-light)',
-    companyName: 'AgriMart Distributors',
-    cropsNeeded: ['Paddy'],
-    priceRange: '₹25 - ₹30 / kg',
-    location: 'Salem, TN',
-    verified: false,
-    rating: 4.1,
-  },
-  {
-    id: 4,
-    icon: '🏭',
-    bg: 'var(--clay-light)',
-    companyName: 'Nilgiri Fresh Foods',
-    cropsNeeded: ['Millets', 'Coconut'],
-    priceRange: '₹20 - ₹26 / kg',
-    location: 'Coimbatore, TN',
-    verified: true,
-    rating: 4.4,
-  },
-];
-
-// Sustainability score gate — later this threshold comes from the backend
-// (Admin-configurable), and the farmer's own score comes from their profile
-const MOCK_SUSTAINABILITY_SCORE = 72;
-const MOCK_SCORE_THRESHOLD = 60;
+const SCORE_THRESHOLD = 60;
 
 const BuyerCard = ({ buyer, onContact }) => (
   <div className="card buyer-card">
     <div className="buyer-card-top">
-      <div className="buyer-emblem" style={{ background: buyer.bg }}>
-        {buyer.icon}
+      <div className="buyer-emblem" style={{ background: buyer.bg || 'var(--sky-light)' }}>
+        {buyer.icon || '🏢'}
       </div>
       {buyer.verified ? (
         <span className="pill pill-approved">✅ Verified</span>
@@ -73,7 +22,7 @@ const BuyerCard = ({ buyer, onContact }) => (
     <div className="buyer-name">{buyer.companyName}</div>
 
     <div className="buyer-crops">
-      {buyer.cropsNeeded.map((crop) => (
+      {(buyer.cropsNeeded || buyer.crops || []).map((crop) => (
         <span key={crop} className="crop-tag">
           {crop}
         </span>
@@ -81,13 +30,13 @@ const BuyerCard = ({ buyer, onContact }) => (
     </div>
 
     <div className="buyer-detail-row">
-      <b>💰 Price Range:</b> {buyer.priceRange}
+      <b>💰 Price Range:</b> {buyer.priceRange || 'Contact for pricing'}
     </div>
     <div className="buyer-detail-row">
-      <b>📍 Location:</b> {buyer.location}
+      <b>📍 Location:</b> {buyer.location || buyer.district || 'N/A'}
     </div>
     <div className="buyer-detail-row">
-      <b>⭐ Rating:</b> {buyer.rating} / 5
+      <b>⭐ Rating:</b> {buyer.rating ? `${buyer.rating} / 5` : 'N/A'}
     </div>
 
     <button
@@ -100,37 +49,124 @@ const BuyerCard = ({ buyer, onContact }) => (
   </div>
 );
 
+const ICON_OPTIONS = ['🏢', '🌾', '🚚', '🏭', '🏪', '🍃'];
+const BG_OPTIONS = [
+  'var(--sky-light)',
+  'var(--sprout-light)',
+  'var(--harvest-light)',
+  'var(--clay-light)',
+];
+
+const enrichBuyer = (buyer, index) => ({
+  ...buyer,
+  icon: buyer.icon || ICON_OPTIONS[index % ICON_OPTIONS.length],
+  bg: buyer.bg || BG_OPTIONS[index % BG_OPTIONS.length],
+  cropsNeeded:
+    buyer.cropsNeeded ||
+    (buyer.crops ? (Array.isArray(buyer.crops) ? buyer.crops : [buyer.crops]) : []),
+});
+
 const MarketBuyers = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const [buyers, setBuyers] = useState([]);
+  const [sustainabilityScore, setSustainabilityScore] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const isEligible = MOCK_SUSTAINABILITY_SCORE >= MOCK_SCORE_THRESHOLD;
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const [buyerData, scoreData] = await Promise.all([
+        farmerService.getMarketBuyers(),
+        sustainabilityService.getScore().catch(() => null),
+      ]);
+
+      setBuyers(
+        Array.isArray(buyerData)
+          ? buyerData.map(enrichBuyer)
+          : []
+      );
+
+      if (scoreData) {
+        const score =
+          scoreData?.totalScore ??
+          scoreData?.score ??
+          scoreData?.sustainabilityScore ??
+          0;
+        setSustainabilityScore(Number(score));
+      } else {
+        // If score API fails, grant access (don't block farmers)
+        setSustainabilityScore(SCORE_THRESHOLD);
+      }
+    } catch (err) {
+      console.error('Failed to load market buyers:', err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          'Unable to load market buyers.'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const isEligible =
+    sustainabilityScore === null || sustainabilityScore >= SCORE_THRESHOLD;
 
   const filteredBuyers = useMemo(() => {
-    return BUYERS.filter((b) =>
-      b.companyName.toLowerCase().includes(search.toLowerCase())
+    return buyers.filter((b) =>
+      (b.companyName || '').toLowerCase().includes(search.toLowerCase())
     );
-  }, [search]);
+  }, [buyers, search]);
 
   const handleContact = (buyerId) => {
     navigate(`/farmer/market-buyers/${buyerId}`);
   };
 
+  if (loading) {
+    return (
+      <div className="market-buyers-page">
+        <div className="card" style={{ padding: '24px', textAlign: 'center' }}>
+          <p>Loading market buyers...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="market-buyers-page">
+        <div className="card" style={{ padding: '24px', textAlign: 'center', color: 'var(--clay)' }}>
+          <p>{error}</p>
+          <button className="btn btn-outline btn-sm" type="button" onClick={loadData} style={{ marginTop: '12px' }}>
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (!isEligible) {
     return (
       <div className="market-buyers-page">
         <div className="card market-locked-card">
-          <div className="market-locked-icon">🔒</div>
+          <div className="market-locked-icon">🔐</div>
           <h3>Market Buyers Locked</h3>
           <p>
-            Reach a sustainability score of {MOCK_SCORE_THRESHOLD}+ to unlock
-            verified buyer connections. Your current score is{' '}
-            {MOCK_SUSTAINABILITY_SCORE}.
+            Reach a sustainability score of {SCORE_THRESHOLD}+ to unlock verified
+            buyer connections. Your current score is {sustainabilityScore}.
           </p>
           <button
             className="btn btn-outline btn-sm"
             type="button"
-            onClick={() => navigate('/farmer/sustainability')}
+            onClick={() => navigate('/farmer/sustainability-metrics')}
           >
             View Sustainability Score
           </button>
@@ -143,25 +179,33 @@ const MarketBuyers = () => {
     <div className="market-buyers-page">
       <div className="market-buyers-header">
         <h2 className="market-buyers-title">🛒 Market Buyers</h2>
-        <input
-          className="market-buyers-search"
-          placeholder="🔍 Search buyers..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', width: '100%', maxWidth: '300px' }}>
+          <SearchIcon sx={{ position: 'absolute', left: '10px', color: '#999', fontSize: '18px' }} />
+          <input
+            className="market-buyers-search"
+            style={{ paddingLeft: '32px' }}
+            placeholder="Search buyers..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
       </div>
 
       <div className="grid grid-3">
         {filteredBuyers.map((buyer) => (
           <BuyerCard
-            key={buyer.id}
+            key={buyer.buyerId || buyer.id}
             buyer={buyer}
-            onContact={() => handleContact(buyer.id)}
+            onContact={() => handleContact(buyer.buyerId || buyer.id)}
           />
         ))}
 
         {filteredBuyers.length === 0 && (
-          <div className="market-buyers-empty">No buyers match your search.</div>
+          <div className="market-buyers-empty">
+            {buyers.length === 0
+              ? 'No market buyers available at the moment.'
+              : 'No buyers match your search.'}
+          </div>
         )}
       </div>
     </div>

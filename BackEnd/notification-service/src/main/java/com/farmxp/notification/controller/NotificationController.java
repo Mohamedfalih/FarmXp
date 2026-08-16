@@ -12,6 +12,7 @@ import com.farmxp.notification.dto.NotificationResponse;
 import com.farmxp.notification.service.NotificationService;
 
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -49,18 +50,42 @@ public class NotificationController {
 
             return ResponseEntity
                     .badRequest()
-                    .body(
-                            Map.of(
-                                    "message",
-                                    e.getMessage()
-                            )
-                    );
+                    .body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<?> createBulkNotifications(
+            @Valid @RequestBody com.farmxp.notification.dto.NotificationBulkRequest request) {
+
+        try {
+            notificationService.createBulkNotifications(request);
+
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(Map.of("message", "Bulk notifications created successfully"));
+
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(e.getMessage());
         }
     }
 
     // ==========================================
     // GET USER NOTIFICATIONS
     // ==========================================
+
+    @GetMapping("/my")
+    public ResponseEntity<List<NotificationResponse>>
+    getMyNotifications(Authentication authentication) {
+
+        Long userId = Long.parseLong(authentication.getName());
+        return ResponseEntity.ok(
+                notificationService
+                        .getUserNotifications(userId)
+        );
+    }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<NotificationResponse>>
@@ -77,6 +102,17 @@ public class NotificationController {
     // GET UNREAD
     // ==========================================
 
+    @GetMapping("/my/unread")
+    public ResponseEntity<List<NotificationResponse>>
+    getMyUnreadNotifications(Authentication authentication) {
+
+        Long userId = Long.parseLong(authentication.getName());
+        return ResponseEntity.ok(
+                notificationService
+                        .getUnreadNotifications(userId)
+        );
+    }
+
     @GetMapping("/unread/{userId}")
     public ResponseEntity<List<NotificationResponse>>
     getUnreadNotifications(
@@ -91,6 +127,22 @@ public class NotificationController {
     // ==========================================
     // COUNT UNREAD
     // ==========================================
+
+    @GetMapping("/my/unread/count")
+    public ResponseEntity<?> countMyUnread(Authentication authentication) {
+
+        Long userId = Long.parseLong(authentication.getName());
+        long count =
+                notificationService
+                        .countUnreadNotifications(userId);
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "userId", userId,
+                        "unreadCount", count
+                )
+        );
+    }
 
     @GetMapping("/unread/count/{userId}")
     public ResponseEntity<?> countUnread(
@@ -114,7 +166,8 @@ public class NotificationController {
 
     @PutMapping("/{notificationId}/read")
     public ResponseEntity<?> markAsRead(
-            @PathVariable String notificationId) {
+            @PathVariable Long notificationId) {
+
 
         try {
 
@@ -141,6 +194,21 @@ public class NotificationController {
     // MARK ALL AS READ
     // ==========================================
 
+    @PutMapping("/my/read-all")
+    public ResponseEntity<?> markMyAllAsRead(Authentication authentication) {
+
+        Long userId = Long.parseLong(authentication.getName());
+        notificationService
+                .markAllAsRead(userId);
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "message",
+                        "All notifications marked as read"
+                )
+        );
+    }
+
     @PutMapping("/user/{userId}/read-all")
     public ResponseEntity<?> markAllAsRead(
             @PathVariable Long userId) {
@@ -162,7 +230,7 @@ public class NotificationController {
 
     @DeleteMapping("/{notificationId}")
     public ResponseEntity<?> deleteNotification(
-            @PathVariable String notificationId) {
+            @PathVariable Long notificationId) {
 
         try {
 

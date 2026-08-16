@@ -12,21 +12,26 @@ import com.farmxp.learning.dto.ModuleResponse;
 import com.farmxp.learning.entity.Module;
 import com.farmxp.learning.enums.ModuleStatus;
 import com.farmxp.learning.exception.ResourceNotFoundException;
-import com.farmxp.learning.repository.GameRepository;
 import com.farmxp.learning.repository.ModuleRepository;
+import com.farmxp.learning.repository.GameRepository;
+import com.farmxp.learning.client.NotificationServiceClient;
+import java.util.Map;
+
 @Service
 public class ModuleService {
 	
 	private final GameRepository gameRepository;
-
     private final ModuleRepository moduleRepository;
+    private final NotificationServiceClient notificationClient;
 
     public ModuleService(
             ModuleRepository moduleRepository,
-            GameRepository gameRepository) {
+            GameRepository gameRepository,
+            NotificationServiceClient notificationClient) {
 
         this.moduleRepository = moduleRepository;
         this.gameRepository = gameRepository;
+        this.notificationClient = notificationClient;
     }
 
     @Transactional
@@ -46,9 +51,22 @@ public class ModuleService {
         module.setStatus(request.getStatus());
         module.setDisplayOrder(request.getDisplayOrder());
 
-        return toResponse(
-                moduleRepository.save(module)
-        );
+        Module savedModule = moduleRepository.save(module);
+
+        if (savedModule.getStatus() == ModuleStatus.PUBLISHED) {
+            try {
+                notificationClient.createSystemNotification(Map.of(
+                        "title", "New Learning Module",
+                        "message", "A new module '" + savedModule.getTitle() + "' is now available.",
+                        "type", "SYSTEM",
+                        "actionUrl", "/farmer/learning"
+                ));
+            } catch (Exception e) {
+                // Ignore
+            }
+        }
+
+        return toResponse(savedModule);
     }
     public List<ModuleResponse> getPublishedModules() {
 
@@ -85,6 +103,7 @@ public class ModuleService {
         Module module =
                 getModuleEntity(moduleId);
 
+        ModuleStatus oldStatus = module.getStatus();
         module.setTitle(request.getTitle());
         module.setDescription(request.getDescription());
         module.setThumbnailUrl(request.getThumbnailUrl());
@@ -97,9 +116,22 @@ public class ModuleService {
         module.setStatus(request.getStatus());
         module.setDisplayOrder(request.getDisplayOrder());
 
-        return toResponse(
-                moduleRepository.save(module)
-        );
+        Module savedModule = moduleRepository.save(module);
+
+        if (oldStatus != ModuleStatus.PUBLISHED && savedModule.getStatus() == ModuleStatus.PUBLISHED) {
+            try {
+                notificationClient.createSystemNotification(Map.of(
+                        "title", "New Learning Module",
+                        "message", "A new module '" + savedModule.getTitle() + "' is now available.",
+                        "type", "SYSTEM",
+                        "actionUrl", "/farmer/learning"
+                ));
+            } catch (Exception e) {
+                // Ignore
+            }
+        }
+
+        return toResponse(savedModule);
     }
 
     @Transactional

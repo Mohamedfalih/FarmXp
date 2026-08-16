@@ -69,6 +69,16 @@ public class SecurityConfig {
                         .permitAll()
 
                         // ----------------------------------
+                        // CORS Preflight
+                        // ----------------------------------
+
+                        .requestMatchers(
+                                HttpMethod.OPTIONS,
+                                "/**"
+                        )
+                        .permitAll()
+
+                        // ----------------------------------
                         // Test endpoint
                         // ----------------------------------
 

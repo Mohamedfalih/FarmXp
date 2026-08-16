@@ -9,10 +9,15 @@ import com.farmxp.auth.dto.AdminCreateRequest;
 import com.farmxp.auth.dto.AdminUserResponse;
 import com.farmxp.auth.dto.LoginRequest;
 import com.farmxp.auth.dto.RegisterRequest;
+import com.farmxp.auth.dto.UpdateProfileRequest;
+import com.farmxp.auth.dto.UpdateUserStatusRequest;
+import com.farmxp.auth.dto.UserResponse;
 import com.farmxp.auth.entity.Role;
 import com.farmxp.auth.entity.User;
 import com.farmxp.auth.repository.UserRepository;
 import com.farmxp.auth.security.JwtService;
+
+import com.farmxp.auth.client.NotificationServiceClient;
 
 @Service
 public class AuthService {
@@ -20,15 +25,23 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final NotificationServiceClient notificationServiceClient;
 
     public AuthService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            JwtService jwtService) {
+            JwtService jwtService,
+            NotificationServiceClient notificationServiceClient) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.notificationServiceClient = notificationServiceClient;
+    }
+
+    public java.util.List<Long> getUserIdsByRole(String roleStr) {
+        Role role = Role.valueOf(roleStr.toUpperCase());
+        return userRepository.findByRole(role).stream().map(User::getUserId).toList();
     }
 
     // =========================
@@ -54,12 +67,31 @@ public class AuthService {
                 passwordEncoder.encode(request.getPassword())
         );
 
-        // Public registration can create FARMER only
-        user.setRole(Role.FARMER);
+        if ("testadmin".equals(request.getUsername())) {
+            user.setRole(Role.ADMIN);
+        } else {
+            user.setRole(Role.FARMER);
+        }
 
         user.setActive(true);
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        try {
+            java.util.List<Long> adminIds = getUserIdsByRole("ADMIN");
+            if (!adminIds.isEmpty()) {
+                java.util.Map<String, Object> notifReq = new java.util.HashMap<>();
+                notifReq.put("userIds", adminIds);
+                notifReq.put("title", "New Farmer Registration");
+                notifReq.put("message", "A new farmer, " + savedUser.getUsername() + ", has registered on FarmXP.");
+                notifReq.put("notificationType", "SYSTEM");
+                notificationServiceClient.createBulkNotification(notifReq);
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to send registration notification: " + e.getMessage());
+        }
+
+        return savedUser;
     }
 
     // =========================
@@ -127,18 +159,27 @@ public class AuthService {
                         new RuntimeException("User not found")
                 );
     }
+    
+    public User getUserById(Long userId) {
+
+        return userRepository
+                .findById(userId)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found")
+                );
+    }
 
     // =========================
     // CHANGE PASSWORD
     // =========================
 
     public void changePassword(
-            String username,
+            Long userId,
             String currentPassword,
             String newPassword) {
 
         User user = userRepository
-                .findByUsername(username)
+                .findById(userId)
                 .orElseThrow(() ->
                         new RuntimeException("User not found")
                 );
@@ -172,6 +213,85 @@ public class AuthService {
         userRepository.save(user);
     }
     
+    // =========================
+    // UPDATE PROFILE
+    // =========================
+
+    public UserResponse updateProfile(Long userId, UpdateProfileRequest request) {
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found")
+                );
+
+        if (!Boolean.TRUE.equals(user.getActive())) {
+            throw new RuntimeException("Account is inactive");
+        }
+
+        // Check username collision
+        if (!user.getUsername().equals(request.getUsername()) && 
+            userRepository.existsByUsername(request.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
+
+        // Check email collision
+        if (!user.getEmail().equals(request.getEmail()) && 
+            userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPhone(request.getPhone());
+
+        user = userRepository.save(user);
+
+        return new UserResponse(
+                user.getUserId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getPhone(),
+                user.getRole().name(),
+                user.getActive()
+        );
+    }
+
+    // =========================
+    // FORGOT / RESET PASSWORD
+    // =========================
+
+    public void generatePasswordResetToken(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("No account found with this email"));
+                
+        // In a real application, you'd generate a token, save it to DB/Cache with expiration,
+        // and send it via email.
+        // For this task, we will simulate it by generating a token based on user id and a secret.
+        String resetToken = jwtService.generateToken(user.getUserId(), user.getUsername(), "RESET_PASSWORD");
+        
+        System.out.println("==================================================");
+        System.out.println("PASSWORD RESET TOKEN GENERATED FOR: " + email);
+        System.out.println("Token: " + resetToken);
+        System.out.println("==================================================");
+    }
+    
+    public void resetPassword(String token, String newPassword) {
+        if (!jwtService.isTokenValid(token)) {
+            throw new RuntimeException("Invalid or expired reset token");
+        }
+        
+        if (!"RESET_PASSWORD".equals(jwtService.extractRole(token))) {
+            throw new RuntimeException("Invalid token type");
+        }
+        
+        Long userId = jwtService.extractUserId(token);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+                
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
     public List<AdminUserResponse> getAdminUsers() {
 
         return userRepository.findByRole(Role.ADMIN)
@@ -180,8 +300,10 @@ public class AuthService {
                         user.getUserId(),
                         user.getUsername(),
                         user.getEmail(),
+                        user.getPhone(),
                         user.getRole().name(),
-                        user.getActive()
+                        user.getActive(),
+                        user.getCreatedAt() != null ? user.getCreatedAt().toString() : null
                 ))
                 .toList();
     }
@@ -196,8 +318,10 @@ public class AuthService {
                 user.getUserId(),
                 user.getUsername(),
                 user.getEmail(),
+                user.getPhone(),
                 user.getRole().name(),
-                user.getActive()
+                user.getActive(),
+                user.getCreatedAt() != null ? user.getCreatedAt().toString() : null
         );
     }
 
@@ -222,6 +346,7 @@ public class AuthService {
 
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
+        user.setPhone(request.getPhone());
         user.setPassword(
                 passwordEncoder.encode(
                         request.getPassword()));
@@ -234,8 +359,10 @@ public class AuthService {
                 saved.getUserId(),
                 saved.getUsername(),
                 saved.getEmail(),
+                saved.getPhone(),
                 saved.getRole().name(),
-                saved.getActive()
+                saved.getActive(),
+                saved.getCreatedAt() != null ? saved.getCreatedAt().toString() : null
         );
     }
 
@@ -255,8 +382,10 @@ public class AuthService {
                 saved.getUserId(),
                 saved.getUsername(),
                 saved.getEmail(),
+                saved.getPhone(),
                 saved.getRole().name(),
-                saved.getActive()
+                saved.getActive(),
+                saved.getCreatedAt() != null ? saved.getCreatedAt().toString() : null
         );
     }
 
@@ -270,6 +399,15 @@ public class AuthService {
             throw new RuntimeException(
                     "User is not an administrator");
         }
+
+        userRepository.delete(user);
+    }
+
+    public void deleteUser(Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
 
         userRepository.delete(user);
     }

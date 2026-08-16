@@ -13,11 +13,6 @@ import {
   Alert,
 } from '@mui/material';
 
-import {
-  ArrowBack,
-  Save,
-  Storefront,
-} from '@mui/icons-material';
 
 import { createBuyer } from '../../services/adminService';
 
@@ -129,7 +124,7 @@ const AddBuyer = () => {
         <Box className="add-buyer-section-heading">
 
           <Box className="add-buyer-section-icon">
-            <Storefront />
+            <span>🏪</span>
           </Box>
 
           <Box>

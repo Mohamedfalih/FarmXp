@@ -12,8 +12,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -29,6 +32,7 @@ public class SecurityConfig {
             HttpSecurity http) throws Exception {
 
         http
+            .cors(org.springframework.security.config.Customizer.withDefaults())
             .csrf(csrf -> csrf.disable())
 
             .sessionManagement(session ->
@@ -49,7 +53,10 @@ public class SecurityConfig {
                 // Public authentication APIs
                 .requestMatchers(
                     "/api/auth/register",
-                    "/api/auth/login"
+                    "/api/auth/login",
+                    "/api/auth/forgot-password",
+                    "/api/auth/reset-password",
+                    "/error"
                 ).permitAll()
 
                 // Admin APIs
@@ -59,6 +66,9 @@ public class SecurityConfig {
                 // Farmer APIs
                 .requestMatchers("/api/auth/farmer/**")
                 .hasRole("FARMER")
+
+                // Allow OPTIONS requests
+                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
 
                 // Everything else requires authentication
                 .anyRequest().authenticated()

@@ -156,7 +156,7 @@ const BuyerDetails = () => {
           </Box>
 
           <Box className="buyer-info-item">
-            <span>📱 Phone</span>
+            <span>📞 Phone</span>
             <strong>{buyer.phone}</strong>
           </Box>
 

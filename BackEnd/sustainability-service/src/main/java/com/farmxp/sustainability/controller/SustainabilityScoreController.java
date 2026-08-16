@@ -34,4 +34,15 @@ public class SustainabilityScoreController {
                 scoreService.getScore(farmerId)
         );
     }
+
+    @GetMapping("/admin/{farmerId}")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<SustainabilityScoreResponse>
+    getFarmerScore(
+            @PathVariable Long farmerId) {
+
+        return ResponseEntity.ok(
+                scoreService.getScore(farmerId)
+        );
+    }
 }

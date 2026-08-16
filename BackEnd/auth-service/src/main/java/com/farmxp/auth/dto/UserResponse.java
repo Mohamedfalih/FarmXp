@@ -5,6 +5,7 @@ public class UserResponse {
     private Long userId;
     private String username;
     private String email;
+    private String phone;
     private String role;
     private Boolean active;
 
@@ -15,12 +16,14 @@ public class UserResponse {
             Long userId,
             String username,
             String email,
+            String phone,
             String role,
             Boolean active) {
 
         this.userId = userId;
         this.username = username;
         this.email = email;
+        this.phone = phone;
         this.role = role;
         this.active = active;
     }
@@ -47,6 +50,14 @@ public class UserResponse {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getRole() {

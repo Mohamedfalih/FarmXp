@@ -8,6 +8,8 @@ public class LearningSummaryResponse {
     private Double overallCompletionPercentage;
     private Integer totalGamesCompleted;
     private Integer totalGames;
+    private Integer totalXp;
+    private Integer inProgressModules;
 
     public LearningSummaryResponse() {
     }
@@ -66,5 +68,21 @@ public class LearningSummaryResponse {
 
     public void setTotalGames(Integer totalGames) {
         this.totalGames = totalGames;
+    }
+
+    public Integer getTotalXp() {
+        return totalXp;
+    }
+
+    public void setTotalXp(Integer totalXp) {
+        this.totalXp = totalXp;
+    }
+
+    public Integer getInProgressModules() {
+        return inProgressModules;
+    }
+
+    public void setInProgressModules(Integer inProgressModules) {
+        this.inProgressModules = inProgressModules;
     }
 }

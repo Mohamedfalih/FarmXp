@@ -53,6 +53,15 @@ public class SecurityConfig {
                         ).permitAll()
 
                         // ==============================
+                        // CORS Preflight
+                        // ==============================
+
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.OPTIONS,
+                                "/**"
+                        ).permitAll()
+
+                        // ==============================
                         // Test API
                         // ==============================
 

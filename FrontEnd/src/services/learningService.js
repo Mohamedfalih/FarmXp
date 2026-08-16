@@ -81,12 +81,14 @@ const learningService = {
     moduleId
   ) => {
 
+    // Use the farmer-accessible module content endpoint
+    // which returns { module, games: [...] }
     const response =
       await axiosInstance.get(
-        `/api/learning/admin/modules/${moduleId}/games`
+        `/api/learning/modules/${moduleId}/content`
       );
 
-    return response.data;
+    return response.data?.games || [];
   },
 
   // ==========================================================
@@ -139,6 +141,13 @@ const learningService = {
         "/api/learning/progress/modules"
       );
 
+    return response.data;
+  },
+
+  completeModule: async (moduleId) => {
+    const response = await axiosInstance.post(
+      `/api/learning/progress/modules/${moduleId}/complete`
+    );
     return response.data;
   },
 

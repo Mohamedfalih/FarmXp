@@ -53,6 +53,27 @@ public class ProgressController {
     }
 
     @PostMapping(
+            "/modules/{moduleId}/complete"
+    )
+    public ResponseEntity<ProgressResponse>
+    completeModule(
+            Authentication authentication,
+            @PathVariable Long moduleId) {
+
+        Long farmerId =
+                Long.parseLong(
+                        authentication.getName()
+                );
+
+        return ResponseEntity.ok(
+                progressService.completeModule(
+                        farmerId,
+                        moduleId
+                )
+        );
+    }
+
+    @PostMapping(
             "/modules/{moduleId}/games/{gameId}/submit"
     )
     public ResponseEntity<ProgressResponse>
@@ -121,6 +142,19 @@ public class ProgressController {
                 Long.parseLong(
                         authentication.getName()
                 );
+
+        return ResponseEntity.ok(
+                progressService.getLearningSummary(
+                        farmerId
+                )
+        );
+    }
+
+    @GetMapping("/admin/summary/{farmerId}")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<LearningSummaryResponse>
+    getFarmerSummary(
+            @PathVariable Long farmerId) {
 
         return ResponseEntity.ok(
                 progressService.getLearningSummary(

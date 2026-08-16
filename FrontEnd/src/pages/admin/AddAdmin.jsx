@@ -11,13 +11,13 @@ import {
   Typography,
 } from "@mui/material";
 
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 import { useNavigate } from "react-router-dom";
 import { createAdmin } from "../../services/adminService";
 import "./AddAdmin.css";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 const AddAdmin = () => {
   const navigate = useNavigate();
@@ -107,8 +107,14 @@ const AddAdmin = () => {
     } catch (error) {
       console.error("Create admin error:", error);
 
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.username ||
+        error.response?.data?.email ||
+        "Unable to create administrator. Please try again.";
+
       setErrors({
-        submit: "Unable to create administrator. Please try again.",
+        submit: errorMessage,
       });
     } finally {
       setSaving(false);
@@ -292,7 +298,7 @@ const AddAdmin = () => {
           {/* Password Notice */}
           <Box className="password-notice">
             <Typography variant="body2" className="password-notice-title">
-              🔐 Password security
+              🌱 Password security
             </Typography>
 
             <Typography variant="body2" className="password-notice-text">

@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LandingPage from "../pages/LandingPage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/farmer/RegisterPage";
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 
 import FarmerLayout from "../layouts/farmer/FarmerLayout";
 import AdminLayout from "../layouts/admin/AdminLayout";
@@ -12,7 +14,7 @@ import MyFarm from "../pages/farmer/MyFarm";
 import LearningModules from "../pages/farmer/LearningModules";
 import PracticeLogs from "../pages/farmer/PracticeLogs";
 import PracticeAdd from "../pages/farmer/PracticeAdd";
-import SustainabilityMetrics from "../pages/farmer/sustainabilityMetrics";
+import SustainabilityMetrics from "../pages/farmer/SustainabilityMetrics";
 import Leaderboard from "../pages/farmer/Leaderboard";
 import GovtSchemes from "../pages/farmer/GovtSchemes";
 import AIAssistant from "../pages/farmer/AIAssistant";
@@ -43,6 +45,8 @@ import AdminManagement from "../pages/admin/AdminManagement";
 import AddAdmin from "../pages/admin/AddAdmin";
 import AdminSettings  from "../pages/admin/Settings";
 import AdminNotifications from "../pages/admin/AdminNotifications";
+import AdminLearningModules from "../pages/admin/AdminLearningModules";
+import AdminModuleDetails from "../pages/admin/AdminModuleDetails";
 
 function AppRoutes() {
   return (
@@ -52,6 +56,8 @@ function AppRoutes() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Farmer Routes */}
         <Route path="/farmer" element={<FarmerLayout />}>
@@ -105,8 +111,9 @@ function AppRoutes() {
           <Route path="admins" element={<AdminManagement />} />
           <Route path="admins/add" element={<AddAdmin />} />
           <Route path="settings" element={<AdminSettings  />} />
-          <Route path="notifications" element={<AdminNotifications />}
-/>
+          <Route path="notifications" element={<AdminNotifications />} />
+          <Route path="learning-modules" element={<AdminLearningModules />} />
+          <Route path="learning-modules/:moduleId" element={<AdminModuleDetails />} />
         </Route>
 
         {/* Optional: 404 Page */}

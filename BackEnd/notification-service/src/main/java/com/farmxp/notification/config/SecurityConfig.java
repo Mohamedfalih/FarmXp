@@ -66,6 +66,11 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/actuator/**"
                         ).permitAll()
+                        
+                        .requestMatchers(
+                                HttpMethod.OPTIONS,
+                                "/**"
+                        ).permitAll()
 
                         // Notification APIs
                         .requestMatchers(

@@ -5,6 +5,7 @@ public class FarmerProfileResponse {
     private Long farmerId;
     private String fullName;
     private String state;
+    private Integer totalXp;
 
     public FarmerProfileResponse() {
     }
@@ -31,5 +32,13 @@ public class FarmerProfileResponse {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public Integer getTotalXp() {
+        return totalXp;
+    }
+
+    public void setTotalXp(Integer totalXp) {
+        this.totalXp = totalXp;
     }
 }

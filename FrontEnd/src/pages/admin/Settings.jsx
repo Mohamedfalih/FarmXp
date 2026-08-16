@@ -1,5 +1,6 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import authService from "../../services/authService";
 import {
   Box,
   Typography,
@@ -19,27 +20,17 @@ import {
   Alert,
   Divider,
   Chip,
+
 } from "@mui/material";
-
-import {
-  Person,
-  Notifications,
-  Palette,
-  Security,
-  Lock,
-  Visibility,
-  VisibilityOff,
-  Login,
-  Delete,
-  Agriculture,
-  Save,
-  Edit,
-  LightMode,
-  DarkMode,
-  SettingsBrightness,
-  Close,
-} from "@mui/icons-material";
-
+import { Palette, Security } from "@mui/icons-material";
+import Close from "@mui/icons-material/Close";
+import Login from "@mui/icons-material/Login";
+import LightMode from "@mui/icons-material/LightMode";
+import DarkMode from "@mui/icons-material/DarkMode";
+import SettingsBrightness from "@mui/icons-material/SettingsBrightness";
+import Save from "@mui/icons-material/Save";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import "./Settings.css";
 
 /* =========================================================
@@ -50,12 +41,12 @@ const NAV_SECTIONS = [
   {
     id: "profile",
     label: "Profile",
-    icon: <Person />,
+    icon: '👤',
   },
   {
     id: "notifications",
     label: "Notifications",
-    icon: <Notifications />,
+    icon: '🔔',
   },
   {
     id: "preferences",
@@ -278,11 +269,38 @@ const Settings = () => {
   ======================================================= */
 
   const [profile, setProfile] = useState({
-    fullName: "FarmXP Admin",
-    email: "admin@farmxp.com",
-    phone: "+91 98765 43210",
+    fullName: "Loading...",
+    email: "Loading...",
+    phone: "Loading...",
     role: "Administrator",
   });
+
+  const [loadingProfile, setLoadingProfile] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await authService.getCurrentUser();
+        setProfile({
+          fullName: data.username,
+          email: data.email,
+          phone: data.phone || "Not provided",
+          role: data.role,
+        });
+        setProfileForm({
+          fullName: data.username,
+          email: data.email,
+          phone: data.phone || "",
+          role: data.role,
+        });
+      } catch (error) {
+        showSnackbar("Failed to load profile", "error");
+      } finally {
+        setLoadingProfile(false);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const [editProfile, setEditProfile] =
     useState(false);
@@ -307,16 +325,29 @@ const Settings = () => {
     setEditProfile(false);
   };
 
-  const handleSaveProfile = () => {
-    setProfile(profileForm);
-    setEditProfile(false);
+  const [savingProfile, setSavingProfile] = useState(false);
 
-    // Later:
-    // PUT /api/admin/profile
-
-    showSnackbar(
-      "Profile updated successfully"
-    );
+  const handleSaveProfile = async () => {
+    try {
+      setSavingProfile(true);
+      const data = await authService.updateProfile({
+        username: profileForm.fullName,
+        email: profileForm.email,
+        phone: profileForm.phone,
+      });
+      setProfile({
+        ...profile,
+        fullName: data.username,
+        email: data.email,
+        phone: data.phone || "Not provided",
+      });
+      setEditProfile(false);
+      showSnackbar("Profile updated successfully");
+    } catch (error) {
+      showSnackbar(error.message || "Failed to update profile", "error");
+    } finally {
+      setSavingProfile(false);
+    }
   };
 
   /* =======================================================
@@ -494,17 +525,46 @@ const Settings = () => {
     return Object.keys(errors).length === 0;
   };
 
-  const handleUpdatePassword = () => {
+  const [savingPassword, setSavingPassword] = useState(false);
+
+  const handleUpdatePassword = async () => {
     if (!validatePassword()) return;
 
-    // Later:
-    // PUT /api/admin/profile/password
-
-    handleCancelPassword();
-
-    showSnackbar(
-      "Password updated successfully"
-    );
+    try {
+      setSavingPassword(true);
+      await authService.updatePassword({
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword,
+      });
+      
+      handleCancelPassword();
+      showSnackbar("Password updated successfully");
+    } catch (error) {
+      const backendError = error.response?.data;
+      
+      // Handle generic message response (e.g., "Current password is incorrect")
+      if (backendError && backendError.message) {
+        setPasswordErrors({
+          currentPassword: backendError.message
+        });
+      } 
+      // Handle validation errors from MethodArgumentNotValidException
+      else if (backendError && typeof backendError === 'object') {
+        // Validation errors come as a map of field names to error messages
+        setPasswordErrors({
+          currentPassword: backendError.currentPassword || "",
+          newPassword: backendError.newPassword || ""
+        });
+      }
+      // Fallback
+      else {
+        setPasswordErrors({
+          currentPassword: error.message || "Failed to update password"
+        });
+      }
+    } finally {
+      setSavingPassword(false);
+    }
   };
 
   /* =======================================================
@@ -564,7 +624,7 @@ const Settings = () => {
         </Box>
 
         <Box className="settings-header-icon">
-          <Agriculture />
+          <span>🌾</span>
         </Box>
       </Box>
 
@@ -621,7 +681,7 @@ const Settings = () => {
                   </Typography>
                 </Box>
 
-                <Person className="panel-heading-icon" />
+                <span className="panel-heading-icon">👤</span>
 
               </Box>
 
@@ -634,7 +694,7 @@ const Settings = () => {
                   <Box className="profile-summary">
 
                     <Avatar className="profile-avatar">
-                      <Agriculture />
+                      <span>🌾</span>
                     </Avatar>
 
                     <Box>
@@ -701,7 +761,7 @@ const Settings = () => {
 
                     <Button
                       variant="outlined"
-                      startIcon={<Edit />}
+                      startIcon={<span>✏️</span>}
                       onClick={
                         handleStartEditing
                       }
@@ -802,8 +862,9 @@ const Settings = () => {
                       onClick={
                         handleSaveProfile
                       }
+                      disabled={savingProfile}
                     >
-                      Save Changes
+                      {savingProfile ? "Saving..." : "Save Changes"}
                     </Button>
 
                   </Box>
@@ -839,7 +900,7 @@ const Settings = () => {
                   </Typography>
                 </Box>
 
-                <Notifications className="panel-heading-icon" />
+                <span className="panel-heading-icon">🔔</span>
 
               </Box>
 
@@ -1062,7 +1123,7 @@ const Settings = () => {
               {/* PASSWORD */}
 
               <SecurityItem
-                icon={<Lock />}
+                icon="🔒"
                 title="Password"
                 description="Keep your account secure by regularly updating your password."
               >
@@ -1125,27 +1186,29 @@ const Settings = () => {
                       size="small"
                       fullWidth
                       margin="dense"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
+                      slotProps={{
+                        input: {
+                          endAdornment: (
+                            <InputAdornment position="end">
 
-                            <IconButton
-                              size="small"
-                              onClick={() =>
-                                togglePasswordVisibility(
-                                  "current"
-                                )
-                              }
-                            >
-                              {showPassword.current ? (
-                                <VisibilityOff fontSize="small" />
-                              ) : (
-                                <Visibility fontSize="small" />
-                              )}
-                            </IconButton>
+                              <IconButton
+                                size="small"
+                                onClick={() =>
+                                  togglePasswordVisibility(
+                                    "current"
+                                  )
+                                }
+                              >
+                                {showPassword.current ? (
+                                  <VisibilityOff fontSize="small" />
+                                ) : (
+                                  <Visibility fontSize="small" />
+                                )}
+                              </IconButton>
 
-                          </InputAdornment>
-                        ),
+                            </InputAdornment>
+                          ),
+                        }
                       }}
                     />
 
@@ -1176,27 +1239,29 @@ const Settings = () => {
                       size="small"
                       fullWidth
                       margin="dense"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
+                      slotProps={{
+                        input: {
+                          endAdornment: (
+                            <InputAdornment position="end">
 
-                            <IconButton
-                              size="small"
-                              onClick={() =>
-                                togglePasswordVisibility(
-                                  "new"
-                                )
-                              }
-                            >
-                              {showPassword.new ? (
-                                <VisibilityOff fontSize="small" />
-                              ) : (
-                                <Visibility fontSize="small" />
-                              )}
-                            </IconButton>
+                              <IconButton
+                                size="small"
+                                onClick={() =>
+                                  togglePasswordVisibility(
+                                    "new"
+                                  )
+                                }
+                              >
+                                {showPassword.new ? (
+                                  <VisibilityOff fontSize="small" />
+                                ) : (
+                                  <Visibility fontSize="small" />
+                                )}
+                              </IconButton>
 
-                          </InputAdornment>
-                        ),
+                            </InputAdornment>
+                          ),
+                        }
                       }}
                     />
 
@@ -1226,27 +1291,29 @@ const Settings = () => {
                       size="small"
                       fullWidth
                       margin="dense"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
+                      slotProps={{
+                        input: {
+                          endAdornment: (
+                            <InputAdornment position="end">
 
-                            <IconButton
-                              size="small"
-                              onClick={() =>
-                                togglePasswordVisibility(
-                                  "confirm"
-                                )
-                              }
-                            >
-                              {showPassword.confirm ? (
-                                <VisibilityOff fontSize="small" />
-                              ) : (
-                                <Visibility fontSize="small" />
-                              )}
-                            </IconButton>
+                              <IconButton
+                                size="small"
+                                onClick={() =>
+                                  togglePasswordVisibility(
+                                    "confirm"
+                                  )
+                                }
+                              >
+                                {showPassword.confirm ? (
+                                  <VisibilityOff fontSize="small" />
+                                ) : (
+                                  <Visibility fontSize="small" />
+                                )}
+                              </IconButton>
 
-                          </InputAdornment>
-                        ),
+                            </InputAdornment>
+                          ),
+                        }
                       }}
                     />
 
@@ -1262,16 +1329,16 @@ const Settings = () => {
                         Cancel
                       </Button>
 
-                      <Button
-                        variant="contained"
-                        color="success"
-                        size="small"
-                        onClick={
-                          handleUpdatePassword
-                        }
-                      >
-                        Update Password
-                      </Button>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          onClick={
+                            handleUpdatePassword
+                          }
+                          disabled={savingPassword}
+                        >
+                          {savingPassword ? "Updating..." : "Update Password"}
+                        </Button>
 
                     </Box>
 
@@ -1311,7 +1378,7 @@ const Settings = () => {
               {/* DELETE ACCOUNT */}
 
               <SecurityItem
-                icon={<Delete />}
+                icon="🗑️"
                 title="Delete Account"
                 description="Permanently delete your FarmXP administrator account."
                 danger
@@ -1323,7 +1390,7 @@ const Settings = () => {
                     variant="text"
                     color="error"
                     size="small"
-                    startIcon={<Delete />}
+                    startIcon={<span>🗑️</span>}
                     onClick={() =>
                       setDeleteDialogOpen(true)
                     }

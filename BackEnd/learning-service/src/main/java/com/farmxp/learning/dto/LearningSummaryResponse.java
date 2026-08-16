@@ -8,6 +8,8 @@ public class LearningSummaryResponse {
     private Double overallCompletionPercentage;
     private Integer totalGamesCompleted;
     private Integer totalGames;
+    private Integer totalXp;
+    private Integer inProgressModules;
 
     public LearningSummaryResponse() {
     }
@@ -18,7 +20,9 @@ public class LearningSummaryResponse {
             Integer completedModules,
             Double overallCompletionPercentage,
             Integer totalGamesCompleted,
-            Integer totalGames) {
+            Integer totalGames,
+            Integer totalXp,
+            Integer inProgressModules) {
 
         this.farmerId = farmerId;
         this.totalModules = totalModules;
@@ -27,6 +31,8 @@ public class LearningSummaryResponse {
                 overallCompletionPercentage;
         this.totalGamesCompleted = totalGamesCompleted;
         this.totalGames = totalGames;
+        this.totalXp = totalXp;
+        this.inProgressModules = inProgressModules;
     }
 
     public Long getFarmerId() {
@@ -51,5 +57,13 @@ public class LearningSummaryResponse {
 
     public Integer getTotalGames() {
         return totalGames;
+    }
+
+    public Integer getTotalXp() {
+        return totalXp;
+    }
+
+    public Integer getInProgressModules() {
+        return inProgressModules;
     }
 }

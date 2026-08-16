@@ -1,46 +1,42 @@
 import axiosInstance from "../api/axiosInstance";
 
 const farmerService = {
-
   // ==========================================================
   // PROFILE
   // ==========================================================
 
   getProfile: async () => {
-    const response =
-      await axiosInstance.get(
-        "/api/farmers/profile"
-      );
+    const response = await axiosInstance.get("/api/farmers/profile");
 
     return response.data;
   },
 
   createProfile: async (profileData) => {
-    const response =
-      await axiosInstance.post(
-        "/api/farmers/profile",
-        profileData
-      );
+    const response = await axiosInstance.post(
+      "/api/farmers/profile",
+      profileData,
+    );
 
     return response.data;
   },
 
   updateProfile: async (profileData) => {
-    const response =
-      await axiosInstance.put(
-        "/api/farmers/profile",
-        profileData
-      );
+    const response = await axiosInstance.put(
+      "/api/farmers/profile",
+      profileData,
+    );
 
     return response.data;
   },
 
   profileExists: async () => {
-    const response =
-      await axiosInstance.get(
-        "/api/farmers/profile/exists"
-      );
+    const response = await axiosInstance.get("/api/farmers/profile/exists");
 
+    return response.data;
+  },
+
+  deleteProfile: async () => {
+    const response = await axiosInstance.delete("/api/farmers/profile");
     return response.data;
   },
 
@@ -49,87 +45,54 @@ const farmerService = {
   // ==========================================================
 
   getMyCrops: async () => {
-    const response =
-      await axiosInstance.get(
-        "/api/farmers/crops"
-      );
+    const response = await axiosInstance.get("/api/farmers/crops");
 
     return response.data;
   },
 
   getCrops: async () => {
-    const response =
-      await axiosInstance.get(
-        "/api/farmers/crops"
-      );
+    const response = await axiosInstance.get("/api/farmers/crops");
 
     return response.data;
   },
 
   createCrop: async (cropData) => {
-    const response =
-      await axiosInstance.post(
-        "/api/farmers/crops",
-        cropData
-      );
+    const response = await axiosInstance.post("/api/farmers/crops", cropData);
 
     return response.data;
   },
 
   addCrop: async (cropData) => {
-    return farmerService.createCrop(
-      cropData
-    );
+    return farmerService.createCrop(cropData);
   },
 
   getCrop: async (cropId) => {
-    const response =
-      await axiosInstance.get(
-        `/api/farmers/crops/${cropId}`
-      );
+    const response = await axiosInstance.get(`/api/farmers/crops/${cropId}`);
 
     return response.data;
   },
 
-  updateCrop: async (
-    cropId,
-    cropData
-  ) => {
-
-    const response =
-      await axiosInstance.put(
-        `/api/farmers/crops/${cropId}`,
-        cropData
-      );
-
-    return response.data;
-  },
-
-  editCrop: async (
-    cropId,
-    cropData
-  ) => {
-
-    return farmerService.updateCrop(
-      cropId,
-      cropData
+  updateCrop: async (cropId, cropData) => {
+    const response = await axiosInstance.put(
+      `/api/farmers/crops/${cropId}`,
+      cropData,
     );
+
+    return response.data;
+  },
+
+  editCrop: async (cropId, cropData) => {
+    return farmerService.updateCrop(cropId, cropData);
   },
 
   deleteCrop: async (cropId) => {
-
-    await axiosInstance.delete(
-      `/api/farmers/crops/${cropId}`
-    );
+    await axiosInstance.delete(`/api/farmers/crops/${cropId}`);
 
     return true;
   },
 
   removeCrop: async (cropId) => {
-
-    return farmerService.deleteCrop(
-      cropId
-    );
+    return farmerService.deleteCrop(cropId);
   },
 
   // ==========================================================
@@ -137,11 +100,7 @@ const farmerService = {
   // ==========================================================
 
   getDashboard: async () => {
-
-    const response =
-      await axiosInstance.get(
-        "/api/farmers/dashboard"
-      );
+    const response = await axiosInstance.get("/api/farmers/dashboard");
 
     return response.data;
   },
@@ -151,35 +110,22 @@ const farmerService = {
   // ==========================================================
 
   getPracticeLogs: async () => {
-
-    const response =
-      await axiosInstance.get(
-        "/api/sustainability/practices"
-      );
+    const response = await axiosInstance.get("/api/sustainability/practices");
 
     return response.data;
   },
 
-  submitPractice: async (
-    practiceData
-  ) => {
-
-    const response =
-      await axiosInstance.post(
-        "/api/sustainability/practices",
-        practiceData
-      );
-
-    return response.data;
-  },
-
-  createPracticeLog: async (
-    practiceData
-  ) => {
-
-    return farmerService.submitPractice(
-      practiceData
+  submitPractice: async (practiceData) => {
+    const response = await axiosInstance.post(
+      "/api/sustainability/practices",
+      practiceData,
     );
+
+    return response.data;
+  },
+
+  createPracticeLog: async (practiceData) => {
+    return farmerService.submitPractice(practiceData);
   },
 
   // ==========================================================
@@ -187,21 +133,13 @@ const farmerService = {
   // ==========================================================
 
   getMarketBuyers: async () => {
-
-    const response =
-      await axiosInstance.get(
-        "/api/market/buyers"
-      );
+    const response = await axiosInstance.get("/api/market/buyers");
 
     return response.data;
   },
 
   getBuyerById: async (buyerId) => {
-
-    const response =
-      await axiosInstance.get(
-        `/api/market/buyers/${buyerId}`
-      );
+    const response = await axiosInstance.get(`/api/market/buyers/${buyerId}`);
 
     return response.data;
   },
@@ -210,25 +148,17 @@ const farmerService = {
   // BUYER INQUIRY
   // ==========================================================
 
-  sendBuyerInquiry: async (
-    inquiryData
-  ) => {
-
-    const response =
-      await axiosInstance.post(
-        "/api/market/inquiries",
-        inquiryData
-      );
+  sendBuyerInquiry: async (inquiryData) => {
+    const response = await axiosInstance.post(
+      "/api/market/inquiries",
+      inquiryData,
+    );
 
     return response.data;
   },
 
   getMyInquiries: async () => {
-
-    const response =
-      await axiosInstance.get(
-        "/api/market/inquiries/my"
-      );
+    const response = await axiosInstance.get("/api/market/inquiries/my");
 
     return response.data;
   },
@@ -238,21 +168,13 @@ const farmerService = {
   // ==========================================================
 
   getSchemes: async () => {
-
-    const response =
-      await axiosInstance.get(
-        "/api/schemes"
-      );
+    const response = await axiosInstance.get("/api/schemes");
 
     return response.data;
   },
 
   getSchemeById: async (schemeId) => {
-
-    const response =
-      await axiosInstance.get(
-        `/api/schemes/${schemeId}`
-      );
+    const response = await axiosInstance.get(`/api/schemes/${schemeId}`);
 
     return response.data;
   },
@@ -261,92 +183,115 @@ const farmerService = {
   // AI
   // ==========================================================
 
-  sendChatMessage: async (
-    message
-  ) => {
-
-    const response =
-      await axiosInstance.post(
-        "/api/ai/chat",
-        {
-          message,
-        }
-      );
+  sendChatMessage: async (message) => {
+    const response = await axiosInstance.post("/api/ai/chat", {
+      message,
+    });
 
     return response.data;
   },
+
+  // ==========================================================
+  // UTILS
+  // ==========================================================
+
+  formatDateForFrontend: (dateVal) => {
+    if (!dateVal) return '';
+    if (Array.isArray(dateVal)) {
+      if (dateVal.length >= 3) {
+        return `${dateVal[0]}-${String(dateVal[1]).padStart(2, '0')}-${String(dateVal[2]).padStart(2, '0')}`;
+      }
+      return '';
+    }
+    if (typeof dateVal === 'string') {
+      return dateVal.split('T')[0];
+    }
+    return '';
+  },
 };
+
+// ============================================================
+// DEFAULT EXPORT
+// ============================================================
 
 export default farmerService;
 
-export const getProfile =
-  farmerService.getProfile;
+// ============================================================
+// NAMED EXPORTS
+// ============================================================
 
-export const createProfile =
-  farmerService.createProfile;
+export const getProfile = farmerService.getProfile;
 
-export const updateProfile =
-  farmerService.updateProfile;
+export const createProfile = farmerService.createProfile;
 
-export const profileExists =
-  farmerService.profileExists;
+export const updateProfile = farmerService.updateProfile;
 
-export const getMyCrops =
-  farmerService.getMyCrops;
+export const profileExists = farmerService.profileExists;
 
-export const getCrops =
-  farmerService.getCrops;
+export const deleteProfile = farmerService.deleteProfile;
 
-export const createCrop =
-  farmerService.createCrop;
+// ============================================================
+// CROP EXPORTS
+// ============================================================
 
-export const addCrop =
-  farmerService.addCrop;
+export const getMyCrops = farmerService.getMyCrops;
 
-export const getCrop =
-  farmerService.getCrop;
+export const getCrops = farmerService.getCrops;
 
-export const updateCrop =
-  farmerService.updateCrop;
+export const createCrop = farmerService.createCrop;
 
-export const editCrop =
-  farmerService.editCrop;
+export const addCrop = farmerService.addCrop;
 
-export const deleteCrop =
-  farmerService.deleteCrop;
+export const getCrop = farmerService.getCrop;
 
-export const removeCrop =
-  farmerService.removeCrop;
+export const updateCrop = farmerService.updateCrop;
 
-export const getDashboard =
-  farmerService.getDashboard;
+export const editCrop = farmerService.editCrop;
 
-export const getPracticeLogs =
-  farmerService.getPracticeLogs;
+export const deleteCrop = farmerService.deleteCrop;
 
-export const submitPractice =
-  farmerService.submitPractice;
+export const removeCrop = farmerService.removeCrop;
 
-export const createPracticeLog =
-  farmerService.createPracticeLog;
+// ============================================================
+// DASHBOARD EXPORT
+// ============================================================
 
-export const getMarketBuyers =
-  farmerService.getMarketBuyers;
+export const getDashboard = farmerService.getDashboard;
 
-export const getBuyerById =
-  farmerService.getBuyerById;
+// ============================================================
+// PRACTICE EXPORTS
+// ============================================================
 
-export const sendBuyerInquiry =
-  farmerService.sendBuyerInquiry;
+export const getPracticeLogs = farmerService.getPracticeLogs;
 
-export const getMyInquiries =
-  farmerService.getMyInquiries;
+export const submitPractice = farmerService.submitPractice;
 
-export const getSchemes =
-  farmerService.getSchemes;
+export const createPracticeLog = farmerService.createPracticeLog;
 
-export const getSchemeById =
-  farmerService.getSchemeById;
+// ============================================================
+// MARKET EXPORTS
+// ============================================================
 
-export const sendChatMessage =
-  farmerService.sendChatMessage;
+export const getMarketBuyers = farmerService.getMarketBuyers;
+
+export const getBuyerById = farmerService.getBuyerById;
+
+export const sendBuyerInquiry = farmerService.sendBuyerInquiry;
+
+export const getMyInquiries = farmerService.getMyInquiries;
+
+// ============================================================
+// SCHEME EXPORTS
+// ============================================================
+
+export const getSchemes = farmerService.getSchemes;
+
+export const getSchemeById = farmerService.getSchemeById;
+
+// ============================================================
+// AI EXPORT
+// ============================================================
+
+export const sendChatMessage = farmerService.sendChatMessage;
+
+export const formatDateForFrontend = farmerService.formatDateForFrontend;

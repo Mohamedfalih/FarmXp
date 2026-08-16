@@ -1,0 +1,1 @@
+SELECT username, role FROM FARMXP.USERS;

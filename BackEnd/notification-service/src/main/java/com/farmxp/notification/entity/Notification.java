@@ -2,14 +2,15 @@ package com.farmxp.notification.entity;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
 
-@Document(collection = "notifications")
+@Entity
+@Table(name = "notifications")
 public class Notification {
 
     @Id
-    private String notificationId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long notificationId;
 
     private Long userId;
 
@@ -40,11 +41,11 @@ public class Notification {
         this.createdAt = LocalDateTime.now();
     }
 
-    public String getNotificationId() {
+    public Long getNotificationId() {
         return notificationId;
     }
 
-    public void setNotificationId(String notificationId) {
+    public void setNotificationId(Long notificationId) {
         this.notificationId = notificationId;
     }
 

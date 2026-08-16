@@ -1,6 +1,7 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import authService from "../../services/authService";
 
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -11,16 +12,29 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
 
-import MenuIcon from "@mui/icons-material/Menu";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import SettingsIcon from "@mui/icons-material/Settings";
-import VerifiedIcon from "@mui/icons-material/Verified";
 
 import "./AdminTopbar.css";
+import MenuIcon from '@mui/icons-material/Menu';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import SettingsIcon from '@mui/icons-material/Settings';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 const AdminTopbar = ({ pageTitle, onMenuToggle }) => {
   const navigate = useNavigate();
+  const [adminName, setAdminName] = useState("Admin");
+
+  useEffect(() => {
+    authService.getCurrentUser()
+      .then((user) => {
+        if (user && user.username) {
+          setAdminName(user.username);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch admin profile for topbar:", err);
+      });
+  }, []);
 
   const [profileAnchor, setProfileAnchor] = useState(null);
 
@@ -50,11 +64,7 @@ const AdminTopbar = ({ pageTitle, onMenuToggle }) => {
 
   const handleLogout = () => {
     handleProfileClose();
-
-    // Later:
-    // localStorage.removeItem("token");
-    // localStorage.removeItem("user");
-
+    authService.logout();
     navigate("/login");
   };
 
@@ -114,14 +124,14 @@ const AdminTopbar = ({ pageTitle, onMenuToggle }) => {
           }}
         >
           <Avatar className="admin-topbar-avatar">
-            AD
+            {adminName.substring(0, 2).toUpperCase()}
           </Avatar>
 
           <Typography
             variant="body2"
             className="admin-topbar-name"
           >
-            Admin
+            {adminName}
           </Typography>
         </Box>
 
@@ -146,12 +156,12 @@ const AdminTopbar = ({ pageTitle, onMenuToggle }) => {
         <Box className="admin-profile-menu-header">
 
           <Avatar className="admin-profile-menu-avatar">
-            AD
+            {adminName.substring(0, 2).toUpperCase()}
           </Avatar>
 
           <Box>
             <Typography className="admin-profile-menu-name">
-              Admin
+              {adminName}
             </Typography>
 
             <Typography className="admin-profile-menu-role">

@@ -1,69 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { sendBuyerInquiry } from '../../services/farmerService';
+import farmerService from '../../services/farmerService';
 import './ContactBuyer.css';
 
-// Mock buyer data — kept inline, matching the same records as MarketBuyers.jsx
-// (same id, companyName, icon, bg). Replace the useEffect body below with
-// farmerService.getBuyerById(id) once the backend is ready.
-const BUYERS = [
-  {
-    id: 1,
-    icon: '🏢',
-    bg: 'var(--sky-light)',
-    companyName: 'GreenLeaf Exports',
-    contactPerson: 'Ravi Kumar',
-    phone: '+91 98765 11111',
-    email: 'procurement@greenleafexports.com',
-    cropsNeeded: ['Paddy', 'Millets'],
-    priceRange: '₹28 - ₹34 / kg',
-    location: 'Coimbatore, TN',
-    verified: true,
-    rating: 4.6,
-  },
-  {
-    id: 2,
-    icon: '🌾',
-    bg: 'var(--sprout-light)',
-    companyName: 'Organic Harvest Co.',
-    contactPerson: 'Meena Devi',
-    phone: '+91 98765 22222',
-    email: 'sourcing@organicharvest.co.in',
-    cropsNeeded: ['Banana', 'Coconut'],
-    priceRange: '₹18 - ₹22 / kg',
-    location: 'Erode, TN',
-    verified: true,
-    rating: 4.8,
-  },
-  {
-    id: 3,
-    icon: '🚚',
-    bg: 'var(--harvest-light)',
-    companyName: 'AgriMart Distributors',
-    contactPerson: 'Suresh Babu',
-    phone: '+91 98765 33333',
-    email: 'buying@agrimart.in',
-    cropsNeeded: ['Paddy'],
-    priceRange: '₹25 - ₹30 / kg',
-    location: 'Salem, TN',
-    verified: false,
-    rating: 4.1,
-  },
-  {
-    id: 4,
-    icon: '🏭',
-    bg: 'var(--clay-light)',
-    companyName: 'Nilgiri Fresh Foods',
-    contactPerson: 'Anitha Raj',
-    phone: '+91 98765 44444',
-    email: 'contact@nilgirifresh.com',
-    cropsNeeded: ['Millets', 'Coconut'],
-    priceRange: '₹20 - ₹26 / kg',
-    location: 'Coimbatore, TN',
-    verified: true,
-    rating: 4.4,
-  },
+const ICON_OPTIONS = ['🏢', '🌾', '🚚', '🏭', '🏪', '🍃'];
+const BG_OPTIONS = [
+  'var(--sky-light)',
+  'var(--sprout-light)',
+  'var(--harvest-light)',
+  'var(--clay-light)',
 ];
+
+// Parse comma-separated or array crops from backend response
+const parseCrops = (requiredCrops) => {
+  if (!requiredCrops) return [];
+  if (Array.isArray(requiredCrops)) return requiredCrops;
+  return String(requiredCrops)
+    .split(',')
+    .map((c) => c.trim())
+    .filter(Boolean);
+};
 
 const ContactBuyer = () => {
   const { id } = useParams();
@@ -71,20 +27,50 @@ const ContactBuyer = () => {
 
   const [buyer, setBuyer] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const [cropType, setCropType] = useState('');
   const [quantity, setQuantity] = useState('');
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [sendError, setSendError] = useState('');
 
   useEffect(() => {
-    setLoading(true);
-    // Replace with: farmerService.getBuyerById(id).then((data) => {...})
-    const found = BUYERS.find((b) => String(b.id) === String(id));
-    setBuyer(found || null);
-    setLoading(false);
+    loadBuyer();
   }, [id]);
+
+  const loadBuyer = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const data = await farmerService.getBuyerById(id);
+
+      const idx = Math.abs(Number(id) || 0) % ICON_OPTIONS.length;
+
+      const cropsNeeded = parseCrops(data.requiredCrops || data.cropsNeeded);
+
+      setBuyer({
+        buyerId: data.buyerId || data.id,
+        companyName: data.businessName || data.companyName || 'Unknown Buyer',
+        icon: data.icon || ICON_OPTIONS[idx],
+        bg: data.bg || BG_OPTIONS[idx % BG_OPTIONS.length],
+        contactPerson: data.contactPerson || 'N/A',
+        phone: data.phone || 'N/A',
+        email: data.email || 'N/A',
+        location: [data.district, data.state].filter(Boolean).join(', ') || data.address || 'N/A',
+        priceRange: data.priceRange || 'Contact for pricing',
+        cropsNeeded,
+        verified: data.status === 'ACTIVE' || data.verified || false,
+      });
+    } catch (err) {
+      console.error('Failed to load buyer:', err);
+      setError(err.response?.data?.message || err.message || 'Buyer not found.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleBack = () => navigate(-1);
 
@@ -92,31 +78,43 @@ const ContactBuyer = () => {
 
   const handleSubmit = async () => {
     setSending(true);
+    setSendError('');
 
     try {
-      await sendBuyerInquiry({
-        buyerId: buyer.id,
+      await farmerService.sendBuyerInquiry({
+        buyerId: buyer.buyerId,
         cropType,
         quantity,
         message,
       });
       setSent(true);
+    } catch (err) {
+      console.error('Failed to send inquiry:', err);
+      setSendError(err.response?.data?.message || err.message || 'Failed to send inquiry. Please try again.');
     } finally {
       setSending(false);
     }
   };
 
   if (loading) {
-    return <div className="contact-buyer-page">Loading...</div>;
+    return (
+      <div className="contact-buyer-page">
+        <div className="card" style={{ padding: '24px', textAlign: 'center' }}>
+          Loading buyer details...
+        </div>
+      </div>
+    );
   }
 
-  if (!buyer) {
+  if (error || !buyer) {
     return (
       <div className="contact-buyer-page">
         <button className="btn-ghost back-btn" type="button" onClick={handleBack}>
           ← Back to Buyers
         </button>
-        <div className="card buyer-notfound">Buyer not found.</div>
+        <div className="card buyer-notfound">
+          {error || 'Buyer not found.'}
+        </div>
       </div>
     );
   }
@@ -187,7 +185,7 @@ const ContactBuyer = () => {
           </div>
           <div className="card info-box">
             <b>🌾 Crops Needed</b>
-            <p>{buyer.cropsNeeded.join(', ')}</p>
+            <p>{buyer.cropsNeeded.length > 0 ? buyer.cropsNeeded.join(', ') : 'Various'}</p>
           </div>
         </div>
       </div>
@@ -207,6 +205,7 @@ const ContactBuyer = () => {
               {crop}
             </option>
           ))}
+          <option value="Other">Other</option>
         </select>
 
         <label className="contact-form-label">Quantity Available</label>
@@ -225,6 +224,12 @@ const ContactBuyer = () => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
+
+        {sendError && (
+          <div style={{ color: 'var(--clay)', fontSize: '13px', marginBottom: '10px' }}>
+            ⚠️ {sendError}
+          </div>
+        )}
 
         <button
           className="btn btn-primary contact-submit-btn"

@@ -15,12 +15,6 @@ import {
   MenuItem,
   IconButton as IconBtn,
 } from '@mui/material';
-import {
-  Visibility,
-  VisibilityOff,
-  Edit,
-  Delete,
-} from '@mui/icons-material';
 import authService from '../../services/authService';
 import './RegisterPage.css';
 
@@ -65,8 +59,8 @@ const INDIAN_STATES = [
 
 const CROP_ICONS = {
   paddy: '🌾',
-  banana: '🍌',
-  coconut: '🥥',
+  banana: '🌱',
+  coconut: '🌱',
   millets: '🌾',
   sugarcane: '🎋',
   cotton: '🌱',
@@ -426,7 +420,7 @@ const RegisterPage = () => {
 
             <TextField
               fullWidth
-              label="👤 Full name"
+              label={<>👤 Full name</>}
               name="name"
               value={formData.name}
               onChange={handleChange}
@@ -439,7 +433,7 @@ const RegisterPage = () => {
 
               <TextField
                 fullWidth
-                label="📱 Phone number"
+                label={<>📱 Phone number</>}
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
@@ -450,7 +444,7 @@ const RegisterPage = () => {
 
               <TextField
                 fullWidth
-                label="📍 Village / District"
+                label={<>📍 Village / District</>}
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
@@ -463,7 +457,7 @@ const RegisterPage = () => {
 
             <TextField
               fullWidth
-              label="👤 Email"
+              label={<>👤 Email</>}
               name="email"
               type="email"
               value={formData.email}
@@ -475,7 +469,7 @@ const RegisterPage = () => {
 
             <TextField
               fullWidth
-              label="🔒 Create password"
+              label={<>🔐 Create password</>}
               name="password"
               type={
                 showPassword
@@ -542,7 +536,7 @@ const RegisterPage = () => {
               <TextField
                 fullWidth
                 select
-                label="🗺️ State"
+                label={<>🌱 State</>}
                 name="state"
                 value={formData.state}
                 onChange={handleChange}
@@ -563,7 +557,7 @@ const RegisterPage = () => {
 
               <TextField
                 fullWidth
-                label="🚜 Total land (acres)"
+                label={<>🌾 Total land (acres)</>}
                 name="totalLand"
                 type="number"
                 value={formData.totalLand}

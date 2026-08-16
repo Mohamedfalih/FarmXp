@@ -12,16 +12,26 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import com.farmxp.sustainability.client.NotificationServiceClient;
+import com.farmxp.sustainability.client.FarmerServiceClient;
+import com.farmxp.sustainability.dto.FarmerProfileResponse;
+import java.util.Map;
 
 @Service
 public class VerificationService {
 
     private final CertifiedPracticeLogRepository repository;
+    private final NotificationServiceClient notificationClient;
+    private final FarmerServiceClient farmerServiceClient;
 
     public VerificationService(
-            CertifiedPracticeLogRepository repository) {
+            CertifiedPracticeLogRepository repository,
+            NotificationServiceClient notificationClient,
+            FarmerServiceClient farmerServiceClient) {
 
         this.repository = repository;
+        this.notificationClient = notificationClient;
+        this.farmerServiceClient = farmerServiceClient;
     }
 
     public List<PracticeLogResponse> getPendingPractices() {
@@ -54,7 +64,9 @@ public class VerificationService {
             );
         }
 
-        if (Boolean.TRUE.equals(request.getApproved())) {
+        boolean isApproved = Boolean.TRUE.equals(request.getApproved());
+
+        if (isApproved) {
 
             practice.setStatus(
                     PracticeStatus.VERIFIED
@@ -79,9 +91,26 @@ public class VerificationService {
         );
 
         repository.save(practice);
+        
+        try {
+            String title = isApproved ? "Practice Verified" : "Practice Rejected";
+            String msg = isApproved 
+                ? "Your practice '" + practice.getPracticeName() + "' has been successfully verified."
+                : "Your practice '" + practice.getPracticeName() + "' was rejected. Reason: " + request.getRejectionReason();
+            
+            notificationClient.createNotification(Map.of(
+                    "userId", practice.getFarmerId(),
+                    "title", title,
+                    "message", msg,
+                    "type", "SYSTEM",
+                    "actionUrl", "/farmer/practice-logs"
+            ));
+        } catch (Exception e) {
+            // Ignore
+        }
 
         String message =
-                Boolean.TRUE.equals(request.getApproved())
+                isApproved
                         ? "Practice verified successfully"
                         : "Practice rejected successfully";
 
@@ -106,6 +135,17 @@ public class VerificationService {
                 entity.getFarmerId()
         );
 
+        try {
+            FarmerProfileResponse farmerProfile = farmerServiceClient.getFarmer(entity.getFarmerId());
+            if (farmerProfile != null) {
+                response.setFarmerName(farmerProfile.getFullName());
+            } else {
+                response.setFarmerName("Unknown Farmer");
+            }
+        } catch (Exception e) {
+            response.setFarmerName("Unknown Farmer");
+        }
+
         response.setCategory(
                 entity.getCategory()
         );
@@ -119,7 +159,7 @@ public class VerificationService {
         );
 
         response.setEvidence(
-                entity.getEvidence()
+                resolveEvidence(entity.getEvidence())
         );
 
         response.setStatus(
@@ -149,5 +189,33 @@ public class VerificationService {
                 .stream()
                 .map(this::convertToResponse)
                 .toList();
+    }
+
+    private String resolveEvidence(String evidence) {
+        if (evidence != null && !evidence.trim().isEmpty() && !evidence.startsWith("http") && !evidence.startsWith("data:")) {
+            String lower = evidence.toLowerCase();
+            if (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".gif") || lower.endsWith(".webp")) {
+                try {
+                    java.nio.file.Path path = java.nio.file.Paths.get(evidence);
+                    if (java.nio.file.Files.exists(path) && !java.nio.file.Files.isDirectory(path)) {
+                        if (java.nio.file.Files.size(path) <= 5 * 1024 * 1024) {
+                            byte[] bytes = java.nio.file.Files.readAllBytes(path);
+                            String mimeType = java.nio.file.Files.probeContentType(path);
+                            if (mimeType == null) {
+                                if (lower.endsWith(".png")) mimeType = "image/png";
+                                else if (lower.endsWith(".gif")) mimeType = "image/gif";
+                                else if (lower.endsWith(".webp")) mimeType = "image/webp";
+                                else mimeType = "image/jpeg";
+                            }
+                            String base64 = java.util.Base64.getEncoder().encodeToString(bytes);
+                            return "data:" + mimeType + ";base64," + base64;
+                        }
+                    }
+                } catch (Exception e) {
+                    // Ignore, leave as text
+                }
+            }
+        }
+        return evidence;
     }
 }

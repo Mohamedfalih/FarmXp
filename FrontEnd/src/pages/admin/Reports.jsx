@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   Box,
   Card,
@@ -9,243 +9,141 @@ import {
   InputLabel,
   Button,
   LinearProgress,
+  CircularProgress,
 } from '@mui/material';
-import DownloadIcon from '@mui/icons-material/Download';
-import RefreshIcon from '@mui/icons-material/Refresh';
+import { getFarmers, getPracticesByStatus } from '../../services/adminService';
 import './Reports.css';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import DownloadIcon from '@mui/icons-material/Download';
 
-/*
- * Mock report data.
- *
- * Later replace this with:
- *
- * reportService.getReports()
- *
- * The frontend structure will remain the same when
- * Spring Boot APIs are connected.
- */
-
-const FARMERS = [
-  {
-    id: 1,
-    name: 'Mohamed Falih',
-    state: 'Tamil Nadu',
-    district: 'Coimbatore',
-    score: 82,
-    status: 'Active',
-  },
-  {
-    id: 2,
-    name: 'Gurumoorthy V',
-    state: 'Tamil Nadu',
-    district: 'Erode',
-    score: 64,
-    status: 'New',
-  },
-  {
-    id: 3,
-    name: 'Selvi P.',
-    state: 'Tamil Nadu',
-    district: 'Salem',
-    score: 72,
-    status: 'Active',
-  },
-  {
-    id: 4,
-    name: 'Anitha R.',
-    state: 'Tamil Nadu',
-    district: 'Salem',
-    score: 64,
-    status: 'Active',
-  },
-  {
-    id: 5,
-    name: 'Velan K.',
-    state: 'Tamil Nadu',
-    district: 'Erode',
-    score: 58,
-    status: 'Suspended',
-  },
-  {
-    id: 6,
-    name: 'Ravi Kumar',
-    state: 'Kerala',
-    district: 'Ernakulam',
-    score: 76,
-    status: 'Active',
-  },
-  {
-    id: 7,
-    name: 'Arun Raj',
-    state: 'Kerala',
-    district: 'Thrissur',
-    score: 69,
-    status: 'Active',
-  },
-  {
-    id: 8,
-    name: 'Priya Devi',
-    state: 'Karnataka',
-    district: 'Mysuru',
-    score: 74,
-    status: 'Active',
-  },
-];
-
-const SUSTAINABILITY = {
-  water: 78,
-  soil: 72,
-  pestControl: 66,
-  cropDiversity: 61,
-};
-
-const PRACTICES = {
-  total: 148,
-  verified: 112,
-  pending: 24,
-  rejected: 12,
-};
-
-const LEARNING = {
-  totalModules: 6,
-  completionRate: 68,
-};
+const normalizeFarmer = (raw) => ({
+  id: raw.id ?? raw.farmerId ?? raw.userId,
+  name: raw.name ?? raw.fullName ?? 'Unknown Farmer',
+  state: raw.state ?? 'Unknown',
+  district: raw.district ?? 'Unknown',
+  score: raw.sustainabilityScore ?? raw.score ?? 0,
+  status: raw.status ?? raw.accountStatus ?? 'PENDING',
+});
 
 const Reports = () => {
+  const [farmers, setFarmers] = useState([]);
+  const [practices, setPractices] = useState({ total: 0, verified: 0, pending: 0, rejected: 0 });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
   const [stateFilter, setStateFilter] = useState('All States');
   const [districtFilter, setDistrictFilter] = useState('All Districts');
 
-  /*
-   * Get unique states from farmer data.
-   */
-  const states = useMemo(() => {
-    return [
-      'All States',
-      ...new Set(FARMERS.map((farmer) => farmer.state)),
-    ];
+  useEffect(() => {
+    loadReports();
   }, []);
 
-  /*
-   * Districts depend on selected state.
-   */
+  const loadReports = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const [farmersData, verifiedData, pendingData, rejectedData] = await Promise.all([
+        getFarmers(),
+        getPracticesByStatus('VERIFIED'),
+        getPracticesByStatus('PENDING'),
+        getPracticesByStatus('REJECTED'),
+      ]);
+
+      const farmersList = Array.isArray(farmersData) ? farmersData : (farmersData?.farmers ?? farmersData?.content ?? []);
+      setFarmers(farmersList.map(normalizeFarmer));
+
+      const vCount = Array.isArray(verifiedData) ? verifiedData.length : 0;
+      const pCount = Array.isArray(pendingData) ? pendingData.length : 0;
+      const rCount = Array.isArray(rejectedData) ? rejectedData.length : 0;
+
+      setPractices({
+        total: vCount + pCount + rCount,
+        verified: vCount,
+        pending: pCount,
+        rejected: rCount,
+      });
+
+    } catch (err) {
+      console.error('Failed to load reports:', err);
+      setError('Unable to load reporting data.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const states = useMemo(() => {
+    return ['All States', ...new Set(farmers.map((farmer) => farmer.state).filter(Boolean))];
+  }, [farmers]);
+
   const districts = useMemo(() => {
     const filteredByState =
       stateFilter === 'All States'
-        ? FARMERS
-        : FARMERS.filter((farmer) => farmer.state === stateFilter);
+        ? farmers
+        : farmers.filter((farmer) => farmer.state === stateFilter);
 
-    return [
-      'All Districts',
-      ...new Set(filteredByState.map((farmer) => farmer.district)),
-    ];
-  }, [stateFilter]);
+    return ['All Districts', ...new Set(filteredByState.map((farmer) => farmer.district).filter(Boolean))];
+  }, [stateFilter, farmers]);
 
-  /*
-   * Farmers displayed in the distribution section.
-   */
   const filteredFarmers = useMemo(() => {
-    return FARMERS.filter((farmer) => {
-      const matchesState =
-        stateFilter === 'All States' ||
-        farmer.state === stateFilter;
-
-      const matchesDistrict =
-        districtFilter === 'All Districts' ||
-        farmer.district === districtFilter;
-
+    return farmers.filter((farmer) => {
+      const matchesState = stateFilter === 'All States' || farmer.state === stateFilter;
+      const matchesDistrict = districtFilter === 'All Districts' || farmer.district === districtFilter;
       return matchesState && matchesDistrict;
     });
-  }, [stateFilter, districtFilter]);
+  }, [stateFilter, districtFilter, farmers]);
 
-  /*
-   * Farmer distribution by district.
-   */
   const districtDistribution = useMemo(() => {
     const counts = {};
-
     filteredFarmers.forEach((farmer) => {
-      counts[farmer.district] =
-        (counts[farmer.district] || 0) + 1;
+      const d = farmer.district || 'Unknown';
+      counts[d] = (counts[d] || 0) + 1;
     });
 
     return Object.entries(counts)
       .map(([district, count]) => ({
         district,
         count,
-        percentage:
-          filteredFarmers.length > 0
-            ? Math.round((count / filteredFarmers.length) * 100)
-            : 0,
+        percentage: filteredFarmers.length > 0 ? Math.round((count / filteredFarmers.length) * 100) : 0,
       }))
       .sort((a, b) => b.count - a.count);
   }, [filteredFarmers]);
 
-  /*
-   * Farmer distribution by state.
-   */
   const stateDistribution = useMemo(() => {
     const counts = {};
-
-    FARMERS.forEach((farmer) => {
-      counts[farmer.state] =
-        (counts[farmer.state] || 0) + 1;
+    farmers.forEach((farmer) => {
+      const s = farmer.state || 'Unknown';
+      counts[s] = (counts[s] || 0) + 1;
     });
 
     return Object.entries(counts)
       .map(([state, count]) => ({
         state,
         count,
-        percentage: Math.round((count / FARMERS.length) * 100),
+        percentage: farmers.length > 0 ? Math.round((count / farmers.length) * 100) : 0,
       }))
       .sort((a, b) => b.count - a.count);
-  }, []);
+  }, [farmers]);
 
-  /*
-   * Overall statistics.
-   */
-  const totalFarmers = FARMERS.length;
+  const totalFarmers = farmers.length;
+  const activeFarmers = farmers.filter((farmer) => farmer.status.toUpperCase() === 'ACTIVE').length;
+  const averageScore = farmers.length > 0 
+    ? Math.round(farmers.reduce((sum, farmer) => sum + farmer.score, 0) / farmers.length) 
+    : 0;
 
-  const activeFarmers = FARMERS.filter(
-    (farmer) => farmer.status === 'Active'
-  ).length;
+  const verificationRate = practices.total > 0
+    ? Math.round((practices.verified / practices.total) * 100)
+    : 0;
 
-  const averageScore = Math.round(
-    FARMERS.reduce((sum, farmer) => sum + farmer.score, 0) /
-      FARMERS.length
-  );
-
-  const verificationRate = Math.round(
-    (PRACTICES.verified / PRACTICES.total) * 100
-  );
-
-  /*
-   * State selection resets district.
-   */
   const handleStateChange = (event) => {
     setStateFilter(event.target.value);
     setDistrictFilter('All Districts');
   };
 
   const handleRefresh = () => {
-    /*
-     * Later:
-     * fetchReports();
-     *
-     * Currently mock data is static.
-     */
-    window.location.reload();
+    loadReports();
   };
 
   const handleExport = () => {
-    /*
-     * Temporary frontend export.
-     *
-     * Later this should call:
-     * reportService.exportReport()
-     *
-     * and Spring Boot can generate PDF/Excel.
-     */
-
     const reportData = [
       ['FarmXP Admin Report'],
       [''],
@@ -255,54 +153,49 @@ const Reports = () => {
       ['Practice Verification Rate', `${verificationRate}%`],
       [''],
       ['State', 'Farmers'],
-      ...stateDistribution.map((item) => [
-        item.state,
-        item.count,
-      ]),
+      ...stateDistribution.map((item) => [item.state, item.count]),
     ];
 
-    const csv = reportData
-      .map((row) => row.join(','))
-      .join('\n');
-
-    const blob = new Blob([csv], {
-      type: 'text/csv;charset=utf-8;',
-    });
-
+    const csv = reportData.map((row) => row.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
 
     const link = document.createElement('a');
     link.href = url;
     link.download = 'farmxp-admin-report.csv';
-
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-
     URL.revokeObjectURL(url);
   };
 
+  if (loading) {
+    return (
+      <Box className="reports-page" sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
+        <CircularProgress color="success" />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box className="reports-page" sx={{ textAlign: 'center', py: 10 }}>
+        <Typography color="error">{error}</Typography>
+        <Button onClick={loadReports} sx={{ mt: 2 }} variant="outlined">Retry</Button>
+      </Box>
+    );
+  }
+
   return (
     <Box className="reports-page">
-
-      {/* =========================
-          PAGE HEADER
-      ========================== */}
       <Box className="reports-header">
-
         <Box>
-          <Typography className="reports-title">
-            Reports
-          </Typography>
-
+          <Typography className="reports-title">Reports</Typography>
           <Typography className="reports-subtitle">
-            Monitor farmer adoption, sustainability performance,
-            learning progress and practice verification.
+            Monitor farmer adoption, sustainability performance, and practice verification.
           </Typography>
         </Box>
-
         <Box className="reports-actions">
-
           <Button
             variant="outlined"
             startIcon={<RefreshIcon />}
@@ -311,7 +204,6 @@ const Reports = () => {
           >
             Refresh
           </Button>
-
           <Button
             variant="contained"
             startIcon={<DownloadIcon />}
@@ -320,381 +212,148 @@ const Reports = () => {
           >
             Export Report
           </Button>
-
         </Box>
-
       </Box>
 
-      {/* =========================
-          OVERVIEW CARDS
-      ========================== */}
       <Box className="report-stat-grid">
-
         <Card className="report-stat-card">
-          <Typography className="stat-label">
-            Total Farmers
-          </Typography>
-
-          <Typography className="stat-value">
-            {totalFarmers}
-          </Typography>
-
-          <Typography className="stat-helper">
-            Registered on FarmXP
-          </Typography>
+          <Typography className="stat-label">Total Farmers</Typography>
+          <Typography className="stat-value">{totalFarmers}</Typography>
+          <Typography className="stat-helper">Registered on FarmXP</Typography>
         </Card>
-
         <Card className="report-stat-card">
-          <Typography className="stat-label">
-            Active Farmers
-          </Typography>
-
-          <Typography className="stat-value">
-            {activeFarmers}
-          </Typography>
-
-          <Typography className="stat-helper">
-            Currently participating
-          </Typography>
+          <Typography className="stat-label">Active Farmers</Typography>
+          <Typography className="stat-value">{activeFarmers}</Typography>
+          <Typography className="stat-helper">Currently participating</Typography>
         </Card>
-
         <Card className="report-stat-card">
-          <Typography className="stat-label">
-            Average Score
-          </Typography>
-
-          <Typography className="stat-value">
-            {averageScore}
-          </Typography>
-
-          <Typography className="stat-helper">
-            Out of 100
-          </Typography>
+          <Typography className="stat-label">Average Score</Typography>
+          <Typography className="stat-value">{averageScore}</Typography>
+          <Typography className="stat-helper">Out of 100</Typography>
         </Card>
-
         <Card className="report-stat-card">
-          <Typography className="stat-label">
-            Verified Practices
-          </Typography>
-
-          <Typography className="stat-value">
-            {verificationRate}%
-          </Typography>
-
-          <Typography className="stat-helper">
-            Verification rate
-          </Typography>
+          <Typography className="stat-label">Verified Practices</Typography>
+          <Typography className="stat-value">{verificationRate}%</Typography>
+          <Typography className="stat-helper">Verification rate</Typography>
         </Card>
-
       </Box>
 
-      {/* =========================
-          MAIN REPORT GRID
-      ========================== */}
       <Box className="reports-main-grid">
-
-        {/* =========================
-            SUSTAINABILITY
-        ========================== */}
         <Card className="report-card">
-
-          <Typography className="report-card-title">
-            Sustainability Performance
-          </Typography>
-
+          <Typography className="report-card-title">Sustainability Performance</Typography>
           <Typography className="report-card-subtitle">
-            Average category performance across farmers
+            Average overall performance (Detailed category APIs not available)
           </Typography>
-
           <Box className="sustainability-list">
-
             <Box className="sustainability-item">
               <Box className="sustainability-label">
-                <span>Water Management</span>
-                <strong>{SUSTAINABILITY.water}%</strong>
+                <span>Overall Sustainability</span>
+                <strong>{averageScore}%</strong>
               </Box>
-
               <LinearProgress
                 variant="determinate"
-                value={SUSTAINABILITY.water}
+                value={averageScore}
                 className="sustainability-progress"
               />
             </Box>
-
-            <Box className="sustainability-item">
-              <Box className="sustainability-label">
-                <span>Soil Health</span>
-                <strong>{SUSTAINABILITY.soil}%</strong>
-              </Box>
-
-              <LinearProgress
-                variant="determinate"
-                value={SUSTAINABILITY.soil}
-                className="sustainability-progress"
-              />
-            </Box>
-
-            <Box className="sustainability-item">
-              <Box className="sustainability-label">
-                <span>Pest Control</span>
-                <strong>{SUSTAINABILITY.pestControl}%</strong>
-              </Box>
-
-              <LinearProgress
-                variant="determinate"
-                value={SUSTAINABILITY.pestControl}
-                className="sustainability-progress"
-              />
-            </Box>
-
-            <Box className="sustainability-item">
-              <Box className="sustainability-label">
-                <span>Crop Diversity</span>
-                <strong>{SUSTAINABILITY.cropDiversity}%</strong>
-              </Box>
-
-              <LinearProgress
-                variant="determinate"
-                value={SUSTAINABILITY.cropDiversity}
-                className="sustainability-progress"
-              />
-            </Box>
-
           </Box>
-
         </Card>
 
-        {/* =========================
-            FARMER DISTRIBUTION
-        ========================== */}
         <Card className="report-card farmer-distribution-card">
-
           <Box className="distribution-header">
-
             <Box>
-              <Typography className="report-card-title">
-                Farmer Distribution
-              </Typography>
-
-              <Typography className="report-card-subtitle">
-                View farmers by state and district
-              </Typography>
+              <Typography className="report-card-title">Farmer Distribution</Typography>
+              <Typography className="report-card-subtitle">View farmers by state and district</Typography>
             </Box>
-
           </Box>
 
-          {/* Filters */}
           <Box className="distribution-filters">
-
             <FormControl size="small">
               <InputLabel>State</InputLabel>
-
-              <Select
-                value={stateFilter}
-                label="State"
-                onChange={handleStateChange}
-              >
+              <Select value={stateFilter} label="State" onChange={handleStateChange}>
                 {states.map((state) => (
-                  <MenuItem key={state} value={state}>
-                    {state}
-                  </MenuItem>
+                  <MenuItem key={state} value={state}>{state}</MenuItem>
                 ))}
               </Select>
             </FormControl>
-
             <FormControl size="small">
               <InputLabel>District</InputLabel>
-
               <Select
                 value={districtFilter}
                 label="District"
-                onChange={(event) =>
-                  setDistrictFilter(event.target.value)
-                }
+                onChange={(event) => setDistrictFilter(event.target.value)}
               >
                 {districts.map((district) => (
-                  <MenuItem
-                    key={district}
-                    value={district}
-                  >
-                    {district}
-                  </MenuItem>
+                  <MenuItem key={district} value={district}>{district}</MenuItem>
                 ))}
               </Select>
             </FormControl>
-
           </Box>
 
-          {/* State overview */}
-          {stateFilter === 'All States' &&
-            districtFilter === 'All Districts' && (
-              <Box className="distribution-section">
-
-                <Typography className="distribution-section-title">
-                  By State
-                </Typography>
-
-                {stateDistribution.map((item) => (
-                  <Box
-                    className="distribution-row"
-                    key={item.state}
-                  >
-
-                    <Box className="distribution-name">
-                      <span>{item.state}</span>
-
-                      <strong>
-                        {item.count} farmer
-                        {item.count !== 1 ? 's' : ''}
-                      </strong>
-                    </Box>
-
-                    <Box className="distribution-bar-container">
-                      <Box
-                        className="distribution-bar"
-                        style={{
-                          width: `${item.percentage}%`,
-                        }}
-                      />
-                    </Box>
-
-                    <span className="distribution-percentage">
-                      {item.percentage}%
-                    </span>
-
+          {stateFilter === 'All States' && districtFilter === 'All Districts' && (
+            <Box className="distribution-section">
+              <Typography className="distribution-section-title">By State</Typography>
+              {stateDistribution.map((item) => (
+                <Box className="distribution-row" key={item.state}>
+                  <Box className="distribution-name">
+                    <span>{item.state}</span>
+                    <strong>{item.count} farmer{item.count !== 1 ? 's' : ''}</strong>
                   </Box>
-                ))}
+                  <Box className="distribution-bar-container">
+                    <Box className="distribution-bar" style={{ width: `${item.percentage}%` }} />
+                  </Box>
+                  <span className="distribution-percentage">{item.percentage}%</span>
+                </Box>
+              ))}
+            </Box>
+          )}
 
-              </Box>
-            )}
-
-          {/* District overview */}
           <Box className="distribution-section">
-
             <Typography className="distribution-section-title">
-              {stateFilter === 'All States'
-                ? 'District Distribution'
-                : `${stateFilter} — District Distribution`}
+              {stateFilter === 'All States' ? 'District Distribution' : `${stateFilter} — District Distribution`}
             </Typography>
-
             {districtDistribution.length === 0 ? (
-              <Typography className="no-distribution">
-                No farmers found for the selected filters.
-              </Typography>
+              <Typography className="no-distribution">No farmers found for the selected filters.</Typography>
             ) : (
               districtDistribution.map((item) => (
-                <Box
-                  className="distribution-row"
-                  key={item.district}
-                >
-
+                <Box className="distribution-row" key={item.district}>
                   <Box className="distribution-name">
                     <span>{item.district}</span>
-
-                    <strong>
-                      {item.count} farmer
-                      {item.count !== 1 ? 's' : ''}
-                    </strong>
+                    <strong>{item.count} farmer{item.count !== 1 ? 's' : ''}</strong>
                   </Box>
-
                   <Box className="distribution-bar-container">
-                    <Box
-                      className="distribution-bar"
-                      style={{
-                        width: `${item.percentage}%`,
-                      }}
-                    />
+                    <Box className="distribution-bar" style={{ width: `${item.percentage}%` }} />
                   </Box>
-
-                  <span className="distribution-percentage">
-                    {item.percentage}%
-                  </span>
-
+                  <span className="distribution-percentage">{item.percentage}%</span>
                 </Box>
               ))
             )}
-
           </Box>
-
         </Card>
-
       </Box>
 
-      {/* =========================
-          PRACTICE VERIFICATION
-      ========================== */}
       <Card className="report-card">
-
-        <Typography className="report-card-title">
-          Practice Verification
-        </Typography>
-
-        <Typography className="report-card-subtitle">
-          Current farmer practice verification status
-        </Typography>
-
+        <Typography className="report-card-title">Practice Verification</Typography>
+        <Typography className="report-card-subtitle">Current farmer practice verification status</Typography>
         <Box className="verification-grid">
-
           <Box className="verification-item">
             <span>Total Submitted</span>
-            <strong>{PRACTICES.total}</strong>
+            <strong>{practices.total}</strong>
           </Box>
-
           <Box className="verification-item">
             <span>Verified</span>
-            <strong>{PRACTICES.verified}</strong>
+            <strong>{practices.verified}</strong>
           </Box>
-
           <Box className="verification-item">
             <span>Pending</span>
-            <strong>{PRACTICES.pending}</strong>
+            <strong>{practices.pending}</strong>
           </Box>
-
           <Box className="verification-item">
             <span>Rejected</span>
-            <strong>{PRACTICES.rejected}</strong>
+            <strong>{practices.rejected}</strong>
           </Box>
-
         </Box>
-
       </Card>
-
-      {/* =========================
-          LEARNING MODULE REPORT
-      ========================== */}
-      <Card className="report-card learning-report-card">
-
-        <Box className="learning-report-header">
-
-          <Box>
-            <Typography className="report-card-title">
-              Learning Module Completion
-            </Typography>
-
-            <Typography className="report-card-subtitle">
-              Farmer progress across FarmXP learning modules
-            </Typography>
-          </Box>
-
-          <Typography className="learning-percentage">
-            {LEARNING.completionRate}%
-          </Typography>
-
-        </Box>
-
-        <LinearProgress
-          variant="determinate"
-          value={LEARNING.completionRate}
-          className="learning-progress"
-        />
-
-        <Typography className="learning-helper">
-          {LEARNING.totalModules} learning modules currently
-          available to farmers
-        </Typography>
-
-      </Card>
-
     </Box>
   );
 };

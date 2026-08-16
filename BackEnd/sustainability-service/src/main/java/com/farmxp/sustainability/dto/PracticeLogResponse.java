@@ -9,6 +9,8 @@ public class PracticeLogResponse {
 
     private Long practiceLogId;
     private Long farmerId;
+    private String farmerName;
+    private String farmerEmail;
     private SustainabilityCategory category;
     private String practiceName;
     private String description;
@@ -35,6 +37,22 @@ public class PracticeLogResponse {
 
     public void setFarmerId(Long farmerId) {
         this.farmerId = farmerId;
+    }
+
+    public String getFarmerName() {
+        return farmerName;
+    }
+
+    public void setFarmerName(String farmerName) {
+        this.farmerName = farmerName;
+    }
+
+    public String getFarmerEmail() {
+        return farmerEmail;
+    }
+
+    public void setFarmerEmail(String farmerEmail) {
+        this.farmerEmail = farmerEmail;
     }
 
     public SustainabilityCategory getCategory() {

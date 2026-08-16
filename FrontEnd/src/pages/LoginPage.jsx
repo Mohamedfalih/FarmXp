@@ -231,7 +231,7 @@ const LoginPage = () => {
               handleRoleSelect('ADMIN')
             }
           >
-            🛠️ Admin
+            🌱 Admin
           </button>
 
         </div>
@@ -268,7 +268,7 @@ const LoginPage = () => {
           <div className="field">
 
             <label>
-              🔒 Password
+              🔐 Password
             </label>
 
             <input

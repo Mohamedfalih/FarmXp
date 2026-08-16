@@ -11,11 +11,14 @@ import com.farmxp.learning.repository.ProgressRepository;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import com.farmxp.learning.client.FarmerServiceClient;
 
 @Service
 public class ProgressService {
@@ -25,26 +28,28 @@ public class ProgressService {
     private final GameService gameService;
     private final GameRepository gameRepository;
     private final QuestionService questionService;
+    private final FarmerServiceClient farmerServiceClient;
 
     public ProgressService(
             ProgressRepository progressRepository,
             ModuleService moduleService,
             GameService gameService,
             GameRepository gameRepository,
-            QuestionService questionService) {
+            QuestionService questionService,
+            FarmerServiceClient farmerServiceClient) {
 
         this.progressRepository = progressRepository;
         this.moduleService = moduleService;
         this.gameService = gameService;
         this.gameRepository = gameRepository;
         this.questionService = questionService;
+        this.farmerServiceClient = farmerServiceClient;
     }
 
     // =========================================================
     // START GAME
     // =========================================================
 
-    @Transactional
     public ProgressResponse startGame(
             Long farmerId,
             Long moduleId,
@@ -115,16 +120,25 @@ public class ProgressService {
             );
         }
 
-        return toResponse(
-                progressRepository.save(progress)
-        );
+        try {
+            return toResponse(
+                    progressRepository.saveAndFlush(progress)
+            );
+        } catch (DataIntegrityViolationException e) {
+            // Race condition: another thread already inserted it.
+            // Retrieve the existing record instead.
+            Progress inserted = progressRepository
+                    .findByFarmerIdAndModuleModuleIdAndGameGameId(
+                            farmerId, moduleId, gameId)
+                    .orElseThrow(() -> new RuntimeException("Concurrent progress creation failed"));
+            return toResponse(inserted);
+        }
     }
 
     // =========================================================
     // SUBMIT GAME
     // =========================================================
 
-    @Transactional
     public ProgressResponse submitGame(
             Long farmerId,
             Long moduleId,
@@ -200,21 +214,109 @@ public class ProgressService {
         int totalMarks =
                 calculateTotalMarks(gameId);
 
+        boolean wasCompletedBefore = isModuleCompleted(farmerId, moduleId);
+
         progress.setScore(score);
-
         progress.setTotalMarks(totalMarks);
+        progress.setStatus(ProgressStatus.COMPLETED);
+        progress.setCompletedAt(LocalDateTime.now());
 
-        progress.setStatus(
-                ProgressStatus.COMPLETED
-        );
+        ProgressResponse response;
+        try {
+            response = toResponse(progressRepository.saveAndFlush(progress));
+        } catch (DataIntegrityViolationException e) {
+            Progress inserted = progressRepository
+                    .findByFarmerIdAndModuleModuleIdAndGameGameId(
+                            farmerId, moduleId, gameId)
+                    .orElseThrow(() -> new RuntimeException("Concurrent progress creation failed"));
+            
+            inserted.setScore(score);
+            inserted.setTotalMarks(totalMarks);
+            inserted.setStatus(ProgressStatus.COMPLETED);
+            inserted.setCompletedAt(LocalDateTime.now());
+            
+            response = toResponse(progressRepository.saveAndFlush(inserted));
+        }
 
-        progress.setCompletedAt(
-                LocalDateTime.now()
-        );
+        boolean isCompletedNow = isModuleCompleted(farmerId, moduleId);
+        if (!wasCompletedBefore && isCompletedNow) {
+            try {
+                Integer reward = module.getXpReward() != null ? module.getXpReward() : 0;
+                farmerServiceClient.addXp(farmerId, reward);
+            } catch (Exception e) {
+                // Ignore cross-service call failure
+            }
+        }
 
-        return toResponse(
-                progressRepository.save(progress)
-        );
+        return response;
+    }
+
+    // =========================================================
+    // COMPLETE MODULE (NO QUIZ)
+    // =========================================================
+
+    public ProgressResponse completeModule(
+            Long farmerId,
+            Long moduleId) {
+
+        Module module =
+                moduleService.getModuleEntity(moduleId);
+
+        // Check if a progress without game already exists
+        Progress progress =
+                progressRepository
+                        .findByFarmerIdAndModuleModuleIdAndGameGameId(
+                                farmerId,
+                                moduleId,
+                                null
+                        )
+                        .orElseGet(() -> {
+                            Progress p = new Progress();
+                            p.setFarmerId(farmerId);
+                            p.setModule(module);
+                            p.setGame(null);
+                            p.setStartedAt(LocalDateTime.now());
+                            return p;
+                        });
+
+        boolean wasCompletedBefore = progress.getStatus() == ProgressStatus.COMPLETED;
+
+        progress.setStatus(ProgressStatus.COMPLETED);
+        
+        Integer reward = module.getXpReward() != null ? module.getXpReward() : 0;
+        progress.setScore(reward);
+        progress.setTotalMarks(reward);
+        
+        if (progress.getCompletedAt() == null) {
+            progress.setCompletedAt(LocalDateTime.now());
+        }
+
+        ProgressResponse response;
+        try {
+            response = toResponse(progressRepository.saveAndFlush(progress));
+        } catch (DataIntegrityViolationException e) {
+            Progress inserted = progressRepository
+                    .findByFarmerIdAndModuleModuleIdAndGameGameId(
+                            farmerId, moduleId, null)
+                    .orElseThrow(() -> new RuntimeException("Concurrent progress creation failed"));
+            
+            wasCompletedBefore = inserted.getStatus() == ProgressStatus.COMPLETED;
+            inserted.setStatus(ProgressStatus.COMPLETED);
+            inserted.setScore(reward);
+            inserted.setTotalMarks(reward);
+            
+            response = toResponse(progressRepository.saveAndFlush(inserted));
+        }
+
+        if (!wasCompletedBefore) {
+            try {
+                farmerServiceClient.addXp(farmerId, reward);
+            } catch (Exception e) {
+                // Ignore cross-service call failure
+            }
+        }
+
+        return response;
     }
 
     // =========================================================
@@ -292,36 +394,38 @@ public class ProgressService {
                             .count();
 
             // =================================================
-            // COMPLETION PERCENTAGE
+            // MODULE STATUS & PERCENTAGE
             // =================================================
 
-            double percentage =
-                    totalGames == 0
-                            ? 0
-                            : (completedGames * 100.0)
-                            / totalGames;
-
-            // =================================================
-            // MODULE STATUS
-            // =================================================
-
+            double percentage;
             ProgressStatus status;
 
-            if (completedGames == 0) {
-
-                status =
-                        ProgressStatus.NOT_STARTED;
-
-            } else if (completedGames
-                    == totalGames) {
-
-                status =
-                        ProgressStatus.COMPLETED;
-
+            if (totalGames == 0) {
+                
+                boolean isCompletedWithoutGame = progress.stream()
+                        .anyMatch(p -> p.getGame() == null && p.getStatus() == ProgressStatus.COMPLETED);
+                
+                if (isCompletedWithoutGame) {
+                    percentage = 100.0;
+                    status = ProgressStatus.COMPLETED;
+                    completedGames = 1; // logical count for summary math
+                    totalGames = 1;     // logical count for summary math
+                } else {
+                    percentage = 0.0;
+                    status = ProgressStatus.NOT_STARTED;
+                }
+                
             } else {
 
-                status =
-                        ProgressStatus.IN_PROGRESS;
+                percentage = (completedGames * 100.0) / totalGames;
+
+                if (completedGames == 0) {
+                    status = ProgressStatus.NOT_STARTED;
+                } else if (completedGames == totalGames) {
+                    status = ProgressStatus.COMPLETED;
+                } else {
+                    status = ProgressStatus.IN_PROGRESS;
+                }
             }
 
             // =================================================
@@ -341,6 +445,22 @@ public class ProgressService {
         }
 
         return response;
+    }
+
+    private boolean isModuleCompleted(Long farmerId, Long moduleId) {
+        List<Game> games = gameRepository.findByModuleModuleIdOrderByDisplayOrderAsc(moduleId);
+        List<Progress> progressList = progressRepository.findByFarmerIdAndModuleModuleId(farmerId, moduleId);
+        
+        int totalGames = games.size();
+        if (totalGames == 0) {
+            return progressList.stream().anyMatch(p -> p.getGame() == null && p.getStatus() == ProgressStatus.COMPLETED);
+        }
+        
+        long completedGames = progressList.stream()
+                .filter(p -> p.getGame() != null && p.getStatus() == ProgressStatus.COMPLETED)
+                .count();
+                
+        return completedGames == totalGames;
     }
 
     // =========================================================
@@ -407,6 +527,25 @@ public class ProgressService {
                         .sum();
 
         // =====================================================
+        // IN PROGRESS MODULES
+        // =====================================================
+
+        int inProgressModules =
+                (int) modules.stream()
+                        .filter(m ->
+                                m.getStatus()
+                                == ProgressStatus.IN_PROGRESS
+                        )
+                        .count();
+
+        // =====================================================
+        // TOTAL XP IS NOW MAINTAINED BY FARMER_SERVICE
+        // =====================================================
+        // We will set totalXp to 0 here since it's no longer the source of truth.
+        // It will be dropped from LearningSummaryResponse once frontend is updated to use FarmerProfile directly.
+        int totalXp = 0;
+
+        // =====================================================
         // RESPONSE
         // =====================================================
 
@@ -416,7 +555,9 @@ public class ProgressService {
                 completedModules,
                 completion,
                 completedGames,
-                totalGames
+                totalGames,
+                totalXp,
+                inProgressModules
         );
     }
 

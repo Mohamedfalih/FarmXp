@@ -1,11 +1,12 @@
 import { useState } from "react";
+import authService from "../../services/authService";
 import "./Settings.css";
 
 const TABS = [
-  { key: "password", label: "🔒 Password" },
-  { key: "language", label: "🌐 Language" },
-  { key: "notifications", label: "🔔 Notifications" },
-  { key: "help", label: "❓ Help" },
+  { key: "password", label: '🔐 Password' },
+  { key: "language", label: '🌱 Language' },
+  { key: "notifications", label: '🔔 Notifications' },
+  { key: "help", label: '❓ Help' },
   { key: "about", label: "ℹ️ About" },
 ];
 
@@ -67,6 +68,10 @@ const Settings = () => {
   // Help tab state
   const [openFaqId, setOpenFaqId] = useState(null);
 
+  // Delete account state
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+
   const handlePasswordChange = (e) => {
     setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value });
     setPasswordError("");
@@ -77,7 +82,7 @@ const Settings = () => {
     setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }));
   };
 
-  const handleUpdatePassword = (e) => {
+  const handleUpdatePassword = async (e) => {
     e.preventDefault();
     setPasswordError("");
     setPasswordSuccess("");
@@ -99,13 +104,20 @@ const Settings = () => {
       return;
     }
 
-    // Later this becomes: authService.updatePassword(passwordForm)
-    setPasswordSuccess("Password updated successfully.");
-    setPasswordForm({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
+    try {
+      await authService.updatePassword({
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword
+      });
+      setPasswordSuccess("Password updated successfully.");
+      setPasswordForm({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+    } catch (err) {
+      setPasswordError(err.response?.data?.message || err.message || "Failed to update password.");
+    }
   };
 
   const toggleNotifPref = (key) => {
@@ -115,6 +127,18 @@ const Settings = () => {
 
   const toggleFaq = (id) => {
     setOpenFaqId((prev) => (prev === id ? null : id));
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      setDeleteError("");
+      const { deleteProfile } = await import("../../services/farmerService");
+      await deleteProfile();
+      authService.logout();
+      window.location.href = "/";
+    } catch (err) {
+      setDeleteError(err.response?.data?.message || err.message || "Failed to delete account.");
+    }
   };
 
   return (
@@ -135,7 +159,7 @@ const Settings = () => {
       {/* Password */}
       {activeTab === "password" && (
         <div className="card settings-card">
-          <h3>🔒 Change Password</h3>
+          <h3>🔐 Change Password</h3>
 
           {passwordError && (
             <div className="settings-alert error">{passwordError}</div>
@@ -215,7 +239,7 @@ const Settings = () => {
       {/* Language */}
       {activeTab === "language" && (
         <div className="card settings-card">
-          <h3>🌐 Language</h3>
+          <h3>🌱 Language</h3>
           <div className="language-options">
             <label
               className={`language-option ${language === "english" ? "selected" : ""}`}
@@ -347,6 +371,49 @@ const Settings = () => {
               in their preferred language — making expert farming knowledge
               accessible without needing to attend in-person training sessions.
             </p>
+          </div>
+
+          <div className="about-section" style={{ marginTop: "2rem", borderTop: "1px solid #ddd", paddingTop: "1rem" }}>
+            <h4 style={{ color: "#d32f2f" }}>Danger Zone</h4>
+            <p style={{ marginBottom: "1rem" }}>
+              Permanently delete your account and all associated data. This action cannot be undone.
+            </p>
+            {deleteError && (
+              <div className="settings-alert error" style={{ marginBottom: "1rem" }}>
+                {deleteError}
+              </div>
+            )}
+            {!showDeleteConfirm ? (
+              <button 
+                className="btn" 
+                style={{ backgroundColor: "#d32f2f", color: "white" }}
+                onClick={() => setShowDeleteConfirm(true)}
+              >
+                Delete Account
+              </button>
+            ) : (
+              <div style={{ backgroundColor: "#ffebee", padding: "1rem", borderRadius: "8px", border: "1px solid #ef9a9a" }}>
+                <p style={{ color: "#c62828", fontWeight: "bold", marginBottom: "1rem" }}>
+                  Are you sure? This will delete your profile, crops, practices, and login credentials permanently.
+                </p>
+                <div style={{ display: "flex", gap: "1rem" }}>
+                  <button 
+                    className="btn" 
+                    style={{ backgroundColor: "#d32f2f", color: "white" }}
+                    onClick={handleDeleteAccount}
+                  >
+                    Yes, Delete My Account
+                  </button>
+                  <button 
+                    className="btn" 
+                    style={{ backgroundColor: "#e0e0e0", color: "#333" }}
+                    onClick={() => setShowDeleteConfirm(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
