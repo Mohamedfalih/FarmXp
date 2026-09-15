@@ -9,8 +9,14 @@ import {
   IconButton,
   Button,
   CircularProgress,
+  Checkbox,
+  FormControlLabel,
 } from '@mui/material';
-import { getSchemeById, updateScheme, formatDateForFrontend } from '../../services/adminService';
+import {
+  getSchemeById,
+  updateScheme,
+  formatDateForFrontend
+} from '../../services/adminService';
 import './EditScheme.css';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
@@ -37,6 +43,10 @@ const EditScheme = () => {
   const [schemeName, setSchemeName] = useState('');
   const [category, setCategory] = useState('');
   const [deadline, setDeadline] = useState('');
+
+  // NEW: controls whether the scheme has a fixed deadline
+  const [hasDeadline, setHasDeadline] = useState(true);
+
   const [status, setStatus] = useState('Active');
   const [benefitSummary, setBenefitSummary] = useState('');
   const [eligibility, setEligibility] = useState('');
@@ -47,35 +57,57 @@ const EditScheme = () => {
 
   useEffect(() => {
     setLoading(true);
+
     getSchemeById(id).then((scheme) => {
       if (!scheme) {
         setNotFound(true);
         setLoading(false);
         return;
       }
+
       setSchemeName(scheme.title || '');
       setCategory(scheme.department || scheme.category || '');
-      
-      setDeadline(formatDateForFrontend(scheme.lastDate || scheme.deadline));
-      
-      setStatus(
-        scheme.status === 'INACTIVE' ? 'Draft' : 
-        scheme.status === 'ACTIVE' ? 'Active' : 
-        scheme.status || 'Active'
+
+      const formattedDeadline = formatDateForFrontend(
+        scheme.lastDate || scheme.deadline
       );
+
+      setDeadline(formattedDeadline);
+
+      // If backend has no date, treat it as "No fixed deadline"
+      if (formattedDeadline) {
+        setHasDeadline(true);
+      } else {
+        setHasDeadline(false);
+      }
+
+      setStatus(
+        scheme.status === 'INACTIVE'
+          ? 'Draft'
+          : scheme.status === 'ACTIVE'
+            ? 'Active'
+            : scheme.status || 'Active'
+      );
+
       // backend field is 'description' — map to benefitSummary state
       setBenefitSummary(scheme.description || '');
+
       setEligibility(scheme.eligibility || '');
       setMinFarmSize(scheme.minFarmSize || '');
       setApplicableCrops(scheme.applicableCrops || '');
       setOfficialWebsiteUrl(scheme.officialWebsiteUrl || '');
+
       setLoading(false);
     });
   }, [id]);
 
   const handleBack = () => navigate('/admin/schemes');
 
-  const isFormValid = schemeName.trim() && category.trim() && deadline.trim();
+  // Deadline is required only when hasDeadline is true
+  const isFormValid =
+    schemeName.trim() &&
+    category.trim() &&
+    (!hasDeadline || deadline.trim());
 
   const handleSave = async () => {
     setSaving(true);
@@ -84,16 +116,22 @@ const EditScheme = () => {
       await updateScheme(id, {
         schemeName,
         category,
-        // pass benefitSummary as description so adminService maps it to the backend 'description' field
+
+        // If no fixed deadline, send null
+        deadline: hasDeadline ? deadline : null,
+
+        // pass benefitSummary as description so adminService maps it
+        // to the backend 'description' field
         description: benefitSummary,
         benefits: benefitSummary,
-        deadline,
+
         status,
         eligibility,
         minFarmSize,
         applicableCrops,
         officialWebsiteUrl,
       });
+
       navigate('/admin/schemes');
     } finally {
       setSaving(false);
@@ -114,6 +152,7 @@ const EditScheme = () => {
         <IconButton onClick={handleBack} className="edit-scheme-back">
           <ArrowBackIcon />
         </IconButton>
+
         <Card className="edit-scheme-card">
           <Typography>Scheme not found.</Typography>
         </Card>
@@ -123,14 +162,22 @@ const EditScheme = () => {
 
   return (
     <Box className="edit-scheme">
-      <IconButton onClick={handleBack} className="edit-scheme-back">
+
+      <IconButton
+        onClick={handleBack}
+        className="edit-scheme-back"
+      >
         <ArrowBackIcon />
       </IconButton>
 
       <Card className="edit-scheme-card">
+
         <Box className="edit-scheme-title">
           <AccountBalanceIcon color="success" />
-          <Typography variant="h6">Edit Government Scheme</Typography>
+
+          <Typography variant="h6">
+            Edit Government Scheme
+          </Typography>
         </Box>
 
         <TextField
@@ -142,6 +189,7 @@ const EditScheme = () => {
         />
 
         <Box className="edit-scheme-row">
+
           <TextField
             select
             fullWidth
@@ -160,12 +208,34 @@ const EditScheme = () => {
           <TextField
             fullWidth
             type="date"
-            InputLabelProps={{ shrink: true }}
+            InputLabelProps={{
+              shrink: true,
+            }}
             label="Deadline"
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
             margin="normal"
+            disabled={!hasDeadline}
           />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={!hasDeadline}
+                onChange={(e) => {
+                  const noDeadline = e.target.checked;
+
+                  setHasDeadline(!noDeadline);
+
+                  if (noDeadline) {
+                    setDeadline('');
+                  }
+                }}
+              />
+            }
+            label="No fixed deadline"
+          />
+
         </Box>
 
         <TextField
@@ -213,6 +283,7 @@ const EditScheme = () => {
         />
 
         <Box className="edit-scheme-row">
+
           <TextField
             fullWidth
             label="Min. farm size (acres)"
@@ -228,6 +299,7 @@ const EditScheme = () => {
             onChange={(e) => setApplicableCrops(e.target.value)}
             margin="normal"
           />
+
         </Box>
 
         <Button
@@ -242,6 +314,7 @@ const EditScheme = () => {
         >
           {saving ? 'Saving...' : 'Update Scheme'}
         </Button>
+
       </Card>
     </Box>
   );

@@ -77,7 +77,11 @@ const SchemeManagement = () => {
                     </Typography>
                   </TableCell>
                   <TableCell>{scheme.department}</TableCell>
-                  <TableCell>{formatDateForFrontend(scheme.lastDate) || '-'}</TableCell>
+                  <TableCell>
+                      {scheme.lastDate
+                        ? formatDateForFrontend(scheme.lastDate)
+                        : 'No fixed deadline'}
+                    </TableCell>
                   <TableCell>
                     <Chip
                       label={scheme.status}

@@ -8,6 +8,8 @@ import {
   MenuItem,
   IconButton,
   Button,
+  Checkbox,
+  FormControlLabel,
 } from '@mui/material';
 import { addScheme } from '../../services/adminService';
 import './AddScheme.css';
@@ -30,6 +32,7 @@ const AddScheme = () => {
   const [schemeName, setSchemeName] = useState('');
   const [category, setCategory] = useState('');
   const [deadline, setDeadline] = useState('');
+  const [hasDeadline, setHasDeadline] = useState(true);
   const [benefitSummary, setBenefitSummary] = useState('');
   const [eligibility, setEligibility] = useState('');
   const [minFarmSize, setMinFarmSize] = useState('');
@@ -40,7 +43,10 @@ const AddScheme = () => {
   const handleBack = () => navigate('/admin/schemes');
 
   const isFormValid =
-    schemeName.trim() && category.trim() && deadline.trim() && benefitSummary.trim();
+    schemeName.trim() &&
+    category.trim() &&
+    benefitSummary.trim() &&
+    (!hasDeadline || deadline.trim());
 
   const handleSave = async () => {
     setSaving(true);
@@ -49,13 +55,17 @@ const AddScheme = () => {
       await addScheme({
         schemeName,
         category,
-        deadline,
+
+        // If there is no fixed deadline, send null
+        deadline: hasDeadline ? deadline : null,
+
         benefitSummary,
         eligibility,
         minFarmSize,
         applicableCrops,
         officialWebsiteUrl,
       });
+
       navigate('/admin/schemes');
     } finally {
       setSaving(false);
@@ -71,7 +81,9 @@ const AddScheme = () => {
       <Card className="add-scheme-card">
         <Box className="add-scheme-title">
           <AccountBalanceIcon color="success" />
-          <Typography variant="h6">Add Government Scheme</Typography>
+          <Typography variant="h6">
+            Add Government Scheme
+          </Typography>
         </Box>
 
         <TextField
@@ -99,14 +111,44 @@ const AddScheme = () => {
             ))}
           </TextField>
 
-          <TextField
-            fullWidth
-            label="Deadline"
-            placeholder="e.g. 30 Sep 2026 or Ongoing"
-            value={deadline}
-            onChange={(e) => setDeadline(e.target.value)}
-            margin="normal"
-          />
+          <Box
+            sx={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <TextField
+              fullWidth
+              type="date"
+              label="Deadline"
+              value={deadline}
+              onChange={(e) => setDeadline(e.target.value)}
+              margin="normal"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              disabled={!hasDeadline}
+            />
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={!hasDeadline}
+                  onChange={(e) => {
+                    const noDeadline = e.target.checked;
+
+                    setHasDeadline(!noDeadline);
+
+                    if (noDeadline) {
+                      setDeadline('');
+                    }
+                  }}
+                />
+              }
+              label="No fixed deadline"
+            />
+          </Box>
         </Box>
 
         <TextField

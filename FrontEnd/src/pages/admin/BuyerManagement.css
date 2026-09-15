@@ -185,3 +185,14 @@
     min-width: 0;
   }
 }
+
+/* =========================
+   Buyer Actions
+========================= */
+
+.buyer-action-btn {
+  text-transform: none !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  white-space: nowrap !important;
+}

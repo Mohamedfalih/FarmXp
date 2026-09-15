@@ -6,25 +6,67 @@ const adminService = {
   // UTILS
   // ==========================================================
 
-  formatDateForBackend: (dateVal) => {
-    if (!dateVal) return null;
-    if (Array.isArray(dateVal)) {
-      if (dateVal.length >= 3) {
-        return `${dateVal[0]}-${String(dateVal[1]).padStart(2, '0')}-${String(dateVal[2]).padStart(2, '0')}`;
-      }
-      return null;
-    }
-    // If it's already a string in YYYY-MM-DD, just return it
-    if (typeof dateVal === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateVal)) {
-      return dateVal;
-    }
-    // Fallback parsing
-    const parsed = Date.parse(dateVal);
-    if (!isNaN(parsed)) {
-      return new Date(parsed).toISOString().split('T')[0];
+formatDateForBackend: (dateVal) => {
+  if (!dateVal) return null;
+
+  // If backend sends LocalDate as [year, month, day]
+  if (Array.isArray(dateVal)) {
+    if (dateVal.length >= 3) {
+      return `${dateVal[0]}-${String(dateVal[1]).padStart(2, '0')}-${String(dateVal[2]).padStart(2, '0')}`;
     }
     return null;
-  },
+  }
+
+  if (typeof dateVal !== 'string') {
+    return null;
+  }
+
+  const value = dateVal.trim();
+
+  // No deadline
+  if (
+    value === '' ||
+    value.toLowerCase() === 'ongoing' ||
+    value.toLowerCase() === 'no fixed deadline' ||
+    value.toLowerCase() === 'no deadline'
+  ) {
+    return null;
+  }
+
+  // Already YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return value;
+  }
+
+  // DD/MM/YYYY
+  let match = value.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+
+  if (match) {
+    const [, day, month, year] = match;
+
+    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  }
+
+  // DD-MM-YYYY
+  match = value.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+
+  if (match) {
+    const [, day, month, year] = match;
+
+    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  }
+
+  // Example: 30 Sep 2026
+  const parsed = Date.parse(value);
+
+  if (!isNaN(parsed)) {
+    const date = new Date(parsed);
+
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  }
+
+  return null;
+},
 
   formatDateForFrontend: (dateVal) => {
     if (!dateVal) return '';

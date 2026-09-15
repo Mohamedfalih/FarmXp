@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 
 
-import { getBuyers } from '../../services/adminService';
+import { getBuyers, deleteBuyer } from '../../services/adminService';
 
 import './BuyerManagement.css';
 import AddIcon from '@mui/icons-material/Add';
@@ -132,6 +132,25 @@ const BuyerManagement = () => {
   const handleView = (buyerId) => {
     navigate(`/admin/buyers/${buyerId}`);
   };
+
+  const handleDelete = async (buyerId) => {
+  const confirmed = window.confirm(
+    'Are you sure you want to delete this buyer?'
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await deleteBuyer(buyerId);
+
+    setBuyers((previous) =>
+      previous.filter((buyer) => buyer.id !== buyerId)
+    );
+  } catch (error) {
+    console.error('Failed to delete buyer:', error);
+    alert('Unable to delete buyer. Please try again.');
+  }
+};
 
   return (
     <Box className="buyer-management">
@@ -363,21 +382,36 @@ const BuyerManagement = () => {
 
                     {/* Actions */}
                     <TableCell align="right">
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'flex-end',
+                              gap: '8px',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              startIcon={<VisibilityIcon />}
+                              onClick={() => handleView(buyer.id)}
+                              className="buyer-action-btn"
+                            >
+                              View
+                            </Button>
 
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        startIcon={<VisibilityIcon />}
-                        onClick={() =>
-                          handleView(
-                            buyer.id
-                          )
-                        }
-                      >
-                        View
-                      </Button>
-
-                    </TableCell>
+                            <Button
+                              variant="outlined"
+                              color="error"
+                              size="small"
+                              onClick={() => handleDelete(buyer.id)}
+                              className="buyer-action-btn"
+                            >
+                              Delete
+                            </Button>
+                          </Box>
+                        </TableCell>
 
                   </TableRow>
                 )

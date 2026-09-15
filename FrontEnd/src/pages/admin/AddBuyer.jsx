@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Save from '@mui/icons-material/Save';
 import {
   Box,
   Card,
@@ -91,7 +92,7 @@ const AddBuyer = () => {
           Back
       ========================= */}
       <Button
-        startIcon={<ArrowBack />}
+        startIcon={<ArrowBackIcon />}
         onClick={handleCancel}
         className="add-buyer-back"
       >
