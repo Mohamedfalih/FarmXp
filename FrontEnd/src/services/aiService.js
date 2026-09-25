@@ -2,20 +2,19 @@ import axiosInstance from "../api/axiosInstance";
 
 const aiService = {
 
-  chat: async (
-    message
-  ) => {
+  chat: async (message) => {
+  const response = await axiosInstance.post(
+    "/api/ai/chat",
+    {
+      message,
+    },
+    {
+      timeout: 60000, // 60 seconds
+    }
+  );
 
-    const response =
-      await axiosInstance.post(
-        "/api/ai/chat",
-        {
-          message,
-        }
-      );
-
-    return response.data;
-  },
+  return response.data;
+},
 
   getRecommendation: async (
     data

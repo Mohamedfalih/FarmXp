@@ -55,7 +55,7 @@ cluster_labels = {
     1: "DEVELOPING",
     2: "INTERMEDIATE",
     3: "ADVANCED"
-}
+}w
 
 # We manually map the centroids back to labels for consistency, 
 # but for simplicity we'll just evaluate the closest and use a simple heuristic if KMeans mapping is unstable.
