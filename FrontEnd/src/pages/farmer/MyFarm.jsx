@@ -625,28 +625,28 @@ const MyFarm = () => {
   const farmStats = [
 
     {
-      icon: '🌾',
+      icon: <GrassIcon />,
       bg: 'var(--sprout-light)',
       value: crops.length,
       label: 'Total Crops'
     },
 
     {
-      icon: '🌱',
+      icon: <SpaIcon />,
       bg: 'var(--sky-light)',
       value: sustainability?.certifiedPractices ?? sustainability?.verifiedPractices ?? '—',
       label: 'Certified Practices'
     },
 
     {
-      icon: '⭐',
+      icon: <StarIcon /> ,
       bg: 'var(--harvest-light)',
       value: safeScore,
       label: 'Sustainability Score'
     },
 
     {
-      icon: '🏆',
+      icon: <EmojiEventsIcon />,
       bg: 'var(--clay-light)',
       value: dashboardStats?.farmer?.totalXp ?? 0,
       label: 'Total XP'

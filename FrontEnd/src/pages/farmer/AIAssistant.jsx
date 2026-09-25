@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import aiService from "../../services/aiService";
 import './AIAssistant.css';
+import SendIcon from '@mui/icons-material/Send';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const welcomeMessage = {
   id: 0,
@@ -101,7 +103,7 @@ const AIAssistant = () => {
       <div className="chat-toolbar">
         <h3>AI Assistant</h3>
         <button className="clear-chat-btn" onClick={handleClearChat}>
-          🗑️ Clear Chat
+          <DeleteIcon /> Clear Chat
         </button>
       </div>
 
@@ -151,9 +153,6 @@ const AIAssistant = () => {
 
         {/* Input row */}
         <div className="chat-input-row">
-          <button className="top-icon-btn" title="Voice (coming soon)">
-            🎙️
-          </button>
           <input
             type="text"
             placeholder="Ask a farming question..."
@@ -163,7 +162,7 @@ const AIAssistant = () => {
             disabled={isTyping}
           />
           <button className="chat-send" onClick={handleSend} disabled={isTyping}>
-            ➤
+            <SendIcon />
           </button>
         </div>
       </main>

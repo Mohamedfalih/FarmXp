@@ -2,6 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 import './LoginPage.css';
+import StorefrontIcon from '@mui/icons-material/Storefront';
+import GrassIcon from '@mui/icons-material/Grass';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import LockIcon from '@mui/icons-material/Lock';
+import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -217,7 +222,7 @@ const LoginPage = () => {
               handleRoleSelect('FARMER')
             }
           >
-            🌾 Farmer
+            <GrassIcon /> Farmer
           </button>
 
           <button
@@ -231,7 +236,7 @@ const LoginPage = () => {
               handleRoleSelect('ADMIN')
             }
           >
-            🌱 Admin
+            <AdminPanelSettingsIcon /> Admin
           </button>
 
         </div>
@@ -250,7 +255,7 @@ const LoginPage = () => {
           <div className="field">
 
             <label>
-              📱 Phone number or email
+              <PhoneAndroidIcon /> Phone number or email
             </label>
 
             <input
@@ -268,7 +273,7 @@ const LoginPage = () => {
           <div className="field">
 
             <label>
-              🔐 Password
+              <LockIcon /> Password
             </label>
 
             <input

@@ -3,6 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import farmerService from '../../services/farmerService';
 import sustainabilityService from '../../services/sustainabilityService';
 import './MarketBuyers.css';
+import CorporateIcon from '@mui/icons-material/CorporateFare';
+import GrassIcon from '@mui/icons-material/Grass';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import FactoryIcon from '@mui/icons-material/Factory';
+import StorefrontIcon from '@mui/icons-material/Storefront';
+import SpaIcon from '@mui/icons-material/Spa';
+import CheckIcon from '@mui/icons-material/Check';
+import PhoneIcon from '@mui/icons-material/Phone';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import StarIcon from '@mui/icons-material/Star';
+import SearchIcon from '@mui/icons-material/Search';
 
 const SCORE_THRESHOLD = 60;
 
@@ -13,7 +25,7 @@ const BuyerCard = ({ buyer, onContact }) => (
         {buyer.icon || '🏢'}
       </div>
       {buyer.verified ? (
-        <span className="pill pill-approved">✅ Verified</span>
+        <span className="pill pill-approved"><CheckIcon /> Verified</span>
       ) : (
         <span className="pill pill-neutral">Unverified</span>
       )}
@@ -30,13 +42,13 @@ const BuyerCard = ({ buyer, onContact }) => (
     </div>
 
     <div className="buyer-detail-row">
-      <b>💰 Price Range:</b> {buyer.priceRange || 'Contact for pricing'}
+      <b><AttachMoneyIcon /> Price Range:</b> {buyer.priceRange || 'Contact for pricing'}
     </div>
     <div className="buyer-detail-row">
-      <b>📍 Location:</b> {buyer.location || buyer.district || 'N/A'}
+      <b><LocationOnIcon /> Location:</b> {buyer.location || buyer.district || 'N/A'}
     </div>
     <div className="buyer-detail-row">
-      <b>⭐ Rating:</b> {buyer.rating ? `${buyer.rating} / 5` : 'N/A'}
+      <b><StarIcon /> Rating:</b> {buyer.rating ? `${buyer.rating} / 5` : 'N/A'}
     </div>
 
     <button
@@ -44,12 +56,12 @@ const BuyerCard = ({ buyer, onContact }) => (
       type="button"
       onClick={onContact}
     >
-      📞 Contact Buyer
+      <PhoneIcon /> Contact Buyer
     </button>
   </div>
 );
 
-const ICON_OPTIONS = ['🏢', '🌾', '🚚', '🏭', '🏪', '🍃'];
+const ICON_OPTIONS = [<CorporateIcon />, <GrassIcon />, <LocalShippingIcon />, <FactoryIcon />, <StorefrontIcon />, <SpaIcon />];
 const BG_OPTIONS = [
   'var(--sky-light)',
   'var(--sprout-light)',

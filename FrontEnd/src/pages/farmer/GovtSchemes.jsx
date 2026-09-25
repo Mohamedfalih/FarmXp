@@ -5,6 +5,18 @@ import farmerService from '../../services/farmerService';
 import { formatDateForFrontend } from '../../services/farmerService';
 import './GovtSchemes.css';
 import SearchIcon from '@mui/icons-material/Search';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import CheckIcon from '@mui/icons-material/Check';
+import InfoIcon from '@mui/icons-material/Info';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import DescriptionIcon from '@mui/icons-material/Description';
+import LocalFarmIcon from '@mui/icons-material/Agriculture';
+import RecyclingIcon from '@mui/icons-material/Recycling';
+import WaterDropIcon from '@mui/icons-material/WaterDrop';
+import GrassIcon from '@mui/icons-material/Grass';
+import CropIcon from '@mui/icons-material/Grass';
+
 
 const STATES = ['All States', 'Kerala', 'Tamil Nadu'];
 const CROPS = ['All Crops', 'Paddy', 'Millets', 'Banana', 'Coconut'];
@@ -14,24 +26,24 @@ const TYPES = ['All Types', 'Organic', 'Subsidy', 'Credit', 'Livestock'];
 const pickIcon = (scheme) => {
   if (scheme.icon) return scheme.icon;
   const title = (scheme.title ?? scheme.schemeName ?? '').toLowerCase();
-  if (title.includes('water') || title.includes('irrigation') || title.includes('sinchayee')) return '💧';
-  if (title.includes('soil')) return '🌱';
-  if (title.includes('kisan') || title.includes('pm-kisan')) return '🌾';
-  if (title.includes('livestock') || title.includes('animal')) return '🐄';
-  if (title.includes('credit') || title.includes('card') || title.includes('loan')) return '🏦';
-  if (title.includes('organic')) return '♻️';
-  return '🏛️';
+  if (title.includes('water') || title.includes('irrigation') || title.includes('sinchayee')) return <WaterDropIcon />;
+  if (title.includes('soil')) return <GrassIcon />;
+  if (title.includes('kisan') || title.includes('pm-kisan')) return <CropIcon />;
+  if (title.includes('livestock') || title.includes('animal')) return <LocalFarmIcon />;
+  if (title.includes('credit') || title.includes('card') || title.includes('loan')) return <AccountBalanceIcon />;
+  if (title.includes('organic')) return <RecyclingIcon />;
+  return <AccountBalanceIcon />;
 };
 
 const pickBg = (scheme) => {
   if (scheme.bg) return scheme.bg;
   const icon = pickIcon(scheme);
-  if (icon === '💧') return 'var(--sky-light)';
-  if (icon === '🌱') return 'var(--sprout-light)';
-  if (icon === '🌾') return 'var(--harvest-light)';
-  if (icon === '🐄') return 'var(--clay-light)';
-  if (icon === '🏦') return 'var(--sky-light)';
-  if (icon === '♻️') return 'var(--sprout-light)';
+  if (icon === <WaterDropIcon />) return 'var(--sky-light)';
+  if (icon === <GrassIcon />) return 'var(--sprout-light)';
+  if (icon === <CropIcon />) return 'var(--harvest-light)';
+  if (icon === <LocalFarmIcon />) return 'var(--clay-light)';
+  if (icon === <AccountBalanceIcon />) return 'var(--sky-light)';
+  if (icon === <RecyclingIcon />) return 'var(--sprout-light)';
   return 'var(--harvest-light)';
 };
 
@@ -63,19 +75,19 @@ const SchemeCard = ({ scheme, onClick }) => {
       <div className="scheme-top">
         <div className="scheme-emblem" style={{ background: scheme.bg }}>{scheme.icon}</div>
         {scheme.eligible ? (
-          <span className="pill pill-approved">✅ Eligible</span>
+          <span className="pill pill-approved"><CheckIcon /> Eligible</span>
         ) : (
-          <span className="pill pill-neutral">Check eligibility</span>
+          <span className="pill pill-neutral"><InfoIcon /> Check eligibility</span>
         )}
       </div>
       <div className="scheme-title">{scheme.title}</div>
       <div className="scheme-desc">
-        <b>💰 Benefit:</b> {scheme.desc}
+        <b><AttachMoneyIcon /> Benefit:</b> {scheme.desc}
       </div>
-      <div className="scheme-deadline">⏰ Deadline: {scheme.deadline}</div>
+      <div className="scheme-deadline"><AccessTimeIcon /> Deadline: {scheme.deadline}</div>
       <div className="scheme-buttons" style={{ display: 'flex', gap: '8px' }}>
         <button className="btn btn-outline btn-sm scheme-btn" type="button" onClick={(e) => { e.stopPropagation(); onClick(); }}>
-          📄 View Details
+          <DescriptionIcon /> View Details
         </button>
       </div>
     </div>
@@ -186,7 +198,7 @@ const GovtSchemes = () => {
       {view === 'recommended' && (
         <>
           <div className="section-title" style={{ marginTop: 0 }}>
-            <h3>🏛️ Recommended for Your Farm</h3>
+            <h3><AccountBalanceIcon /> Recommended for Your Farm</h3>
             <button className="link-more" type="button" onClick={() => setView('all')}>
               Browse all →
             </button>

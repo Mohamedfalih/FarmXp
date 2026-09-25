@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import learningService from '../../services/learningService';
 import './LearningModules.css';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import SpaIcon from '@mui/icons-material/Spa';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
 const CATEGORIES = [
   { key: 'all', label: 'All' },
   { key: 'soil', label: '🌱 Soil' },
   { key: 'water', label: '💧 Water' },
   { key: 'organic', label: '🧪 Organic' },
-  { key: 'pest', label: '🌱 Pest Control' },
+  { key: 'pest', label: '🐜 Pest Control' },
 ];
 
 const LearningModules = () => {
@@ -221,7 +224,7 @@ const LearningModules = () => {
 
           const icon =
             module?.icon ||
-            '📚';
+            <MenuBookIcon />;
 
           const duration =
             module?.durationMinutes ??
@@ -399,11 +402,11 @@ const LearningModules = () => {
                 <div className="module-meta">
 
                   <span>
-                    🌱 {duration} min
+                    <SpaIcon /> {duration} min
                   </span>
 
                   <span>
-                    🏆 {xp} XP
+                    <EmojiEventsIcon /> {xp} XP
                   </span>
 
                 </div>

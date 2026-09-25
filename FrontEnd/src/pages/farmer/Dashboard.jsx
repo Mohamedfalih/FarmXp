@@ -4,28 +4,46 @@ import farmerService from '../../services/farmerService';
 import learningService from '../../services/learningService';
 import aiService from '../../services/aiService';
 import './Dashboard.css';
+import WarningIcon from '@mui/icons-material/Warning';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
+import GrassIcon from '@mui/icons-material/Grass';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import SpaIcon from '@mui/icons-material/Spa';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import WaterDropIcon from '@mui/icons-material/WaterDrop';
+import ScienceIcon from '@mui/icons-material/Science';
+import TrackChangesIcon from '@mui/icons-material/TrackChanges';
+import SunIcon from '@mui/icons-material/WbSunny';
+import RobotIcon from '@mui/icons-material/SmartToy';
+import BuildingIcon from '@mui/icons-material/AccountBalance';
+import CheckIcon from '@mui/icons-material/Check';
+import InfoIcon from '@mui/icons-material/Info';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import DescriptionIcon from '@mui/icons-material/Description';
+
 
 const quickActions = [
   {
-    icon: '🤖',
+    icon: <RobotIcon />,
     bg: 'var(--clay-light)',
     label: 'Ask AI',
     path: '/farmer/ai-assistant'
   },
   {
-    icon: '📷',
+    icon: <MenuBookIcon />,
     bg: 'var(--sprout-light)',
     label: 'Log Practice',
     path: '/farmer/practice-logs'
   },
   {
-    icon: '💧',
+    icon: <WaterDropIcon />,
     bg: 'var(--sky-light)',
     label: 'Add Metric',
     path: '/farmer/sustainability-metrics'
   },
   {
-    icon: '🏛️',
+    icon: <BuildingIcon />,
     bg: 'var(--harvest-light)',
     label: 'Schemes',
     path: '/farmer/govt-schemes'
@@ -82,7 +100,7 @@ const Dashboard = () => {
           const mods = Array.isArray(modulesResult.value) ? modulesResult.value : (modulesResult.value?.modules ?? []);
           setRecommendedModules(mods.slice(0, 3).map(m => ({
             id: m.id || m.moduleId,
-            icon: '📚',
+            icon: <MenuBookIcon />,
             bg: 'var(--sprout-light)',
             tag: m.category || 'LEARNING',
             tagBg: 'var(--sprout-light)',
@@ -97,7 +115,7 @@ const Dashboard = () => {
           const schs = Array.isArray(schemesResult.value) ? schemesResult.value : (schemesResult.value?.schemes ?? []);
           setRecommendedSchemes(schs.filter(s => s.eligible || s.isEligible).slice(0, 3).map(s => ({
             id: s.id || s.schemeId,
-            icon: '🏛️',
+            icon: <BuildingIcon />,
             bg: 'var(--sky-light)',
             title: s.title || s.schemeName,
             desc: s.benefit || s.shortDescription || s.description,
@@ -128,7 +146,7 @@ const Dashboard = () => {
                           title: `Weather in ${district}`,
                           sub: `${weatherData.current_weather.temperature}°C, Wind: ${weatherData.current_weather.windspeed} km/h, Hum: ${humidity}%`,
                           bg: 'var(--sky-light)',
-                          icon: '☀️'
+                          icon: <SunIcon />
                       }]);
                   } else {
                       setTodayTasks([]);
@@ -142,7 +160,7 @@ const Dashboard = () => {
                   title: `Weather Unavailable`,
                   sub: `Could not load weather for ${district}`,
                   bg: 'var(--clay-light)',
-                  icon: '⚠️'
+                  icon: <WarningIcon />
               }]);
           }
       } else {
@@ -381,7 +399,7 @@ const location =
   const statCards = [
 
     {
-      icon: '🏆',
+      icon: <EmojiEventsIcon />,
       bg: 'var(--harvest-light)',
       trend: '+120',
       value:
@@ -391,7 +409,7 @@ const location =
     },
 
     {
-      icon: '📚',
+      icon: <MenuBookIcon />,
       bg: 'var(--sprout-light)',
       trend:
         totalModules > 0
@@ -405,7 +423,7 @@ const location =
     },
 
     {
-      icon: '💧',
+      icon: <WaterDropIcon />,
       bg: 'var(--sky-light)',
       trend: 'Score',
       value: safeScore,
@@ -413,7 +431,7 @@ const location =
     },
 
     {
-      icon: '🧪',
+      icon: <ScienceIcon />,
       bg: 'var(--clay-light)',
       trend:
         sustainability?.pendingPractices !==
@@ -476,7 +494,7 @@ const location =
 
           <h2 className="dash-hero-name">
 
-            {farmerName} 🌱
+            {farmerName} <SpaIcon />
 
           </h2>
 
@@ -718,7 +736,7 @@ const location =
               fontSize: 24
             }}
           >
-            🎯
+            <TrackChangesIcon />
           </div>
 
           <div
@@ -829,7 +847,7 @@ const location =
       <div className="section-title">
 
         <h3>
-          ☀️ Today's Farming Tasks
+          <SunIcon /> Today's Farming Tasks
         </h3>
 
       </div>
@@ -879,7 +897,7 @@ const location =
       {mlRecommendation && (
         <>
           <div className="section-title">
-            <h3>🧠 AI ML Insights</h3>
+            <h3><SmartToyIcon /> AI ML Insights</h3>
           </div>
           <div className="card ml-recommendation-card" style={{ marginBottom: '24px', background: 'var(--sprout-light)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -895,13 +913,13 @@ const location =
                 </p>
                 <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                   <span className="pill pill-neutral" style={{ background: '#f0fdfa', color: '#0f766e' }}>
-                    💧 Water Benefit: {mlRecommendation.expectedBenefits?.water}
+                    <WaterDropIcon /> Water Benefit: {mlRecommendation.expectedBenefits?.water}
                   </span>
                   <span className="pill pill-neutral" style={{ background: '#fef3c7', color: '#b45309' }}>
-                    🧪 Chemical Benefit: {mlRecommendation.expectedBenefits?.chemical}
+                    <ScienceIcon /> Chemical Benefit: {mlRecommendation.expectedBenefits?.chemical}
                   </span>
                   <span className="pill pill-neutral" style={{ background: '#ecfdf5', color: '#047857' }}>
-                    🌾 Yield Benefit: {mlRecommendation.expectedBenefits?.yield}
+                    <GrassIcon /> Yield Benefit: {mlRecommendation.expectedBenefits?.yield}
                   </span>
                 </div>
               </div>
@@ -920,7 +938,7 @@ const location =
       <div className="section-title">
 
         <h3>
-          🤖 Recommended for You
+          <RobotIcon /> Recommended for You
         </h3>
 
         <button
@@ -1034,7 +1052,7 @@ const location =
       <div className="section-title">
 
         <h3>
-          🏛️ Government Schemes for You
+          <AccountBalanceIcon /> Government Schemes for You
         </h3>
 
         <button
@@ -1069,13 +1087,13 @@ const location =
               {s.eligible ? (
 
                 <span className="pill pill-approved">
-                  ✅ Eligible
+                  <CheckIcon /> Eligible
                 </span>
 
               ) : (
 
                 <span className="pill pill-neutral">
-                  Check eligibility
+                  <InfoIcon /> Check eligibility
                 </span>
 
               )}
@@ -1089,7 +1107,7 @@ const location =
             <div className="scheme-desc">
 
               <b>
-                💰 Benefit:
+                <AccountBalanceIcon /> Benefit:
               </b>
 
               {' '}
@@ -1100,7 +1118,7 @@ const location =
 
             <div className="scheme-deadline">
 
-              ⏰ Deadline: {s.deadline}
+              <AccessTimeIcon /> Deadline: {s.deadline}
 
             </div>
 
@@ -1113,7 +1131,7 @@ const location =
                 )
               }
             >
-              📄 View Details
+              <DescriptionIcon /> View Details
             </button>
 
           </div>

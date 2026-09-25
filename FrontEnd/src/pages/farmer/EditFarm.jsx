@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import farmerService from '../../services/farmerService';
 import './EditFarm.css';
+import SpaIcon from '@mui/icons-material/Spa';
+import PersonalIcon from '@mui/icons-material/Person';
+import PhoneIcon from '@mui/icons-material/Phone';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import FarmIcon from '@mui/icons-material/Agriculture';
+import CropIcon from '@mui/icons-material/Grass';
+import GrassIcon from "@mui/icons-material/Grass";import WaterDropIcon from '@mui/icons-material/WaterDrop';
 
 const EditFarm = () => {
   const navigate = useNavigate();
@@ -110,13 +117,13 @@ const EditFarm = () => {
   return (
     <div className="edit-farm">
       <div className="card edit-farm-card">
-        <h3 className="edit-farm-title">🌱 Edit Your Details</h3>
+        <h3 className="edit-farm-title"><SpaIcon /> Edit Your Details</h3>
 
         {error && <div className="auth-error" style={{marginBottom: '15px'}}>{error}</div>}
 
         <form onSubmit={handleSave}>
           <div className="field">
-            <label>👤 Full name</label>
+            <label><PersonalIcon /> Full name</label>
             <input
               name="fullName"
               value={formData.fullName}
@@ -127,7 +134,7 @@ const EditFarm = () => {
 
           <div className="field-row">
             <div className="field">
-              <label>📱 Phone</label>
+              <label><PhoneIcon /> Phone</label>
               <input
                 name="phone"
                 value={formData.phone}
@@ -137,7 +144,7 @@ const EditFarm = () => {
             </div>
 
             <div className="field">
-              <label>📍 State</label>
+              <label><LocationOnIcon /> State</label>
               <input
                 name="state"
                 value={formData.state}
@@ -149,7 +156,7 @@ const EditFarm = () => {
 
           <div className="field-row">
             <div className="field">
-              <label>🏙️ District</label>
+              <label><LocationOnIcon /> District</label>
               <input
                 name="district"
                 value={formData.district}
@@ -159,7 +166,7 @@ const EditFarm = () => {
             </div>
 
             <div className="field">
-              <label>🏡 Village</label>
+              <label><LocationOnIcon /> Village</label>
               <input
                 name="village"
                 value={formData.village}
@@ -172,7 +179,7 @@ const EditFarm = () => {
           <div className="field-separator">Farm Details</div>
 
           <div className="field">
-            <label>🌾 Farm Name</label>
+            <label><FarmIcon /> Farm Name</label>
             <input
               name="farmName"
               value={formData.farmName}
@@ -183,7 +190,7 @@ const EditFarm = () => {
 
           <div className="field-row">
             <div className="field">
-              <label>📏 Farm Size (Acres)</label>
+              <label><CropIcon /> Farm Size (Acres)</label>
               <input
                 type="number"
                 step="0.01"
@@ -196,7 +203,7 @@ const EditFarm = () => {
             </div>
 
             <div className="field">
-              <label>🧱 Soil Type</label>
+              <label><GrassIcon /> Soil Type</label>
               <select name="soilType" value={formData.soilType} onChange={handleChange}>
                 <option>Alluvial</option>
                 <option>Black</option>
@@ -209,7 +216,7 @@ const EditFarm = () => {
 
           <div className="field-row">
             <div className="field">
-              <label>🌾 Primary Crop</label>
+              <label><CropIcon /> Primary Crop</label>
               <input
                 name="primaryCrop"
                 value={formData.primaryCrop}
@@ -218,7 +225,7 @@ const EditFarm = () => {
             </div>
 
             <div className="field">
-              <label>💧 Irrigation Type</label>
+              <label><WaterDropIcon /> Irrigation Type</label>
               <select name="irrigationType" value={formData.irrigationType} onChange={handleChange}>
                 <option>Drip Irrigation</option>
                 <option>Sprinkler</option>

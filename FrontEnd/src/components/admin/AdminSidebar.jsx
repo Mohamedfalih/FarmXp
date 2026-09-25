@@ -23,6 +23,7 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import SettingsIcon from '@mui/icons-material/Settings';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SpaIcon from '@mui/icons-material/Spa';
 
 const drawerWidth = 250;
 
@@ -155,7 +156,7 @@ const AdminSidebar = ({ mobileOpen, onClose }) => {
       {/* Logo */}
       <Box className="admin-sidebar-logo">
         <span className="admin-sidebar-mark">
-          🌱
+          <SpaIcon />
         </span>
 
         <Typography className="admin-sidebar-word">
@@ -266,4 +267,3 @@ const AdminSidebar = ({ mobileOpen, onClose }) => {
 };
 
 export default AdminSidebar;
-

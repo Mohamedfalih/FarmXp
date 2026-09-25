@@ -1,6 +1,21 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./LandingPage.css";
+import SpaIcon from "@mui/icons-material/Spa";
+import RobotIcon from "@mui/icons-material/SmartToy";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import MedalIcon from "@mui/icons-material/EmojiEvents";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import CastleIcon from "@mui/icons-material/Castle";
+import StoreIcon from "@mui/icons-material/Store";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import SettingsIcon from "@mui/icons-material/Settings";
+import HomeIcon from "@mui/icons-material/Home";
+import VideoGameIcon from "@mui/icons-material/VideogameAsset";
+import ScienceIcon from "@mui/icons-material/Science";
+import WaterDropIcon from "@mui/icons-material/WaterDrop";
+
 
 
 const navLinks = [
@@ -14,16 +29,16 @@ const navLinks = [
 ];
 
 const features = [
-  { icon: '🌱', bg: "#E4F1D8", title: "Sustainable Farming", desc: "Practices that protect soil & water" },
-  { icon: '🤖', bg: "#F8E1D6", title: "AI Farming Assistant", desc: "Ask questions, get instant guidance" },
-  { icon: '📚', bg: "#FCEDD3", title: "Learning Modules", desc: "Bite-sized, practical lessons" },
-  { icon: '🏆', bg: "#DFF0F2", title: "XP Rewards & Badges", desc: "Progress feels like a game" },
-  { icon: '📈', bg: "#E4F1D8", title: "Sustainability Score", desc: "A clear score for your farm" },
-  { icon: '📊', bg: "#FCEDD3", title: "Progress Analytics", desc: "See growth over every season" },
-  { icon: '🏛️', bg: "#DFF0F2", title: "Government Schemes", desc: "Find schemes you qualify for" },
-  { icon: '🛒', bg: "#F8E1D6", title: "Market Buyers", desc: "Connect with verified buyers" },
-  { icon: '🔔', bg: "#E4F1D8", title: "Notifications", desc: "Never miss a deadline" },
-  { icon: '📱', bg: "#DFF0F2", title: "Mobile Friendly", desc: "Works anywhere on the farm" },
+  { icon: <SpaIcon /> , bg: "#E4F1D8", title: "Sustainable Farming", desc: "Practices that protect soil & water" },
+  { icon: <RobotIcon />, bg: "#F8E1D6", title: "AI Farming Assistant", desc: "Ask questions, get instant guidance" },
+  { icon: <MenuBookIcon />, bg: "#FCEDD3", title: "Learning Modules", desc: "Bite-sized, practical lessons" },
+  { icon: <MedalIcon />, bg: "#DFF0F2", title: "XP Rewards & Badges", desc: "Progress feels like a game" },
+  { icon: <TrendingUpIcon />, bg: "#E4F1D8", title: "Sustainability Score", desc: "A clear score for your farm" },
+  { icon: <BarChartIcon />, bg: "#FCEDD3", title: "Progress Analytics", desc: "See growth over every season" },
+  { icon: <CastleIcon />, bg: "#DFF0F2", title: "Government Schemes", desc: "Find schemes you qualify for" },
+  { icon: <StoreIcon />, bg: "#F8E1D6", title: "Market Buyers", desc: "Connect with verified buyers" },
+  { icon: <NotificationsIcon />, bg: "#E4F1D8", title: "Notifications", desc: "Never miss a deadline" },
+  { icon: <SettingsIcon />, bg: "#DFF0F2", title: "Mobile Friendly", desc: "Works anywhere on the farm" },
 ];
 
 const steps = [
@@ -55,18 +70,18 @@ const benefits = [
 ];
 
 const modules = [
-  { icon: '🏠', bg: "#E4F1D8", title: "Dashboard" },
-  { icon: '🤖', bg: "#F8E1D6", title: "AI Assistant" },
-  { icon: '📚', bg: "#FCEDD3", title: "Learning Modules" },
-  { icon: '🎮', bg: "#DFF0F2", title: "Quiz" },
-  { icon: '📈', bg: "#E4F1D8", title: "Progress" },
-  { icon: '🏆', bg: "#FCEDD3", title: "Leaderboard" },
-  { icon: '🧪', bg: "#DFF0F2", title: "Certified Practices" },
-  { icon: '💧', bg: "#E4F1D8", title: "Sustainability Metrics" },
-  { icon: '🏛️', bg: "#F8E1D6", title: "Government Schemes" },
-  { icon: '🛒', bg: "#FCEDD3", title: "Market Buyers" },
-  { icon: '🔔', bg: "#DFF0F2", title: "Notifications" },
-  { icon: '⚙️', bg: "#E4F1D8", title: "Settings" },
+  { icon: <HomeIcon />, bg: "#E4F1D8", title: "Dashboard" },
+  { icon: <RobotIcon />, bg: "#F8E1D6", title: "AI Assistant" },
+  { icon: <MenuBookIcon />, bg: "#FCEDD3", title: "Learning Modules" },
+  { icon: <VideoGameIcon />, bg: "#DFF0F2", title: "Quiz" },
+  { icon: <TrendingUpIcon />, bg: "#E4F1D8", title: "Progress" },
+  { icon: <MedalIcon />, bg: "#FCEDD3", title: "Leaderboard" },
+  { icon: <ScienceIcon />, bg: "#DFF0F2", title: "Certified Practices" },
+  { icon: <WaterDropIcon />, bg: "#E4F1D8", title: "Sustainability Metrics" },
+  { icon: <CastleIcon />, bg: "#F8E1D6", title: "Government Schemes" },
+  { icon: <StoreIcon />, bg: "#FCEDD3", title: "Market Buyers" },
+  { icon: <NotificationsIcon />, bg: "#DFF0F2", title: "Notifications" },
+  { icon: <SettingsIcon />, bg: "#E4F1D8", title: "Settings" },
 ];
 
 const stats = [

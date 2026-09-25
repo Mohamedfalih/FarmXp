@@ -2,8 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import farmerService from '../../services/farmerService';
 import './ContactBuyer.css';
+import CorporateIcon from '@mui/icons-material/CorporateFare';
+import GrassIcon from '@mui/icons-material/Grass';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import FactoryIcon from '@mui/icons-material/Factory';
+import StorefrontIcon from '@mui/icons-material/Storefront';
+import SpaIcon from '@mui/icons-material/Spa';
+import PersonalIcon from '@mui/icons-material/Person';
+import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
+import EmailIcon from '@mui/icons-material/Email';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PriceChangeIcon from '@mui/icons-material/PriceChange';
+import VerifiedIcon from '@mui/icons-material/Verified';
+import WarningIcon from "@mui/icons-material/Warning";
 
-const ICON_OPTIONS = ['🏢', '🌾', '🚚', '🏭', '🏪', '🍃'];
+const ICON_OPTIONS = [<CorporateIcon />, <GrassIcon />, <LocalShippingIcon />, <FactoryIcon />, <StorefrontIcon />, <SpaIcon />];
 const BG_OPTIONS = [
   'var(--sky-light)',
   'var(--sprout-light)',
@@ -155,7 +168,7 @@ const ContactBuyer = () => {
           <div>
             <h2 className="buyer-summary-name">{buyer.companyName}</h2>
             {buyer.verified ? (
-              <span className="pill pill-approved">✅ Verified</span>
+              <span className="pill pill-approved"><VerifiedIcon /> Verified</span>
             ) : (
               <span className="pill pill-neutral">Unverified</span>
             )}
@@ -164,27 +177,27 @@ const ContactBuyer = () => {
 
         <div className="grid grid-2 buyer-summary-grid">
           <div className="card info-box">
-            <b>👤 Contact Person</b>
+            <b><PersonalIcon /> Contact Person</b>
             <p>{buyer.contactPerson}</p>
           </div>
           <div className="card info-box">
-            <b>📞 Phone</b>
+            <b><PhoneAndroidIcon /> Phone</b>
             <p>{buyer.phone}</p>
           </div>
           <div className="card info-box">
-            <b>📧 Email</b>
+            <b><EmailIcon /> Email</b>
             <p>{buyer.email}</p>
           </div>
           <div className="card info-box">
-            <b>📍 Location</b>
+            <b><LocationOnIcon /> Location</b>
             <p>{buyer.location}</p>
           </div>
           <div className="card info-box">
-            <b>💰 Price Range</b>
+            <b><PriceChangeIcon /> Price Range</b>
             <p>{buyer.priceRange}</p>
           </div>
           <div className="card info-box">
-            <b>🌾 Crops Needed</b>
+            <b><GrassIcon /> Crops Needed</b>
             <p>{buyer.cropsNeeded.length > 0 ? buyer.cropsNeeded.join(', ') : 'Various'}</p>
           </div>
         </div>
@@ -227,7 +240,7 @@ const ContactBuyer = () => {
 
         {sendError && (
           <div style={{ color: 'var(--clay)', fontSize: '13px', marginBottom: '10px' }}>
-            ⚠️ {sendError}
+            <WarningIcon /> {sendError}
           </div>
         )}
 

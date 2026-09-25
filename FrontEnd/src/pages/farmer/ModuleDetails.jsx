@@ -2,6 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import learningService from '../../services/learningService';
 import './ModuleDetails.css';
+import SpaIcon from '@mui/icons-material/Spa';
+import WaterDropIcon from '@mui/icons-material/WaterDrop';
+import ScienceIcon from '@mui/icons-material/Science';
+import GrassIcon from '@mui/icons-material/Grass';
+import RecyclingIcon from '@mui/icons-material/Recycling';
+import CheckIcon from '@mui/icons-material/Check';
+import WarningIcon from '@mui/icons-material/Warning';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import SearchIcon from '@mui/icons-material/Search';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+
+
 
 const getButtonLabel = (progress) => {
   if (progress >= 100) return 'Completed';
@@ -17,7 +29,7 @@ const getCategoryStyle = (category) => {
       bg: 'var(--sprout-light)',
       tagBg: 'var(--sprout-light)',
       tagCol: 'var(--sprout)',
-      icon: '🌱',
+      icon: <SpaIcon />,
       tag: 'SOIL HEALTH',
     };
   }
@@ -27,7 +39,7 @@ const getCategoryStyle = (category) => {
       bg: 'var(--sky-light)',
       tagBg: 'var(--sky-light)',
       tagCol: 'var(--sky, #3E8FA0)',
-      icon: '💧',
+      icon: <WaterDropIcon />,
       tag: 'WATER MGMT',
     };
   }
@@ -37,7 +49,7 @@ const getCategoryStyle = (category) => {
       bg: 'var(--clay-light)',
       tagBg: 'var(--clay-light)',
       tagCol: 'var(--clay, #C1552E)',
-      icon: '🧪',
+      icon: <ScienceIcon />,
       tag: 'ORGANIC',
     };
   }
@@ -47,7 +59,7 @@ const getCategoryStyle = (category) => {
       bg: 'var(--harvest-light)',
       tagBg: 'var(--harvest-light)',
       tagCol: '#9A6A0E',
-      icon: '🌱',
+      icon: <SpaIcon />,
       tag: 'PEST CONTROL',
     };
   }
@@ -57,7 +69,7 @@ const getCategoryStyle = (category) => {
       bg: 'var(--sprout-light)',
       tagBg: 'var(--sprout-light)',
       tagCol: 'var(--sprout)',
-      icon: '🌾',
+      icon: <GrassIcon />,
       tag: 'CROP CARE',
     };
   }
@@ -67,7 +79,7 @@ const getCategoryStyle = (category) => {
       bg: 'var(--harvest-light)',
       tagBg: 'var(--harvest-light)',
       tagCol: '#9A6A0E',
-      icon: '♻️',
+      icon: <RecyclingIcon />,
       tag: 'COMPOSTING',
     };
   }
@@ -76,7 +88,7 @@ const getCategoryStyle = (category) => {
     bg: 'var(--sprout-light)',
     tagBg: 'var(--sprout-light)',
     tagCol: 'var(--sprout)',
-    icon: '🌱',
+    icon: <SpaIcon />,
     tag: String(category || 'LEARNING').toUpperCase(),
   };
 };
@@ -377,7 +389,7 @@ const ModuleDetails = () => {
             className="not-found-icon"
             aria-hidden="true"
           >
-            ⚠️
+            <WarningIcon />
           </div>
 
           <h2>
@@ -402,7 +414,7 @@ const ModuleDetails = () => {
               type="button"
               onClick={loadModule}
             >
-              🔄 Try Again
+              <RefreshIcon /> Try Again
             </button>
 
             <button
@@ -448,7 +460,7 @@ const ModuleDetails = () => {
             className="not-found-icon"
             aria-hidden="true"
           >
-            🔍
+            <SearchIcon />  
           </div>
 
           <h2>
@@ -605,11 +617,11 @@ const ModuleDetails = () => {
           <div className="module-details-meta">
 
             <span>
-              🌱 {duration} min
+              <SpaIcon /> {duration} min
             </span>
 
             <span>
-              🏆 {xpReward} XP
+              <EmojiEventsIcon /> {xpReward} XP
             </span>
 
           </div>
@@ -711,7 +723,7 @@ const ModuleDetails = () => {
             >
 
               {isCompleted
-                ? <>✅ Review Module</>
+                ? <><CheckIcon /> Review Module</>
                 : buttonLabel}
 
             </button>

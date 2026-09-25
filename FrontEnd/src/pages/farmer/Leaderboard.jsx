@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import sustainabilityService from '../../services/sustainabilityService';
 import farmerService from '../../services/farmerService';
 import './Leaderboard.css';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+
 
 const STATES = [
   'All States',
@@ -141,7 +143,7 @@ const Leaderboard = () => {
   return (
     <div className="leaderboard-page">
       <div className="lb-header">
-        <div className="lb-trophy">🏆</div>
+        <div className="lb-trophy"><EmojiEventsIcon /></div>
         <h2 className="lb-title">This Week's Top Growers</h2>
 
         <div className="tabbar">
@@ -204,12 +206,12 @@ const Leaderboard = () => {
                 <div className="podium-name">{second.name}</div>
                 <div className="podium-xp">{second.xp.toLocaleString()} XP</div>
                 <div className="podium-block block-second">
-                  <span>🏆 {second.rank}</span>
+                  <span><EmojiEventsIcon /> {second.rank}</span>
                 </div>
               </div>
 
               <div className="podium-col podium-first">
-                <div className="podium-crown">🏆</div>
+                <div className="podium-crown"><EmojiEventsIcon /></div>
                 <div
                   className="podium-avatar avatar-first"
                   style={{ background: first.color }}
@@ -219,7 +221,7 @@ const Leaderboard = () => {
                 <div className="podium-name">{first.name}</div>
                 <div className="podium-xp">{first.xp.toLocaleString()} XP</div>
                 <div className="podium-block block-first">
-                  <span>🏆 {first.rank}</span>
+                  <span><EmojiEventsIcon /> {first.rank}</span>
                 </div>
               </div>
 
@@ -230,7 +232,7 @@ const Leaderboard = () => {
                 <div className="podium-name">{third.name}</div>
                 <div className="podium-xp">{third.xp.toLocaleString()} XP</div>
                 <div className="podium-block block-third">
-                  <span>🏆 {third.rank}</span>
+                  <span><EmojiEventsIcon /> {third.rank}</span>
                 </div>
               </div>
             </div>

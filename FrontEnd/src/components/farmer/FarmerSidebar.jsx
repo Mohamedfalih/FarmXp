@@ -3,44 +3,60 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Box, Drawer, List, ListItemButton, Typography } from '@mui/material';
 import authService from '../../services/authService';
 
+import DashboardIcon  from '@mui/icons-material/Dashboard';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import MedalIcon from '@mui/icons-material/EmojiEvents';
+import PersonalIcon from '@mui/icons-material/Person';
+import ScienceIcon from '@mui/icons-material/Science';
+import WaterDropIcon from '@mui/icons-material/WaterDrop';
+import CastleIcon from '@mui/icons-material/Castle';
+import RobotIcon from '@mui/icons-material/SmartToy';
+import StoreIcon from '@mui/icons-material/Store';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
+
+
+
 const drawerWidth = 250;
 
 const menuGroups = [
   {
     label: null,
     items: [
-      { text: 'Dashboard', icon: '🏠', path: '/farmer/dashboard' },
-      { text: 'Farmer Profile', icon: '👤', path: '/farmer/my-farm' },
+      { text: 'Dashboard', icon: <DashboardIcon /> , path: '/farmer/dashboard' },
+      { text: 'Farmer Profile', icon: <PersonalIcon /> , path: '/farmer/my-farm' },
     ],
   },
   {
     label: 'Learn & Grow',
     items: [
-      { text: 'Learning Modules', icon: '📚', path: '/farmer/learning-modules' },
-      { text: 'Progress', icon: '📈', path: '/farmer/progress' },
-      { text: 'Leaderboard', icon: '🏆' , path: '/farmer/leaderboard' },
+      { text: 'Learning Modules', icon: <MenuBookIcon />, path: '/farmer/learning-modules' },
+      { text: 'Progress', icon: <TrendingUpIcon />, path: '/farmer/progress' },
+      { text: 'Leaderboard', icon: <MedalIcon />, path: '/farmer/leaderboard' },
     ],
   },
   {
     label: 'Sustainability',
     items: [
-      { text: 'Certified Practices', icon: '🧪', path: '/farmer/practice-logs' },
-      { text: 'Sustainability Metrics', icon: '💧', path: '/farmer/sustainability-metrics' },
+      { text: 'Certified Practices', icon: <ScienceIcon />, path: '/farmer/practice-logs' },
+      { text: 'Sustainability Metrics', icon: <WaterDropIcon />, path: '/farmer/sustainability-metrics' },
     ],
   },
   {
     label: 'Opportunities',
     items: [
-      { text: 'Govt. Schemes', icon: '🏛️', path: '/farmer/govt-schemes' },
-      { text: 'AI Assistant', icon: '🤖', path: '/farmer/ai-assistant' },
-      { text: 'Market Buyers', icon: '🏪', path: '/farmer/market-buyers' },
+      { text: 'Govt. Schemes', icon: <CastleIcon />, path: '/farmer/govt-schemes' },
+      { text: 'AI Assistant', icon: <RobotIcon />, path: '/farmer/ai-assistant' },
+      { text: 'Market Buyers', icon: <StoreIcon />, path: '/farmer/market-buyers' },
     ],
   },
   {
     label: 'Account',
     items: [
-      { text: 'Notifications', icon: '🔔', path: '/farmer/notifications' },
-      { text: 'Settings', icon: '⚙️', path: '/farmer/settings' },
+      { text: 'Notifications', icon: <NotificationsIcon />, path: '/farmer/notifications' },
+      { text: 'Settings', icon: <SettingsIcon />, path: '/farmer/settings' },
     ],
   },
 ];
@@ -136,7 +152,7 @@ const FarmerSidebar = ({ mobileOpen, onClose }) => {
       ))}
 
       <Box sx={{ marginTop: 'auto', paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-        <SideItem icon="🚪" text="Log Out" path="/login" isSelected={false} onClick={(e) => {
+        <SideItem icon={<LogoutIcon />} text="Log Out" path="/login" isSelected={false} onClick={(e) => {
           e.preventDefault();
           handleLogout();
         }} />
